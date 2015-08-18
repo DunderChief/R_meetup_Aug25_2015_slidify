@@ -1,0 +1,134 @@
+---
+title       : Predictive Analytics in R
+subtitle    : 
+author      : David O'Brien <dunder.chief@gmail.com>
+job         : 
+framework   : revealjs        # {io2012, html5slides, shower, dzslides, ...}
+revealjs    : {theme:      default, 
+               transition: concave}
+highlighter : prettify  # {highlight.js, prettify, highlight}
+hitheme     : desert
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+# Predictive Analytics in R
+### August 25, 2015
+
+
+--- &vertical
+
+## Read-And-Delete
+
+1. Edit YAML front matter
+2. Write using R Markdown
+3. Use an empty line followed by three dashes to separate slides!
+
+--- &vertical
+
+## Slide 2
+
+```{r}
+
+plot(1:10, rnorm(10, 10))
+```
+
+
+---
+
+<!-----ML Overview---------------------------------------------->
+<!---1--->
+What is Predictive Modeling?
+------------------------------------------------------------
+
+1. Given a set of **predictor variables (X)**, 
+
+2. Predict an **outcome (Y)**
+
+
+```{r, echo=FALSE, results='asis'}
+library(knitr)
+library(AppliedPredictiveModeling)
+library(MASS)
+example_row <- 55
+ex_iris1 <- iris[example_row, ]
+ex_iris1$Species <- '???'
+iris_names <- paste(gsub('\\.', ' ', colnames(iris)), 
+                    c('[X1]','[X2]','[X3]','[X4]','[Y]'), sep='\n')
+kable(ex_iris1, row.names=FALSE, col.names=iris_names, align='c', format='html')
+```
+
+<br>
+
+<div class="centered">
+<img src='img/iris.png' width="700">
+</div>
+
+<div class="notes">
+Machine learning / Predictive analytics / predictive modeling / Statistical learning / etc.
+
+variable / feature / covariate / predictors
+
+</div>
+
+<div class='notes'>
+
+these are notes
+</div>
+
+--- &vertical
+
+<!---2--->
+Our guess: 
+---------------------------------------------------------------------
+
+```{r, echo=FALSE}
+kable(ex_iris1, row.names=FALSE, col.names=iris_names, align='c', format='html')
+```
+<br> <!---- Arrow Image --->
+<div class="centered"> <img src='img/down.png' width="50"> </div>
+<br>
+
+_Equation_
+
+_Equation filled in_
+
+--- &vertical
+
+<!---3--->
+How do we estimate these parameters: 
+-----------------------------
+
+```{r, echo=FALSE}
+ex_iris2 <- rbind(iris[1:2, ], iris[51:52, ], iris[101:102, ])
+kable(data.frame(ex_iris2), row.names=FALSE, col.names=iris_names,
+      align='c', format='html')
+```
+
+Use this _historical_ data to optimize the best fit for our future models:
+
+We use this dataset to find:
+
+1. Mean for each measurements for each class
+2. 
+3. 
+
+--- 
+
+<!---4--->
+Implementation in R: 
+------------------------------------------
+
+```{r}
+library(MASS)
+trainset <- iris[-example_row, ] 
+fit.lda <- lda(Species ~ ., data=trainset, prior=c(1/3, 1/3, 1/3)) 
+pred <- predict(fit.lda, iris[example_row, ])
+round(pred$posterior, 3)
+```
+
+```{r}
+kable(head(iris))
+```
+

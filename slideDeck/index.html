@@ -7,9 +7,9 @@
   <meta name="author" content="David O'Brien <dunder.chief@gmail.com>">
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <link rel="stylesheet" href="libraries/frameworks/revealjs/css/reveal.min.css">
-  <link rel="stylesheet" href="libraries/frameworks/revealjs/css/theme/default.css" id="theme">
-  <link rel="stylesheet" href="libraries/highlighters/prettify/css/desert.css" id="theme">
+  <link rel="stylesheet" href="./frameworks/revealjs/css/reveal.min.css">
+  <link rel="stylesheet" href="./frameworks/revealjs/css/theme/sky.css" id="theme">
+  <link rel="stylesheet" href="./highlighters/prettify/css/desert.css" id="theme">
   <!--[if lt IE 9]>
   <script src="lib/js/html5shiv.js"></script>
   <![endif]-->  <link rel="stylesheet" href = "assets/css/ribbons.css">
@@ -20,48 +20,48 @@
     <div class="slides">
       <section class='' data-state='' id='slide-1'>
   <h1>Predictive Analytics in R</h1>
-  <h3>August 25, 2015</h3>
+  <h3>David O&#39;Brien <a href="mailto:dunder.chief@gmail.com">dunder.chief@gmail.com</a></h3>
+
+<h3>August 25, 2015</h3>
 
 </section>
-<section>
-   <section class='' data-state=''>
-    <h2>Read-And-Delete</h2>
-    <ol>
-<li>Edit YAML front matter</li>
-<li>Write using R Markdown</li>
-<li>Use an empty line followed by three dashes to separate slides!</li>
-</ol>
-
-    <aside class='notes'>
-      
-    </aside>
-   </section>
-</section>
-<section>
-   <section class='' data-state=''>
-    <h2>Slide 2</h2>
-    <pre><code class="r">plot(1:10, rnorm(10, 10))
-</code></pre>
-
-<p><img src="assets/fig/unnamed-chunk-1-1.png" alt="plot of chunk unnamed-chunk-1"> </p>
-
-    <aside class='notes'>
-      
-    </aside>
-   </section>
-</section>
-<section class='' data-state='' id='slide-4'>
+<section class='' data-state='' id='slide-2'>
   
-  <!-----ML Overview---------------------------------------------->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-<!---1--->
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
 
 <h2>What is Predictive Modeling?</h2>
 
-<ol>
-<li><p>Given a set of <strong>predictor variables (X)</strong>, </p></li>
+<p><br> </p>
+
+<ol class = "build incremental">
+<li><p>Given a set of <strong>predictor variables (X)</strong> </p></li>
 <li><p>Predict an <strong>outcome (Y)</strong></p></li>
 </ol>
+
+<script> $('ol.incremental li').addClass('fragment')</script>
+
+</section>
+<section class='' data-state='' id='slide-3'>
+  <h2>We pick a flower in a field</h2>
+  <p><br></p>
+
+<div class='centered'>
+  <img src='assets/img/iris_measure.png' heigh='200'>
+</div>
+
+</section>
+<section class='' data-state='' id='slide-4'>
+  <h2>What kind of iris is this?</h2>
+  <div class="centered" class="fragment">
+  <img src='assets/img/iris.png' width="700">
+</div>
+
+<p><br></p>
 
 <table>
  <thead>
@@ -89,29 +89,22 @@
 </tbody>
 </table>
 
-<p><br></p>
+</section>
+<section class='' data-state='' id='slide-5'>
+  <h2>Slide</h2>
+  <p>Some stuff here</p>
 
-<div class="centered">
-<img src='img/iris.png' width="700">
-</div>
+<p><aside class='notes'></p>
 
-<div class="notes">
-Machine learning / Predictive analytics / predictive modeling / Statistical learning / etc.
+<pre><code>These are notes
+</code></pre>
 
-variable / feature / covariate / predictors
-
-</div>
-
-<div class='notes'>
-
-these are notes
-</div>
+<p></aside></p>
 
 </section>
-<section>
-   <section class='' data-state=''>
-    
-    <!---2--->
+<section class='' data-state='' id='slide-6'>
+  
+  <!---2--->
 
 <h2>Our guess: </h2>
 
@@ -141,9 +134,9 @@ these are notes
 </tbody>
 </table>
 
-<p><br> &lt;!---- Arrow Image ---&gt;</p>
+<p><br> </p>
 
-<div class="centered"> <img src='img/down.png' width="50"> </div>
+<div class="centered"> <img src='assets/img/down.png' width="50"> </div>
 
 <p><br></p>
 
@@ -151,10 +144,6 @@ these are notes
 
 <p><em>Equation filled in</em></p>
 
-    <aside class='notes'>
-      
-    </aside>
-   </section>
 </section>
 <section>
    <section class='' data-state=''>
@@ -239,7 +228,7 @@ these are notes
     </aside>
    </section>
 </section>
-<section class='' data-state='' id='slide-7'>
+<section class='' data-state='' id='slide-8'>
   
   <!---4--->
 
@@ -316,8 +305,8 @@ round(pred$posterior, 3)
     </div>
   </div>
 </body>
-  <script src="libraries/frameworks/revealjs/lib/js/head.min.js"></script>
-  <script src="libraries/frameworks/revealjs/js/reveal.min.js"></script>
+  <script src="./frameworks/revealjs/lib/js/head.min.js"></script>
+  <script src="./frameworks/revealjs/js/reveal.min.js"></script>
   <script>
   // Full list of configuration options available here:
   // https://github.com/hakimel/reveal.js#configuration
@@ -326,23 +315,23 @@ round(pred$posterior, 3)
     progress: true,
     history: true,
     center: true,
-    theme: Reveal.getQueryHash().theme || 'default', 
+    theme: Reveal.getQueryHash().theme || 'sky', 
     transition: Reveal.getQueryHash().transition || 'concave', 
     dependencies: [
     // Cross-browser shim that fully implements classList -
     // https://github.com/eligrey/classList.js/
-      { src: 'libraries/frameworks/revealjs/lib/js/classList.js', condition: function() { return !document.body.classList;}},
+      { src: './frameworks/revealjs/lib/js/classList.js', condition: function() { return !document.body.classList;}},
       // Zoom in and out with Alt+click
-      { src: 'libraries/frameworks/revealjs/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: './frameworks/revealjs/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
       // Speaker notes
-      { src: 'libraries/frameworks/revealjs/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: './frameworks/revealjs/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
       // Remote control your reveal.js presentation using a touch device
-      //{ src: 'libraries/frameworks/revealjs/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+      //{ src: './frameworks/revealjs/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
       ]
   });
   </script>  <!-- Google Prettify -->
 <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
-<script src='libraries/highlighters/prettify/js/lang-r.js'></script>
+<script src='./highlighters/prettify/js/lang-r.js'></script>
 <script>
   var pres = document.getElementsByTagName("pre");
   for (var i=0; i < pres.length; ++i) {

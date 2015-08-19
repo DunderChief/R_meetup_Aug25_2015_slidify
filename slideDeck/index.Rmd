@@ -4,8 +4,8 @@ subtitle    :
 author      : David O'Brien <dunder.chief@gmail.com>
 job         : 
 framework   : revealjs        # {io2012, html5slides, shower, dzslides, ...}
-revealjs    : {theme:      default, 
-               transition: concave}
+revealjs    : {theme:      sky, 
+               transition: concave} #cube, page, zoom, concave, linear, fade, default, none
 highlighter : prettify  # {highlight.js, prettify, highlight}
 hitheme     : desert
 widgets     : []            # {mathjax, quiz, bootstrap}
@@ -14,40 +14,53 @@ knit        : slidify::knit2slides
 ---
 
 # Predictive Analytics in R
+### David O'Brien <dunder.chief@gmail.com>
 ### August 25, 2015
 
+--- 
 
---- &vertical
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-## Read-And-Delete
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
 
-1. Edit YAML front matter
-2. Write using R Markdown
-3. Use an empty line followed by three dashes to separate slides!
 
---- &vertical
 
-## Slide 2
+What is Predictive Modeling?
+-----------------------------------------------
+<br> 
 
-```{r}
+> 1. Given a set of **predictor variables (X)** 
 
-plot(1:10, rnorm(10, 10))
-```
+> 2. Predict an **outcome (Y)**
+
+<script> $('ol.incremental li').addClass('fragment')</script>
+
+---
+
+We pick a flower in a field
+----------------------------------------------
+<br>
+<div class='centered'>
+  <img src='assets/img/iris_measure.png' heigh='200'>
+</div>
+
 
 
 ---
 
-<!-----ML Overview---------------------------------------------->
-<!---1--->
-What is Predictive Modeling?
-------------------------------------------------------------
+What kind of iris is this?
+---------------------------------
 
-1. Given a set of **predictor variables (X)**, 
+<div class="centered" class="fragment">
+  <img src='assets/img/iris.png' width="700">
+</div>
 
-2. Predict an **outcome (Y)**
+<br>
 
-
-```{r, echo=FALSE, results='asis'}
+```{r, echo=FALSE}
 library(knitr)
 library(AppliedPredictiveModeling)
 library(MASS)
@@ -59,25 +72,26 @@ iris_names <- paste(gsub('\\.', ' ', colnames(iris)),
 kable(ex_iris1, row.names=FALSE, col.names=iris_names, align='c', format='html')
 ```
 
-<br>
 
-<div class="centered">
-<img src='img/iris.png' width="700">
-</div>
 
-<div class="notes">
-Machine learning / Predictive analytics / predictive modeling / Statistical learning / etc.
 
-variable / feature / covariate / predictors
 
-</div>
+---
 
-<div class='notes'>
+Slide
+-----------
 
-these are notes
-</div>
 
---- &vertical
+Some stuff here
+
+
+<aside class='notes'>
+
+    These are notes
+
+</aside>
+
+--- 
 
 <!---2--->
 Our guess: 
@@ -86,8 +100,8 @@ Our guess:
 ```{r, echo=FALSE}
 kable(ex_iris1, row.names=FALSE, col.names=iris_names, align='c', format='html')
 ```
-<br> <!---- Arrow Image --->
-<div class="centered"> <img src='img/down.png' width="50"> </div>
+<br> 
+<div class="centered"> <img src='assets/img/down.png' width="50"> </div>
 <br>
 
 _Equation_

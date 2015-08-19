@@ -3,9 +3,10 @@ title       : Predictive Analytics in R
 subtitle    : 
 author      : David O'Brien <dunder.chief@gmail.com>
 job         : 
+url: {lib: "."}
 framework   : revealjs        # {io2012, html5slides, shower, dzslides, ...}
-revealjs    : {theme:      default, 
-               transition: concave}
+revealjs    : {theme:      sky, 
+               transition: concave} #cube, page, zoom, concave, linear, fade, default, none
 highlighter : prettify  # {highlight.js, prettify, highlight}
 hitheme     : desert
 widgets     : []            # {mathjax, quiz, bootstrap}
@@ -14,40 +15,51 @@ knit        : slidify::knit2slides
 ---
 
 # Predictive Analytics in R
+### David O'Brien <dunder.chief@gmail.com>
 ### August 25, 2015
 
+--- 
 
---- &vertical
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-## Read-And-Delete
-
-1. Edit YAML front matter
-2. Write using R Markdown
-3. Use an empty line followed by three dashes to separate slides!
-
---- &vertical
-
-## Slide 2
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
 
 
-```r
-plot(1:10, rnorm(10, 10))
-```
 
-![plot of chunk unnamed-chunk-1](assets/fig/unnamed-chunk-1-1.png) 
+What is Predictive Modeling?
+-----------------------------------------------
+<br> 
+
+> 1. Given a set of **predictor variables (X)** 
+
+> 2. Predict an **outcome (Y)**
+
+<script> $('ol.incremental li').addClass('fragment')</script>
+
+---
+
+We pick a flower in a field
+----------------------------------------------
+<br>
+<div class='centered'>
+  <img src='assets/img/iris_measure.png' heigh='200'>
+</div>
+
 
 
 ---
 
-<!-----ML Overview---------------------------------------------->
-<!---1--->
-What is Predictive Modeling?
-------------------------------------------------------------
+What kind of iris is this?
+---------------------------------
 
-1. Given a set of **predictor variables (X)**, 
+<div class="centered" class="fragment">
+  <img src='assets/img/iris.png' width="700">
+</div>
 
-2. Predict an **outcome (Y)**
-
+<br>
 
 <table>
  <thead>
@@ -75,25 +87,26 @@ What is Predictive Modeling?
 </tbody>
 </table>
 
-<br>
 
-<div class="centered">
-<img src='img/iris.png' width="700">
-</div>
 
-<div class="notes">
-Machine learning / Predictive analytics / predictive modeling / Statistical learning / etc.
 
-variable / feature / covariate / predictors
 
-</div>
+---
 
-<div class='notes'>
+Slide
+-----------
 
-these are notes
-</div>
 
---- &vertical
+Some stuff here
+
+
+<aside class='notes'>
+
+    These are notes
+
+</aside>
+
+--- 
 
 <!---2--->
 Our guess: 
@@ -124,8 +137,8 @@ Our guess:
   </tr>
 </tbody>
 </table>
-<br> <!---- Arrow Image --->
-<div class="centered"> <img src='img/down.png' width="50"> </div>
+<br> 
+<div class="centered"> <img src='assets/img/down.png' width="50"> </div>
 <br>
 
 _Equation_

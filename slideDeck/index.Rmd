@@ -40,7 +40,7 @@ What is Predictive Modeling?
 
 ---
 
-We pick a flower in a field
+Our Flower!
 ----------------------------------------------
 <br>
 <div class='centered'>
@@ -54,63 +54,76 @@ We pick a flower in a field
 What kind of iris is this?
 ---------------------------------
 
-<div class="centered" class="fragment">
-  <img src='assets/img/iris.png' width="700">
-</div>
+
+<img src='assets/img/iris.png' width="700">
+
 
 <br>
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, results='asis'}
 library(knitr)
 library(AppliedPredictiveModeling)
 library(MASS)
+makeShow <- function() {slidify('index.Rmd'); browseURL('index.html')}
 example_row <- 55
 ex_iris1 <- iris[example_row, ]
 ex_iris1$Species <- '???'
 iris_names <- paste(gsub('\\.', ' ', colnames(iris)), 
                     c('[X1]','[X2]','[X3]','[X4]','[Y]'), sep='\n')
-kable(ex_iris1, row.names=FALSE, col.names=iris_names, align='c', format='html')
+out <- kable(ex_iris1, row.names=FALSE, col.names=iris_names, align='c', 
+             format='html')
+cat(sub('<table>', '<table class="fragment">', out))
 ```
-
-
-
-
 
 ---
 
-Slide
------------
-
-
-Some stuff here
-
-
-<aside class='notes'>
-
-    These are notes
-
-</aside>
-
---- 
-
-<!---2--->
 Our guess: 
 ---------------------------------------------------------------------
 
 ```{r, echo=FALSE}
 kable(ex_iris1, row.names=FALSE, col.names=iris_names, align='c', format='html')
 ```
-<br> 
-<div class="centered"> <img src='assets/img/down.png' width="50"> </div>
+
+
+
+.fragment <img src='assets/img/LDA_eq.png' height='100'>
+
+
+
+<table class="fragment"> 
+  <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:center;"> Probability </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> setosa </td>
+   <td style="text-align:center;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> versicolor </td>
+   <td style="text-align:center;"> 0.995 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> virginica </td>
+   <td style="text-align:center;"> 0.005 </td>
+  </tr>
+</tbody>
+</table>
+
 <br>
 
-_Equation_
+.fragment Answer = <p style="color:red" class="fragment">Versicolor</p>
 
-_Equation filled in_
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
 
---- &vertical
+--- 
 
-<!---3--->
 How do we estimate these parameters: 
 -----------------------------
 
@@ -130,10 +143,10 @@ We use this dataset to find:
 
 --- 
 
-<!---4--->
+
 Implementation in R: 
 ------------------------------------------
-
+<br>
 ```{r}
 library(MASS)
 trainset <- iris[-example_row, ] 
@@ -142,7 +155,43 @@ pred <- predict(fit.lda, iris[example_row, ])
 round(pred$posterior, 3)
 ```
 
-```{r}
-kable(head(iris))
+<br> 
+
+__Inputs:__
+
+- formula
+- data.frame
+- matrix
+- X, Y
+
+<aside class='notes'>
+
+Since most of the predictive modeling packages are written by different people,
+they often have different option names/ input structure
+
+</aside>
+
+--- 
+
+
+<p font-family:"Inconsolata">predict(fit_obj, type=???)</p>
+
+
+<br>
+
+```{r, echo=FALSE, results='asis'}
+out <- kable(
+data.frame(Model=c('lda', 'gbm', 'mda', 'rpart', 'Weka', 'LogitBoost'),
+           Probability=c('None needed', "response", "posterior",
+                                "prob", "probability", "raw")),
+format='html'
+)
+cat(sub('<table>', '<table class=fragment>', out))
 ```
+
+
+<aside class='notes'>
+
+There is some standardization, such as the predict function to test our model on a new datasets
+</aside>
 

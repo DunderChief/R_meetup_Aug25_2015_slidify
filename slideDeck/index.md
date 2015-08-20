@@ -3,7 +3,6 @@ title       : Predictive Analytics in R
 subtitle    : 
 author      : David O'Brien <dunder.chief@gmail.com>
 job         : 
-url: {lib: "."}
 framework   : revealjs        # {io2012, html5slides, shower, dzslides, ...}
 revealjs    : {theme:      sky, 
                transition: concave} #cube, page, zoom, concave, linear, fade, default, none
@@ -41,7 +40,7 @@ What is Predictive Modeling?
 
 ---
 
-We pick a flower in a field
+Our Flower!
 ----------------------------------------------
 <br>
 <div class='centered'>
@@ -55,13 +54,13 @@ We pick a flower in a field
 What kind of iris is this?
 ---------------------------------
 
-<div class="centered" class="fragment">
-  <img src='assets/img/iris.png' width="700">
-</div>
+
+<img src='assets/img/iris.png' width="700">
+
 
 <br>
 
-<table>
+<table class="fragment">
  <thead>
   <tr>
    <th style="text-align:center;"> Sepal Length
@@ -87,28 +86,8 @@ What kind of iris is this?
 </tbody>
 </table>
 
-
-
-
-
 ---
 
-Slide
------------
-
-
-Some stuff here
-
-
-<aside class='notes'>
-
-    These are notes
-
-</aside>
-
---- 
-
-<!---2--->
 Our guess: 
 ---------------------------------------------------------------------
 
@@ -137,17 +116,47 @@ Our guess:
   </tr>
 </tbody>
 </table>
-<br> 
-<div class="centered"> <img src='assets/img/down.png' width="50"> </div>
+
+
+
+.fragment <img src='assets/img/LDA_eq.png' height='100'>
+
+
+
+<table class="fragment"> 
+  <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:center;"> Probability </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> setosa </td>
+   <td style="text-align:center;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> versicolor </td>
+   <td style="text-align:center;"> 0.995 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> virginica </td>
+   <td style="text-align:center;"> 0.005 </td>
+  </tr>
+</tbody>
+</table>
+
 <br>
 
-_Equation_
+.fragment Answer = <p style="color:red" class="fragment">Versicolor</p>
 
-_Equation filled in_
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
 
---- &vertical
+--- 
 
-<!---3--->
 How do we estimate these parameters: 
 -----------------------------
 
@@ -222,10 +231,10 @@ We use this dataset to find:
 
 --- 
 
-<!---4--->
+
 Implementation in R: 
 ------------------------------------------
-
+<br>
 
 ```r
 library(MASS)
@@ -240,19 +249,68 @@ round(pred$posterior, 3)
 ## 55      0      0.995     0.005
 ```
 
+<br> 
 
-```r
-kable(head(iris))
-```
+__Inputs:__
+
+- formula
+- data.frame
+- matrix
+- X, Y
+
+<aside class='notes'>
+
+Since most of the predictive modeling packages are written by different people,
+they often have different option names/ input structure
+
+</aside>
+
+--- 
 
 
+<p font-family:"Inconsolata">predict(fit_obj, type=???)</p>
 
-| Sepal.Length| Sepal.Width| Petal.Length| Petal.Width|Species |
-|------------:|-----------:|------------:|-----------:|:-------|
-|          5.1|         3.5|          1.4|         0.2|setosa  |
-|          4.9|         3.0|          1.4|         0.2|setosa  |
-|          4.7|         3.2|          1.3|         0.2|setosa  |
-|          4.6|         3.1|          1.5|         0.2|setosa  |
-|          5.0|         3.6|          1.4|         0.2|setosa  |
-|          5.4|         3.9|          1.7|         0.4|setosa  |
+
+<br>
+
+<table class=fragment>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Model </th>
+   <th style="text-align:left;"> Probability </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> lda </td>
+   <td style="text-align:left;"> None needed </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> gbm </td>
+   <td style="text-align:left;"> response </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mda </td>
+   <td style="text-align:left;"> posterior </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> rpart </td>
+   <td style="text-align:left;"> prob </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Weka </td>
+   <td style="text-align:left;"> probability </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> LogitBoost </td>
+   <td style="text-align:left;"> raw </td>
+  </tr>
+</tbody>
+</table>
+
+
+<aside class='notes'>
+
+There is some standardization, such as the predict function to test our model on a new datasets
+</aside>
 

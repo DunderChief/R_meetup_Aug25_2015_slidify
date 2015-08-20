@@ -7,9 +7,9 @@
   <meta name="author" content="David O'Brien <dunder.chief@gmail.com>">
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <link rel="stylesheet" href="./frameworks/revealjs/css/reveal.min.css">
-  <link rel="stylesheet" href="./frameworks/revealjs/css/theme/sky.css" id="theme">
-  <link rel="stylesheet" href="./highlighters/prettify/css/desert.css" id="theme">
+  <link rel="stylesheet" href="libraries/frameworks/revealjs/css/reveal.min.css">
+  <link rel="stylesheet" href="libraries/frameworks/revealjs/css/theme/sky.css" id="theme">
+  <link rel="stylesheet" href="libraries/highlighters/prettify/css/desert.css" id="theme">
   <!--[if lt IE 9]>
   <script src="lib/js/html5shiv.js"></script>
   <![endif]-->  <link rel="stylesheet" href = "assets/css/ribbons.css">
@@ -47,7 +47,7 @@ $('ol.incremental li').addClass('fragment')
 
 </section>
 <section class='' data-state='' id='slide-3'>
-  <h2>We pick a flower in a field</h2>
+  <h2>Our Flower!</h2>
   <p><br></p>
 
 <div class='centered'>
@@ -57,13 +57,11 @@ $('ol.incremental li').addClass('fragment')
 </section>
 <section class='' data-state='' id='slide-4'>
   <h2>What kind of iris is this?</h2>
-  <div class="centered" class="fragment">
-  <img src='assets/img/iris.png' width="700">
-</div>
+  <p><img src='assets/img/iris.png' width="700"></p>
 
 <p><br></p>
 
-<table>
+<table class="fragment">
  <thead>
   <tr>
    <th style="text-align:center;"> Sepal Length
@@ -91,24 +89,8 @@ $('ol.incremental li').addClass('fragment')
 
 </section>
 <section class='' data-state='' id='slide-5'>
-  <h2>Slide</h2>
-  <p>Some stuff here</p>
-
-<p><aside class='notes'></p>
-
-<pre><code>These are notes
-</code></pre>
-
-<p></aside></p>
-
-</section>
-<section class='' data-state='' id='slide-6'>
-  
-  <!---2--->
-
-<h2>Our guess: </h2>
-
-<table>
+  <h2>Our guess: </h2>
+  <table>
  <thead>
   <tr>
    <th style="text-align:center;"> Sepal Length
@@ -134,25 +116,44 @@ $('ol.incremental li').addClass('fragment')
 </tbody>
 </table>
 
-<p><br> </p>
+<p class='fragment'><img src='assets/img/LDA_eq.png' height='100'></p>
 
-<div class="centered"> <img src='assets/img/down.png' width="50"> </div>
+<table class="fragment"> 
+  <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:center;"> Probability </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> setosa </td>
+   <td style="text-align:center;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> versicolor </td>
+   <td style="text-align:center;"> 0.995 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> virginica </td>
+   <td style="text-align:center;"> 0.005 </td>
+  </tr>
+</tbody>
+</table>
 
 <p><br></p>
 
-<p><em>Equation</em></p>
+<p class='fragment'>Answer = <p style="color:red" class="fragment">Versicolor</p></p>
 
-<p><em>Equation filled in</em></p>
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
 
 </section>
-<section>
-   <section class='' data-state=''>
-    
-    <!---3--->
-
-<h2>How do we estimate these parameters: </h2>
-
-<table>
+<section class='' data-state='' id='slide-6'>
+  <h2>How do we estimate these parameters: </h2>
+  <table>
  <thead>
   <tr>
    <th style="text-align:center;"> Sepal Length
@@ -223,16 +224,10 @@ $('ol.incremental li').addClass('fragment')
 <li></li>
 </ol>
 
-    <aside class='notes'>
-      
-    </aside>
-   </section>
 </section>
-<section class='' data-state='' id='slide-8'>
-  
-  <!---4--->
-
-<h2>Implementation in R: </h2>
+<section class='' data-state='' id='slide-7'>
+  <h2>Implementation in R: </h2>
+  <p><br></p>
 
 <pre><code class="r">library(MASS)
 trainset &lt;- iris[-example_row, ] 
@@ -245,68 +240,77 @@ round(pred$posterior, 3)
 ## 55      0      0.995     0.005
 </code></pre>
 
-<pre><code class="r">kable(head(iris))
-</code></pre>
+<p><br> </p>
 
-<table><thead>
-<tr>
-<th align="right">Sepal.Length</th>
-<th align="right">Sepal.Width</th>
-<th align="right">Petal.Length</th>
-<th align="right">Petal.Width</th>
-<th align="left">Species</th>
-</tr>
-</thead><tbody>
-<tr>
-<td align="right">5.1</td>
-<td align="right">3.5</td>
-<td align="right">1.4</td>
-<td align="right">0.2</td>
-<td align="left">setosa</td>
-</tr>
-<tr>
-<td align="right">4.9</td>
-<td align="right">3.0</td>
-<td align="right">1.4</td>
-<td align="right">0.2</td>
-<td align="left">setosa</td>
-</tr>
-<tr>
-<td align="right">4.7</td>
-<td align="right">3.2</td>
-<td align="right">1.3</td>
-<td align="right">0.2</td>
-<td align="left">setosa</td>
-</tr>
-<tr>
-<td align="right">4.6</td>
-<td align="right">3.1</td>
-<td align="right">1.5</td>
-<td align="right">0.2</td>
-<td align="left">setosa</td>
-</tr>
-<tr>
-<td align="right">5.0</td>
-<td align="right">3.6</td>
-<td align="right">1.4</td>
-<td align="right">0.2</td>
-<td align="left">setosa</td>
-</tr>
-<tr>
-<td align="right">5.4</td>
-<td align="right">3.9</td>
-<td align="right">1.7</td>
-<td align="right">0.4</td>
-<td align="left">setosa</td>
-</tr>
-</tbody></table>
+<p><strong>Inputs:</strong></p>
+
+<ul>
+<li>formula</li>
+<li>data.frame</li>
+<li>matrix</li>
+<li>X, Y</li>
+</ul>
+
+<p><aside class='notes'></p>
+
+<p>Since most of the predictive modeling packages are written by different people,
+they often have different option names/ input structure</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-8'>
+  
+  <p font-family:"Inconsolata">predict(fit_obj, type=???)</p>
+
+<p><br></p>
+
+<table class=fragment>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Model </th>
+   <th style="text-align:left;"> Probability </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> lda </td>
+   <td style="text-align:left;"> None needed </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> gbm </td>
+   <td style="text-align:left;"> response </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mda </td>
+   <td style="text-align:left;"> posterior </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> rpart </td>
+   <td style="text-align:left;"> prob </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Weka </td>
+   <td style="text-align:left;"> probability </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> LogitBoost </td>
+   <td style="text-align:left;"> raw </td>
+  </tr>
+</tbody>
+</table>
+
+<p><aside class='notes'></p>
+
+<p>There is some standardization, such as the predict function to test our model on a new datasets
+</aside></p>
 
 </section>
     </div>
   </div>
 </body>
-  <script src="./frameworks/revealjs/lib/js/head.min.js"></script>
-  <script src="./frameworks/revealjs/js/reveal.min.js"></script>
+  <script src="libraries/frameworks/revealjs/lib/js/head.min.js"></script>
+  <script src="libraries/frameworks/revealjs/js/reveal.min.js"></script>
   <script>
   // Full list of configuration options available here:
   // https://github.com/hakimel/reveal.js#configuration
@@ -320,18 +324,18 @@ round(pred$posterior, 3)
     dependencies: [
     // Cross-browser shim that fully implements classList -
     // https://github.com/eligrey/classList.js/
-      { src: './frameworks/revealjs/lib/js/classList.js', condition: function() { return !document.body.classList;}},
+      { src: 'libraries/frameworks/revealjs/lib/js/classList.js', condition: function() { return !document.body.classList;}},
       // Zoom in and out with Alt+click
-      { src: './frameworks/revealjs/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: 'libraries/frameworks/revealjs/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
       // Speaker notes
-      { src: './frameworks/revealjs/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: 'libraries/frameworks/revealjs/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
       // Remote control your reveal.js presentation using a touch device
-      //{ src: './frameworks/revealjs/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+      //{ src: 'libraries/frameworks/revealjs/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
       ]
   });
   </script>  <!-- Google Prettify -->
 <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
-<script src='./highlighters/prettify/js/lang-r.js'></script>
+<script src='libraries/highlighters/prettify/js/lang-r.js'></script>
 <script>
   var pres = document.getElementsByTagName("pre");
   for (var i=0; i < pres.length; ++i) {

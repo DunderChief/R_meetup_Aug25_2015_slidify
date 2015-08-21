@@ -28,6 +28,7 @@ $('ol.incremental li').addClass('fragment')
 
 
 
+
 What is Predictive Modeling?
 -----------------------------------------------
 <br> 
@@ -43,9 +44,8 @@ What is Predictive Modeling?
 Our Flower!
 ----------------------------------------------
 <br>
-<div class='centered'>
-  <img src='assets/img/iris_measure.png' heigh='200'>
-</div>
+
+<img src='assets/img/iris_measure.png' heigh='200'>
 
 
 
@@ -84,7 +84,7 @@ What kind of iris is this?
    <td style="text-align:center;"> ??? </td>
   </tr>
 </tbody>
-</table>
+</table></code></pre>
 
 ---
 
@@ -116,6 +116,8 @@ Our guess:
   </tr>
 </tbody>
 </table>
+
+</code></pre>
 
 
 
@@ -221,13 +223,7 @@ How do we estimate these parameters:
 </tbody>
 </table>
 
-Use this _historical_ data to optimize the best fit for our future models:
-
-We use this dataset to find:
-
-1. Mean for each measurements for each class
-2. 
-3. 
+</code></pre>
 
 --- 
 
@@ -235,19 +231,14 @@ We use this dataset to find:
 Implementation in R: 
 ------------------------------------------
 <br>
-
-```r
-library(MASS)
+<pre><code class='r'>library(MASS)
 trainset <- iris[-example_row, ] 
 fit.lda <- lda(Species ~ ., data=trainset, prior=c(1/3, 1/3, 1/3)) 
 pred <- predict(fit.lda, iris[example_row, ])
 round(pred$posterior, 3)
-```
-
-```
 ##    setosa versicolor virginica
 ## 55      0      0.995     0.005
-```
+</code></pre>
 
 <br> 
 
@@ -306,11 +297,450 @@ they often have different option names/ input structure
    <td style="text-align:left;"> raw </td>
   </tr>
 </tbody>
-</table>
+</table></code></pre>
 
 
 <aside class='notes'>
 
 There is some standardization, such as the predict function to test our model on a new datasets
 </aside>
+
+---
+
+Typical flow for trying a new algorithm:
+--------------------------------------------------------------
+
+1. Find the appropriate package(s) and install
+2. Find the correct training function within the package
+3. Set up your data to fit the training model
+    - Matrix
+    - Data.frame
+    - X, Y as seperate
+4. Look up training optimization 
+
+<aside class='notes'>
+
+Why caret package is useful
+
+base R is not really great if you 
+</aside>
+
+
+---
+
+Caret
+-----------------------------
+
+List of Models: https://topepo.github.io/caret/modelList.html
+
+<pre class='fragment'><code class='r'>options(stringsAsFactors=FALSE)
+models <- read.csv('../caret_models.csv')
+#table(models$Type)
+class_models <- subset(models, Type %in% c('Classification', 'Dual Use'),
+                       select='method.Argument')</code></pre>
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
+<pre class='fragment'><code class='r'>library(caret); library(MASS); library(doMC); registerDoMC(4)
+myFits <- foreach(this.model = class_models) %do% {
+  train(Species ~ ., 
+         data=iris,
+         method=this.model,
+         preProcess='pca',
+         trControl=trainControl(method='repeatedcv', repeats=10),
+         tuneLength=6, verbose=FALSE)
+}
+names(myFits) <- da_models
+lapply(myFits, confusionMatrix)</code></pre>
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
+<br>
+
+
+
+---
+
+
+Why use Caret?
+---------------------------------------
+
+caret: <http://topepo.github.io/caret/index.html>
+
+- Data Splitting
+
+- Pre-processing
+
+- Feature Selection (predictor variables)
+
+- Model tuning / Resampling
+
+- Variable Importance
+
+
+<aside class='notes'>
+
+Easier to use than base R
+
+Prevents common mistakes
+
+Here is the overview, I will go over each of these in detail
+
+</aside>
+
+---
+
+
+Data Splitting
+---------------------------------------------------
+
+Why split data?
+
+_Example:_
+
+<pre><code class='r'>library(caret)
+trainIndex <- createDataPartition(iris$Species, p = .8,
+                                  list = FALSE,
+                                  times = 1)
+irisTrain <- iris[ trainIndex, ]
+irisTest  <- iris[-trainIndex, ]</code></pre>
+
+<aside class='notes'>
+
+__Why split data?__ To avoid overfitting our results
+
+__Example:__ This is a good example of how caret make you do things the right way. I would normally just select random rows instead of breaking down into equal classes.
+
+</aside>
+
+---
+
+Data Splitting (Time Series)
+---------------------------------------------------
+
+
+
+<pre class='fragment'><code class='r'>library(quantmod)
+gold <- getSymbols('GLD', src='yahoo', from='1970-01-01', auto.assign=FALSE)</code></pre>
+
+<pre><code class='r'>library(caret)
+slices <- createTimeSlices(Cl(gold), initialWindow=100, 
+                           fixedWindow=TRUE, horizon=50, skip=500)
+str(slices)
+## List of 2
+##  $ train:List of 6
+##   ..$ Training0001: int [1:100] 1 2 3 4 5 6 7 8 9 10 ...
+##   ..$ Training0502: int [1:100] 502 503 504 505 506 507 508 509 510 511 ...
+##   ..$ Training1003: int [1:100] 1003 1004 1005 1006 1007 1008 1009 1010 1011 1012 ...
+##   ..$ Training1504: int [1:100] 1504 1505 1506 1507 1508 1509 1510 1511 1512 1513 ...
+##   ..$ Training2005: int [1:100] 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 ...
+##   ..$ Training2506: int [1:100] 2506 2507 2508 2509 2510 2511 2512 2513 2514 2515 ...
+##  $ test :List of 6
+##   ..$ Testing0001: int [1:50] 101 102 103 104 105 106 107 108 109 110 ...
+##   ..$ Testing0502: int [1:50] 602 603 604 605 606 607 608 609 610 611 ...
+##   ..$ Testing1003: int [1:50] 1103 1104 1105 1106 1107 1108 1109 1110 1111 1112 ...
+##   ..$ Testing1504: int [1:50] 1604 1605 1606 1607 1608 1609 1610 1611 1612 1613 ...
+##   ..$ Testing2005: int [1:50] 2105 2106 2107 2108 2109 2110 2111 2112 2113 2114 ...
+##   ..$ Testing2506: int [1:50] 2606 2607 2608 2609 2610 2611 2612 2613 2614 2615 ...
+</code></pre>
+
+<aside class='notes'>
+
+Time series can't be split randomly because the slice we're predicting depends on the previous samples.
+
+</aside>
+
+---
+
+Data Splitting | Class imbalances
+---------------------------------------------------
+
+copy stuff from this webpage:
+http://topepo.github.io/caret/sampling.html
+
+---
+
+Pre-processing
+---------------------------------------------------
+
+1. Get your data ready for training
+
+2. Apply these training set transformations to test set
+
+Example:
+
+
+
+<aside class='notes'>
+
+What it is: Transforming predictor variables
+Why: 
+
+1. Center and scale so mean is 0 for all predictors with a STDEV of 1
+2. Dimensionality reduction
+
+why caret:
+Makes you do it right by default, I kept doing it wrong at first.
+Applies same parameters to the test set.
+
+Go through example...
+
+Imputation???
+
+</aside>
+
+---
+
+Finding your model
+---------------------------------------------------
+
+
+
+<aside class='notes'>
+
+Caret has 192 models available how do we find these?
+
+1. Website
+
+2. code example
+</aside>
+
+---
+
+Feature Selection
+---------------------------------------------------
+
+Selecting which subset of predictors will give us the best model
+
+<aside class='notes'>
+
+What is feature selection? 
+__this is a subset of the features that we will need__
+
+
+Why we need it:
+__Can be challenging with many predictors & we can't try every possible model__
+
+How to do it:
+__method 1, 2, 3, etc.....__
+
+</aside>
+
+---
+
+Model tuning / Resampling
+----------------------------------------------------
+
+Most models have at least one tuning parameter.
+
+To optimize training parameters without overfitting our data,
+we need to use resampling 
+
+<aside class='notes'>
+
+What
+__Tune our model__
+
+Why
+__Avoid overfitting, get the best model__
+
+How
+__Examples__
+k-nearest neighbor k is the tuning parameter
+random forest: number of trees is a parameter
+ 
+</aside>
+
+---
+
+Variable Importance
+----------------------------------------------------
+
+Rank predictors by usefulness
+
+<aside class='notes'>
+
+What
+__A way to rank our predictors by how important they are to the model__
+
+Why
+__Help us remove predictors we don't want. And give us an idea about what causes our outcome variable__
+
+How
+__Examples__
+
+
+</aside>
+
+---
+
+<!------------------H2O-------------------------------------->
+
+h2o package: What and Why?
+---------------------------------------------------------------------
+
+- Java library utilizing hadoop for certain models
+
+- Over multiple nodes
+
+- http://h2o.ai/
+
+<aside class='notes'>
+
+Most of machine learning is subject to 'riduculously parallelization' because of optimization steps during training
+
+But for really large data where params are already estimated, you
+may want to parallelize a siCan be challenging with many predictors & we can'ngle model.
+
+</aside>
+
+---
+
+List of models available with H2O
+-------------------------------------------------------------
+
+<aside class='notes'>
+
+</aside>
+
+---
+
+Use case
+-------------------------------------------------------------
+<aside class='notes'>
+
+</aside>
+
+---
+
+Setting up on Amazon
+-------------------------------------------------------------
+
+---
+
+<!----------------GPU--------------------------------------->
+GPU computing for machine learning in R
+-------------------------------------------------------------
+
+__Packages:__
+
+- gputools
+- rpud
+- gmatrix
+- Rth
+
+<aside class='notes'>
+A typical machine will have 4-8 cores
+
+A GPU can have 1000 cores
+
+All depend on CUDA infastructure (check this!)
+
+OpenMP????
+</aside>
+
+---
+<!-------------------THE END---------------------------------->
+
+Places to Learn all about machine learning
+---------------------------------------------------------------
+
+- JHU datascience course
+- Andrew Ng
+- Statistical Learning
+- Georgia Tech program
+
+book1,2 & 3
+
+---
+
+References
+---------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+Why  Caret
+----------------------------------------------------
+
+A lot of models made by a lot of different people
+
+- Syntactical minutea
+- Baked in a lot of training control, tuning, and preprocessing (important b/c automatically applies to test set)
+- Protects people from doing the wrong thing
+- feature select the right way
+- Table with a bunch of predict functions with different arguments
+
+
+
+---
+
+
+## Some models take formula, others take matrix, others take a data.frame
+
+Data formating:
+
+- formula
+- data.frame
+- matrix / vector
+  
+<pre><code class='r'># Examples of each</code></pre>
+
+---
+
+## What Caret is good for
+
+Converts all of this to standard options
+
+- Basically a wrapper for a lot of different models
+
+---
+
+## Models implemented
+
+<pre><code class='r'>#show the code to list all models</code></pre>
+
+---
+
+## Tuning parameters
+
+- Easily parallelize tuning
+
+
+
+
+
+
+
+
 

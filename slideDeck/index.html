@@ -45,12 +45,23 @@ $('ol.incremental li').addClass('fragment')
 
 <script> $('ol.incremental li').addClass('fragment')</script>
 
+<p><aside class='notes'></p>
+
+<p>A simplified definition.</p>
+
+<ol>
+<li>may not have an outcome Y</li>
+<li>may want to know reasons behind <strong>why</strong> X predicts Y</li>
+</ol>
+
+<p></aside></p>
+
 </section>
 <section class='' data-state='' id='slide-3'>
   <h2>Our Flower!</h2>
   <p><br></p>
 
-<p><img src='assets/img/iris_measure.png' heigh='200'></p>
+<p><img src='assets/img/Iris_versicolor_nomeas.jpg' height='400'></p>
 
 </section>
 <section class='' data-state='' id='slide-4'>
@@ -59,31 +70,7 @@ $('ol.incremental li').addClass('fragment')
 
 <p><br></p>
 
-<table class="fragment">
- <thead>
-  <tr>
-   <th style="text-align:center;"> Sepal Length
-[X1] </th>
-   <th style="text-align:center;"> Sepal Width
-[X2] </th>
-   <th style="text-align:center;"> Petal Length
-[X3] </th>
-   <th style="text-align:center;"> Petal Width
-[X4] </th>
-   <th style="text-align:center;"> Species
-[Y] </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:center;"> 6.5 </td>
-   <td style="text-align:center;"> 2.8 </td>
-   <td style="text-align:center;"> 4.6 </td>
-   <td style="text-align:center;"> 1.5 </td>
-   <td style="text-align:center;"> ??? </td>
-  </tr>
-</tbody>
-</table>
+<p><img src='assets/img/Iris_versicolor_meas.jpg' height='300'></p>
 
 </section>
 <section class='' data-state='' id='slide-5'>
@@ -114,34 +101,36 @@ $('ol.incremental li').addClass('fragment')
 </tbody>
 </table>
 
-<p class='fragment'><img src='assets/img/LDA_eq.png' height='100'></p>
+<p><img src='assets/img/down1.png' height='75' style='border: none; box-shadow: none;' class='fragment'></p>
 
-<table class="fragment"> 
-  <thead>
+<p class='fragment'><img src='assets/img/LDA_eq.png' height='75'></p>
+
+<p><img src='assets/img/down1.png' height='75' style='border: none; box-shadow: none;' class='fragment'></p>
+
+<table class="fragment">
+ <thead>
   <tr>
    <th style="text-align:left;">   </th>
-   <th style="text-align:center;"> Probability </th>
+   <th style="text-align:right;"> Probablity </th>
   </tr>
  </thead>
 <tbody>
   <tr>
    <td style="text-align:left;"> setosa </td>
-   <td style="text-align:center;"> 0.000 </td>
+   <td style="text-align:right;"> 0.000 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> versicolor </td>
-   <td style="text-align:center;"> 0.995 </td>
+   <td style="text-align:right;"> 0.995 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> virginica </td>
-   <td style="text-align:center;"> 0.005 </td>
+   <td style="text-align:right;"> 0.005 </td>
   </tr>
 </tbody>
 </table>
 
-<p><br></p>
-
-<p class='fragment'>Answer = <p style="color:red" class="fragment">Versicolor</p></p>
+<p style="color:red" class="fragment">Versicolor!</p>
 
 <script>
 $('ul.incremental li').addClass('fragment')
@@ -151,7 +140,11 @@ $('ol.incremental li').addClass('fragment')
 </section>
 <section class='' data-state='' id='slide-6'>
   <h2>How do we estimate these parameters: </h2>
-  <table>
+  <p><br>
+<img src='assets/img/LDA_eq.png' height='100'>
+<br></p>
+
+<table class="fragment">
  <thead>
   <tr>
    <th style="text-align:center;"> Sepal Length
@@ -182,6 +175,13 @@ $('ol.incremental li').addClass('fragment')
    <td style="text-align:center;"> setosa </td>
   </tr>
   <tr>
+   <td style="text-align:center;"> 4.7 </td>
+   <td style="text-align:center;"> 3.2 </td>
+   <td style="text-align:center;"> 1.3 </td>
+   <td style="text-align:center;"> 0.2 </td>
+   <td style="text-align:center;"> setosa </td>
+  </tr>
+  <tr>
    <td style="text-align:center;"> 7.0 </td>
    <td style="text-align:center;"> 3.2 </td>
    <td style="text-align:center;"> 4.7 </td>
@@ -192,6 +192,13 @@ $('ol.incremental li').addClass('fragment')
    <td style="text-align:center;"> 6.4 </td>
    <td style="text-align:center;"> 3.2 </td>
    <td style="text-align:center;"> 4.5 </td>
+   <td style="text-align:center;"> 1.5 </td>
+   <td style="text-align:center;"> versicolor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> 6.9 </td>
+   <td style="text-align:center;"> 3.1 </td>
+   <td style="text-align:center;"> 4.9 </td>
    <td style="text-align:center;"> 1.5 </td>
    <td style="text-align:center;"> versicolor </td>
   </tr>
@@ -207,6 +214,13 @@ $('ol.incremental li').addClass('fragment')
    <td style="text-align:center;"> 2.7 </td>
    <td style="text-align:center;"> 5.1 </td>
    <td style="text-align:center;"> 1.9 </td>
+   <td style="text-align:center;"> virginica </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> 7.1 </td>
+   <td style="text-align:center;"> 3.0 </td>
+   <td style="text-align:center;"> 5.9 </td>
+   <td style="text-align:center;"> 2.1 </td>
    <td style="text-align:center;"> virginica </td>
   </tr>
 </tbody>
@@ -248,12 +262,10 @@ they often have different option names/ input structure</p>
 
 </section>
 <section class='' data-state='' id='slide-8'>
-  
-  <p font-family:"Inconsolata">predict(fit_obj, type=???)</p>
+  <h2>predict(fitObject, type = <strong>???</strong>)</h2>
+  <p><br></p>
 
-<p><br></p>
-
-<table class=fragment>
+<table class="fragment" style="font-size: 40px; line-height: 50px;">
  <thead>
   <tr>
    <th style="text-align:left;"> Model </th>

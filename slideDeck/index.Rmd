@@ -88,13 +88,22 @@ What is Predictive Modeling?
 
 <script> $('ol.incremental li').addClass('fragment')</script>
 
+<aside class='notes'>
+
+A simplified definition.
+
+1. may not have an outcome Y
+2. may want to know reasons behind __why__ X predicts Y
+
+</aside>
+
 ---
 
 Our Flower!
 ----------------------------------------------
 <br>
 
-<img src='assets/img/iris_measure.png' heigh='200'>
+<img src='assets/img/Iris_versicolor_nomeas.jpg' height='400'>
 
 
 
@@ -108,11 +117,16 @@ What kind of iris is this?
 
 <br>
 
+<img src='assets/img/Iris_versicolor_meas.jpg' height='300'>
+
 ```{r, echo=FALSE, results='asis'}
 library(knitr)
 library(AppliedPredictiveModeling)
 library(MASS)
 makeShow <- function() {slidify('index.Rmd'); browseURL('index.html');}
+frag_it <- function(xx) {
+  sub('<table>', '<table class="fragment">', xx)
+}
 example_row <- 55
 ex_iris1 <- iris[example_row, ]
 ex_iris1$Species <- '???'
@@ -120,7 +134,7 @@ iris_names <- paste(gsub('\\.', ' ', colnames(iris)),
                     c('[X1]','[X2]','[X3]','[X4]','[Y]'), sep='\n')
 out <- kable(ex_iris1, row.names=FALSE, col.names=iris_names, align='c', 
              format='html')
-cat(sub('<table>', '<table class="fragment">', out))
+#cat(sub('<table>', '<table class="fragment">', out))
 ```
 
 ---
@@ -128,40 +142,26 @@ cat(sub('<table>', '<table class="fragment">', out))
 Our guess: 
 ---------------------------------------------------------------------
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, results='asis'}
 kable(ex_iris1, row.names=FALSE, col.names=iris_names, align='c', format='html')
 ```
 
 
-
-.fragment <img src='assets/img/LDA_eq.png' height='100'>
-
+<img src='assets/img/down1.png' height='75' style='border: none; box-shadow: none;' class='fragment'>
 
 
-<table class="fragment"> 
-  <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:center;"> Probability </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> setosa </td>
-   <td style="text-align:center;"> 0.000 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> versicolor </td>
-   <td style="text-align:center;"> 0.995 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> virginica </td>
-   <td style="text-align:center;"> 0.005 </td>
-  </tr>
-</tbody>
-</table>
+.fragment <img src='assets/img/LDA_eq.png' height='75'>
 
-<br>
+
+<img src='assets/img/down1.png' height='75' style='border: none; box-shadow: none;' class='fragment'>
+
+```{r echo=FALSE, results='asis'}
+fit <- lda(Species ~ ., iris[-example_row, ])
+pred <- t(predict(fit, iris[example_row, ])$posterior)
+colnames(pred) <- 'Probablity'
+out <- kable(round(pred, 3), format='html')
+cat(sub('<table>', '<table class="fragment">', out))
+```
 
 <p style="color:red" class="fragment">Versicolor!</p>
 
@@ -175,10 +175,14 @@ $('ol.incremental li').addClass('fragment')
 How do we estimate these parameters: 
 -----------------------------
 
-```{r, echo=FALSE}
-ex_iris2 <- rbind(iris[1:2, ], iris[51:52, ], iris[101:102, ])
-kable(data.frame(ex_iris2), row.names=FALSE, col.names=iris_names,
+<br>
+<img src='assets/img/LDA_eq.png' height='100'>
+<br>
+```{r, echo=FALSE, results='asis'}
+ex_iris2 <- rbind(iris[1:3, ], iris[51:53, ], iris[101:103, ])
+out <- kable(data.frame(ex_iris2), row.names=FALSE, col.names=iris_names,
       align='c', format='html')
+frag_it(out)
 ```
 
 --- 
@@ -214,8 +218,8 @@ they often have different option names/ input structure
 --- 
 
 
-<p font-family:"Inconsolata">predict(fit_obj, type=???)</p>
-
+predict(fitObject, type = __???__)
+---------------------------------------------
 
 <br>
 
@@ -226,7 +230,8 @@ data.frame(Model=c('lda', 'gbm', 'mda', 'rpart', 'Weka', 'LogitBoost'),
                                 "prob", "probability", "raw")),
 format='html'
 )
-cat(sub('<table>', '<table class=fragment>', out))
+cat(sub('<table>', 
+        '<table class="fragment" style="font-size: 40px; line-height: 50px;">', out))
 ```
 
 

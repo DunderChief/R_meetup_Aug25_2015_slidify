@@ -75,7 +75,7 @@ body {
  * IMAGES
  *********************************************/
 .reveal section img {
-  margin: 15px 0px;
+  margin: 15px 0;
   background: rgba(255, 255, 255, 0.12);
   border: 4px solid #333333;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
@@ -90,6 +90,14 @@ body {
   border-color: #3b759e;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.55); }
 
+.myImg section img {
+  border: none;
+  box-shadow: none;
+}
+
+.myImg a:hover img {
+  border:none;
+}
 /*********************************************
  * NAVIGATION CONTROLS
  *********************************************/

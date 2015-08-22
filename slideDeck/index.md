@@ -39,13 +39,22 @@ What is Predictive Modeling?
 
 <script> $('ol.incremental li').addClass('fragment')</script>
 
+<aside class='notes'>
+
+A simplified definition.
+
+1. may not have an outcome Y
+2. may want to know reasons behind __why__ X predicts Y
+
+</aside>
+
 ---
 
 Our Flower!
 ----------------------------------------------
 <br>
 
-<img src='assets/img/iris_measure.png' heigh='200'>
+<img src='assets/img/Iris_versicolor_nomeas.jpg' height='400'>
 
 
 
@@ -54,37 +63,14 @@ Our Flower!
 What kind of iris is this?
 ---------------------------------
 
-
 <img src='assets/img/iris.png' width="700">
 
 
 <br>
 
-<table class="fragment">
- <thead>
-  <tr>
-   <th style="text-align:center;"> Sepal Length
-[X1] </th>
-   <th style="text-align:center;"> Sepal Width
-[X2] </th>
-   <th style="text-align:center;"> Petal Length
-[X3] </th>
-   <th style="text-align:center;"> Petal Width
-[X4] </th>
-   <th style="text-align:center;"> Species
-[Y] </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:center;"> 6.5 </td>
-   <td style="text-align:center;"> 2.8 </td>
-   <td style="text-align:center;"> 4.6 </td>
-   <td style="text-align:center;"> 1.5 </td>
-   <td style="text-align:center;"> ??? </td>
-  </tr>
-</tbody>
-</table>
+<img src='assets/img/Iris_versicolor_meas.jpg' height='300'>
+
+
 
 ---
 
@@ -118,37 +104,38 @@ Our guess:
 </table>
 
 
-
-.fragment <img src='assets/img/LDA_eq.png' height='100'>
-
+<img src='assets/img/down1.png' height='75' style='border: none; box-shadow: none;' class='fragment'>
 
 
-<table class="fragment"> 
-  <thead>
+.fragment <img src='assets/img/LDA_eq.png' height='75'>
+
+
+<img src='assets/img/down1.png' height='75' style='border: none; box-shadow: none;' class='fragment'>
+
+<table class="fragment">
+ <thead>
   <tr>
    <th style="text-align:left;">   </th>
-   <th style="text-align:center;"> Probability </th>
+   <th style="text-align:right;"> Probablity </th>
   </tr>
  </thead>
 <tbody>
   <tr>
    <td style="text-align:left;"> setosa </td>
-   <td style="text-align:center;"> 0.000 </td>
+   <td style="text-align:right;"> 0.000 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> versicolor </td>
-   <td style="text-align:center;"> 0.995 </td>
+   <td style="text-align:right;"> 0.995 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> virginica </td>
-   <td style="text-align:center;"> 0.005 </td>
+   <td style="text-align:right;"> 0.005 </td>
   </tr>
 </tbody>
 </table>
 
-<br>
-
-.fragment Answer = <p style="color:red" class="fragment">Versicolor</p>
+<p style="color:red" class="fragment">Versicolor!</p>
 
 <script>
 $('ul.incremental li').addClass('fragment')
@@ -160,7 +147,10 @@ $('ol.incremental li').addClass('fragment')
 How do we estimate these parameters: 
 -----------------------------
 
-<table>
+<br>
+<img src='assets/img/LDA_eq.png' height='100'>
+<br>
+<table class="fragment">
  <thead>
   <tr>
    <th style="text-align:center;"> Sepal Length
@@ -191,6 +181,13 @@ How do we estimate these parameters:
    <td style="text-align:center;"> setosa </td>
   </tr>
   <tr>
+   <td style="text-align:center;"> 4.7 </td>
+   <td style="text-align:center;"> 3.2 </td>
+   <td style="text-align:center;"> 1.3 </td>
+   <td style="text-align:center;"> 0.2 </td>
+   <td style="text-align:center;"> setosa </td>
+  </tr>
+  <tr>
    <td style="text-align:center;"> 7.0 </td>
    <td style="text-align:center;"> 3.2 </td>
    <td style="text-align:center;"> 4.7 </td>
@@ -201,6 +198,13 @@ How do we estimate these parameters:
    <td style="text-align:center;"> 6.4 </td>
    <td style="text-align:center;"> 3.2 </td>
    <td style="text-align:center;"> 4.5 </td>
+   <td style="text-align:center;"> 1.5 </td>
+   <td style="text-align:center;"> versicolor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> 6.9 </td>
+   <td style="text-align:center;"> 3.1 </td>
+   <td style="text-align:center;"> 4.9 </td>
    <td style="text-align:center;"> 1.5 </td>
    <td style="text-align:center;"> versicolor </td>
   </tr>
@@ -216,6 +220,13 @@ How do we estimate these parameters:
    <td style="text-align:center;"> 2.7 </td>
    <td style="text-align:center;"> 5.1 </td>
    <td style="text-align:center;"> 1.9 </td>
+   <td style="text-align:center;"> virginica </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> 7.1 </td>
+   <td style="text-align:center;"> 3.0 </td>
+   <td style="text-align:center;"> 5.9 </td>
+   <td style="text-align:center;"> 2.1 </td>
    <td style="text-align:center;"> virginica </td>
   </tr>
 </tbody>
@@ -260,12 +271,12 @@ they often have different option names/ input structure
 --- 
 
 
-<p font-family:"Inconsolata">predict(fit_obj, type=???)</p>
-
+predict(fitObject, type = __???__)
+---------------------------------------------
 
 <br>
 
-<table class=fragment>
+<table class="fragment" style="font-size: 40px; line-height: 50px;">
  <thead>
   <tr>
    <th style="text-align:left;"> Model </th>

@@ -84,7 +84,7 @@ What kind of iris is this?
    <td style="text-align:center;"> ??? </td>
   </tr>
 </tbody>
-</table></code></pre>
+</table>
 
 ---
 
@@ -116,8 +116,6 @@ Our guess:
   </tr>
 </tbody>
 </table>
-
-</code></pre>
 
 
 
@@ -223,22 +221,25 @@ How do we estimate these parameters:
 </tbody>
 </table>
 
-</code></pre>
-
 --- 
 
 
 Implementation in R: 
 ------------------------------------------
 <br>
-<pre><code class='r'>library(MASS)
+
+```r
+library(MASS)
 trainset <- iris[-example_row, ] 
 fit.lda <- lda(Species ~ ., data=trainset, prior=c(1/3, 1/3, 1/3)) 
 pred <- predict(fit.lda, iris[example_row, ])
 round(pred$posterior, 3)
+```
+
+```
 ##    setosa versicolor virginica
 ## 55      0      0.995     0.005
-</code></pre>
+```
 
 <br> 
 
@@ -297,7 +298,7 @@ they often have different option names/ input structure
    <td style="text-align:left;"> raw </td>
   </tr>
 </tbody>
-</table></code></pre>
+</table>
 
 
 <aside class='notes'>
@@ -310,8 +311,8 @@ There is some standardization, such as the predict function to test our model on
 Typical flow for trying a new algorithm:
 --------------------------------------------------------------
 
-1. Find the appropriate package(s) and install
-2. Find the correct training function within the package
+1. Find the appropriate package(s) and install them
+2. Find training function 
 3. Set up your data to fit the training model
     - Matrix
     - Data.frame
@@ -322,7 +323,8 @@ Typical flow for trying a new algorithm:
 
 Why caret package is useful
 
-base R is not really great if you 
+base R is not really great if you want to train multiple models
+
 </aside>
 
 
@@ -333,18 +335,23 @@ Caret
 
 List of Models: https://topepo.github.io/caret/modelList.html
 
-<pre class='fragment'><code class='r'>options(stringsAsFactors=FALSE)
+
+```r
+options(stringsAsFactors=FALSE)
 models <- read.csv('../caret_models.csv')
 #table(models$Type)
 class_models <- subset(models, Type %in% c('Classification', 'Dual Use'),
-                       select='method.Argument')</code></pre>
+                       select='method.Argument')
+```
 
 <script>
 $('ul.incremental li').addClass('fragment')
 $('ol.incremental li').addClass('fragment')
 </script>
 
-<pre class='fragment'><code class='r'>library(caret); library(MASS); library(doMC); registerDoMC(4)
+
+```r
+library(caret); library(MASS); library(doMC); registerDoMC(4)
 myFits <- foreach(this.model = class_models) %do% {
   train(Species ~ ., 
          data=iris,
@@ -354,7 +361,8 @@ myFits <- foreach(this.model = class_models) %do% {
          tuneLength=6, verbose=FALSE)
 }
 names(myFits) <- da_models
-lapply(myFits, confusionMatrix)</code></pre>
+lapply(myFits, confusionMatrix)
+```
 
 <script>
 $('ul.incremental li').addClass('fragment')
@@ -367,21 +375,28 @@ $('ol.incremental li').addClass('fragment')
 
 ---
 
+<img src='assets/img/authors.png'>
 
-Why use Caret?
+<br>
+
+<img src='assets/img/abstract_highlight.png'>
+
+---
+
+What else can caret do?
 ---------------------------------------
 
 caret: <http://topepo.github.io/caret/index.html>
 
-- Data Splitting
+> - Data Splitting
 
-- Pre-processing
+> - Pre-processing
 
-- Feature Selection (predictor variables)
+> - Feature Selection 
 
-- Model tuning / Resampling
+> - Model tuning / Resampling
 
-- Variable Importance
+> - Variable Importance
 
 
 <aside class='notes'>
@@ -396,7 +411,6 @@ Here is the overview, I will go over each of these in detail
 
 ---
 
-
 Data Splitting
 ---------------------------------------------------
 
@@ -404,12 +418,15 @@ Why split data?
 
 _Example:_
 
-<pre><code class='r'>library(caret)
+
+```r
+library(caret)
 trainIndex <- createDataPartition(iris$Species, p = .8,
                                   list = FALSE,
                                   times = 1)
 irisTrain <- iris[ trainIndex, ]
-irisTest  <- iris[-trainIndex, ]</code></pre>
+irisTest  <- iris[-trainIndex, ]
+```
 
 <aside class='notes'>
 
@@ -424,37 +441,49 @@ __Example:__ This is a good example of how caret make you do things the right wa
 Data Splitting (Time Series)
 ---------------------------------------------------
 
+<br>
+
+<img src='assets/img/Split_time.png'>
 
 
-<pre class='fragment'><code class='r'>library(quantmod)
-gold <- getSymbols('GLD', src='yahoo', from='1970-01-01', auto.assign=FALSE)</code></pre>
 
-<pre><code class='r'>library(caret)
-slices <- createTimeSlices(Cl(gold), initialWindow=100, 
-                           fixedWindow=TRUE, horizon=50, skip=500)
-str(slices)
-## List of 2
-##  $ train:List of 6
-##   ..$ Training0001: int [1:100] 1 2 3 4 5 6 7 8 9 10 ...
-##   ..$ Training0502: int [1:100] 502 503 504 505 506 507 508 509 510 511 ...
-##   ..$ Training1003: int [1:100] 1003 1004 1005 1006 1007 1008 1009 1010 1011 1012 ...
-##   ..$ Training1504: int [1:100] 1504 1505 1506 1507 1508 1509 1510 1511 1512 1513 ...
-##   ..$ Training2005: int [1:100] 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 ...
-##   ..$ Training2506: int [1:100] 2506 2507 2508 2509 2510 2511 2512 2513 2514 2515 ...
-##  $ test :List of 6
-##   ..$ Testing0001: int [1:50] 101 102 103 104 105 106 107 108 109 110 ...
-##   ..$ Testing0502: int [1:50] 602 603 604 605 606 607 608 609 610 611 ...
-##   ..$ Testing1003: int [1:50] 1103 1104 1105 1106 1107 1108 1109 1110 1111 1112 ...
-##   ..$ Testing1504: int [1:50] 1604 1605 1606 1607 1608 1609 1610 1611 1612 1613 ...
-##   ..$ Testing2005: int [1:50] 2105 2106 2107 2108 2109 2110 2111 2112 2113 2114 ...
-##   ..$ Testing2506: int [1:50] 2606 2607 2608 2609 2610 2611 2612 2613 2614 2615 ...
-</code></pre>
+
+```r
+library(quantmod)
+gold <- getSymbols('GLD', src='yahoo', from='1970-01-01', auto.assign=FALSE)
+```
+
+
 
 <aside class='notes'>
 
 Time series can't be split randomly because the slice we're predicting depends on the previous samples.
 
 </aside>
+
+---
+
+
+```r
+library(caret)
+slices <- createTimeSlices(Cl(gold), initialWindow=1000, 
+                           fixedWindow=TRUE, horizon=500, skip=500)
+str(slices)
+```
+
+```
+## List of 2
+##  $ train:List of 3
+##   ..$ Training0001: int [1:1000] 1 2 3 4 5 6 7 8 9 10 ...
+##   ..$ Training0502: int [1:1000] 502 503 504 505 506 507 508 509 510 511 ...
+##   ..$ Training1003: int [1:1000] 1003 1004 1005 1006 1007 1008 1009 1010 1011 1012 ...
+##  $ test :List of 3
+##   ..$ Testing0001: int [1:500] 1001 1002 1003 1004 1005 1006 1007 1008 1009 1010 ...
+##   ..$ Testing0502: int [1:500] 1502 1503 1504 1505 1506 1507 1508 1509 1510 1511 ...
+##   ..$ Testing1003: int [1:500] 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 ...
+```
+
+
 
 ---
 
@@ -714,7 +743,10 @@ Data formating:
 - data.frame
 - matrix / vector
   
-<pre><code class='r'># Examples of each</code></pre>
+
+```r
+# Examples of each
+```
 
 ---
 
@@ -728,7 +760,10 @@ Converts all of this to standard options
 
 ## Models implemented
 
-<pre><code class='r'>#show the code to list all models</code></pre>
+
+```r
+#show the code to list all models
+```
 
 ---
 

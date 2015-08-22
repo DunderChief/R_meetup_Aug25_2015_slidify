@@ -103,7 +103,6 @@ Our Flower!
 What kind of iris is this?
 ---------------------------------
 
-
 <img src='assets/img/iris.png' width="700">
 
 
@@ -164,7 +163,7 @@ kable(ex_iris1, row.names=FALSE, col.names=iris_names, align='c', format='html')
 
 <br>
 
-.fragment Answer = <p style="color:red" class="fragment">Versicolor</p>
+<p style="color:red" class="fragment">Versicolor!</p>
 
 <script>
 $('ul.incremental li').addClass('fragment')
@@ -241,8 +240,8 @@ There is some standardization, such as the predict function to test our model on
 Typical flow for trying a new algorithm:
 --------------------------------------------------------------
 
-1. Find the appropriate package(s) and install
-2. Find the correct training function within the package
+1. Find the appropriate package(s) and install them
+2. Find training function 
 3. Set up your data to fit the training model
     - Matrix
     - Data.frame
@@ -253,7 +252,8 @@ Typical flow for trying a new algorithm:
 
 Why caret package is useful
 
-base R is not really great if you 
+base R is not really great if you want to train multiple models
+
 </aside>
 
 
@@ -302,21 +302,28 @@ $('ol.incremental li').addClass('fragment')
 
 ---
 
+<img src='assets/img/authors.png'>
 
-Why use Caret?
+<br>
+
+<img src='assets/img/abstract_highlight.png'>
+
+---
+
+What else can caret do?
 ---------------------------------------
 
 caret: <http://topepo.github.io/caret/index.html>
 
-- Data Splitting
+> - Data Splitting
 
-- Pre-processing
+> - Pre-processing
 
-- Feature Selection (predictor variables)
+> - Feature Selection 
 
-- Model tuning / Resampling
+> - Model tuning / Resampling
 
-- Variable Importance
+> - Variable Importance
 
 
 <aside class='notes'>
@@ -330,7 +337,6 @@ Here is the overview, I will go over each of these in detail
 </aside>
 
 ---
-
 
 Data Splitting
 ---------------------------------------------------
@@ -361,7 +367,12 @@ __Example:__ This is a good example of how caret make you do things the right wa
 Data Splitting (Time Series)
 ---------------------------------------------------
 
+<br>
+
+<img src='assets/img/Split_time.png'>
+
 ```{r, echo=FALSE, message=FALSE}
+## Save to file in case I need to compile at presentation without internet 
 library(quantmod)
 # gold <- getSymbols('GLD', src='yahoo', from='1970-01-01', auto.assign=F)
 # saveRDS(gold, '../gold_ts.rds')
@@ -373,18 +384,24 @@ library(quantmod)
 gold <- getSymbols('GLD', src='yahoo', from='1970-01-01', auto.assign=FALSE)
 ```
 
-```{r}
-library(caret)
-slices <- createTimeSlices(Cl(gold), initialWindow=100, 
-                           fixedWindow=TRUE, horizon=50, skip=500)
-str(slices)
-```
+
 
 <aside class='notes'>
 
 Time series can't be split randomly because the slice we're predicting depends on the previous samples.
 
 </aside>
+
+---
+
+```{r}
+library(caret)
+slices <- createTimeSlices(Cl(gold), initialWindow=1000, 
+                           fixedWindow=TRUE, horizon=500, skip=500)
+str(slices)
+```
+
+
 
 ---
 

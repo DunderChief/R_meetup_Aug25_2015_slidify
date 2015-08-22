@@ -6,8 +6,8 @@ job         :
 framework   : revealjs        # {io2012, html5slides, shower, dzslides, ...}
 revealjs    : {theme:      sky, 
                transition: concave} #cube, page, zoom, concave, linear, fade, default, none
-highlighter : prettify  # {highlight.js, prettify, highlight}
-hitheme     : desert
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow
 widgets     : []            # {mathjax, quiz, bootstrap}
 mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
@@ -68,7 +68,7 @@ What kind of iris is this?
 
 <br>
 
-<img src='assets/img/Iris_versicolor_meas.jpg' height='300'>
+<img src='assets/img/Iris_versicolor_meas.jpg' height='300' class='fragment'>
 
 
 

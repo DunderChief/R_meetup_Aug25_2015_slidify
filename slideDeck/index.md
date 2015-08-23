@@ -254,7 +254,7 @@ round(pred$posterior, 3)
 
 <br> 
 
-.fragment __Data Inputs:__ <br> formula, data.frame, matrix, or seperate X & Y objects 
+
 
 <aside class='notes'>
 
@@ -332,7 +332,7 @@ Typical flow for trying a new algorithm:
     - Formula
     - Matrix
     - Data.frame
-    - X, Y as seperate
+    - X, Y as seperate objects
 5. Pre-process data
 6. Look up tuning params
 7. Write loops for model tuning / repeated cross-validation
@@ -342,6 +342,7 @@ Typical flow for trying a new algorithm:
 
 Typical flow for base r
 
+__Data Inputs:__ <br> formula, data.frame, matrix, or seperate X & Y objects 
 in caret all of this is contained in less than 5 lines of code
 
 </aside>
@@ -387,6 +388,8 @@ $('ol.incremental li').addClass('fragment')
 
 With all these dependencies, probably a few thousand packages in total???
 
+Can add your own
+
 </aside>
 
 ---
@@ -420,7 +423,9 @@ $('ol.incremental li').addClass('fragment')
 
 This will:
 1. preprocess with PCA,
+
 2. train with 5-fold cross validation, 7 repeats in parallel
+
 3. will also optimize tuning parameters
 
 Took XX minutes to run
@@ -430,13 +435,65 @@ Not all models worked because we have 3 categories
 
 </aside>
 
+
 ---
+
 
 <img src='assets/img/authors.png'>
 
 <br>
 
 <img src='assets/img/abstract_highlight.png'>
+
+---
+
+Basic Syntax
+--------------------------------------
+
+```
+train(Species ~ ., 
+        data=iris,
+        method='gbm',
+        preProcess='knnImpute',
+        trControl=trainControl(method='repeatedcv', number=5, repeats=7),
+        tuneLength=5)
+```
+
+<img src='assets/img/TrainAlgo.png' height='300'>
+
+---
+
+Adding custom tuning params
+----------------------------------------
+
+
+```r
+gbmGrid <-  expand.grid(interaction.depth = c(1, 5, 9),
+                        n.trees = (1:30)*50,
+                        shrinkage = 0.1,
+                        n.minobsinnode = 20)
+head(gbmGrid)
+```
+
+```
+##   interaction.depth n.trees shrinkage n.minobsinnode
+## 1                 1      50       0.1             20
+## 2                 5      50       0.1             20
+## 3                 9      50       0.1             20
+## 4                 1     100       0.1             20
+## 5                 5     100       0.1             20
+## 6                 9     100       0.1             20
+```
+```
+train(Species ~ ., 
+        data=iris,
+        method='gbm',
+        preProcess='pca',
+        trControl=trainControl(method='repeatedcv', number=5, repeats=7),
+        tuneGrid = gbmGrid)
+```   
+
+
 
 ---
 
@@ -472,7 +529,8 @@ Prevents common mistakes
 
 Data Splitting
 ---------------------------------------------------
-_Example:_
+<br>
+<br>
 
 
 ```r
@@ -494,18 +552,17 @@ __Example:__ This is a good example of how caret make you do things the right wa
 
 ---
 
-Data Splitting
+Data Splitting | Tuning
 ---------------------------------------------------
 __$$y = x^3$$__
 
 ```r
 y <- seq(2, 10, by=.05)
 x <- seq(2, 10, by=.05)^3
-par(mar=c(0,0,0,0))
-plot(y ~ x, pch=16)
 ```
 
-![plot of chunk unnamed-chunk-10](assets/fig/unnamed-chunk-10-1.png) 
+![plot of chunk unnamed-chunk-12](assets/fig/unnamed-chunk-12-1.png) 
+
 
 
 ```r
@@ -514,7 +571,7 @@ error <- rnorm(length(x), sd=2)
 dat <- data.frame(X = x + error, Y = y + error)
 ```
 
-![plot of chunk unnamed-chunk-12](assets/fig/unnamed-chunk-12-1.png) 
+![plot of chunk unnamed-chunk-14](assets/fig/unnamed-chunk-14-1.png) 
 
 <aside class='notes'>
 
@@ -525,6 +582,9 @@ dat <- data.frame(X = x + error, Y = y + error)
 </aside>
 
 ---
+
+Tuning polynomials
+------------------------------------------------
 
 
 ```r
@@ -555,11 +615,19 @@ $$y=\theta_3x^3 + \theta_2x^2 + \theta_1x + \theta_0$$
 
 .fragment __Our true fit is:__ $\theta_3=1$, $\{\theta_2, \theta_1, \theta_0\}=0$
 
+<aside class='notes'>
+
+We always fit on the training set
+
+But we will compare analyzing this tuning parameter on both the training & test sets
+
+</aside>
+
 ---
 
 In-sample (__training set__)   |   Out-of-sample (__test set__)
 
-![plot of chunk unnamed-chunk-15](assets/fig/unnamed-chunk-15-1.png) ![plot of chunk unnamed-chunk-15](assets/fig/unnamed-chunk-15-2.png) ![plot of chunk unnamed-chunk-15](assets/fig/unnamed-chunk-15-3.png) ![plot of chunk unnamed-chunk-15](assets/fig/unnamed-chunk-15-4.png) 
+![plot of chunk unnamed-chunk-17](assets/fig/unnamed-chunk-17-1.png) ![plot of chunk unnamed-chunk-17](assets/fig/unnamed-chunk-17-2.png) ![plot of chunk unnamed-chunk-17](assets/fig/unnamed-chunk-17-3.png) ![plot of chunk unnamed-chunk-17](assets/fig/unnamed-chunk-17-4.png) 
 
 <aside class='notes'>
 
@@ -624,8 +692,6 @@ library(quantmod)
 gold <- getSymbols('GLD', src='yahoo', from='1970-01-01', auto.assign=FALSE)
 ```
 
-
-
 <aside class='notes'>
 
 Time series can't be split randomly because the slice we're predicting depends on the previous samples.
@@ -661,7 +727,20 @@ str(slices)
 Data Splitting | Class imbalances
 ---------------------------------------------------
 
-copy stuff from this webpage:
+
+```r
+set.seed(2969)
+imbal_train <- twoClassSim(10000, intercept = -20, linearVars = 20)
+imbal_test  <- twoClassSim(10000, intercept = -20, linearVars = 20)
+table(imbal_train$Class)
+```
+
+```
+## 
+## Class1 Class2 
+##   9411    589
+```
+
 http://topepo.github.io/caret/sampling.html
 
 ---

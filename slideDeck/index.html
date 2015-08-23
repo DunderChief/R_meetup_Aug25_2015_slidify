@@ -244,8 +244,6 @@ round(pred$posterior, 3)
 
 <p><br> </p>
 
-<p class='fragment'><strong>Data Inputs:</strong> <br> formula, data.frame, matrix, or seperate X &amp; Y objects </p>
-
 <p><aside class='notes'></p>
 
 <p>Since most of the predictive modeling packages are written by different people,
@@ -317,7 +315,7 @@ $('ol.incremental li').addClass('fragment')
 <li>Formula</li>
 <li>Matrix</li>
 <li>Data.frame</li>
-<li>X, Y as seperate</li>
+<li>X, Y as seperate objects</li>
 </ul></li>
 <li>Pre-process data</li>
 <li>Look up tuning params</li>
@@ -329,7 +327,8 @@ $('ol.incremental li').addClass('fragment')
 
 <p>Typical flow for base r</p>
 
-<p>in caret all of this is contained in less than 5 lines of code</p>
+<p><strong>Data Inputs:</strong> <br> formula, data.frame, matrix, or seperate X &amp; Y objects 
+in caret all of this is contained in less than 5 lines of code</p>
 
 <p></aside></p>
 
@@ -367,6 +366,8 @@ $('ol.incremental li').addClass('fragment')
 
 <p>With all these dependencies, probably a few thousand packages in total???</p>
 
+<p>Can add your own</p>
+
 <p></aside></p>
 
 </section>
@@ -395,9 +396,12 @@ $('ol.incremental li').addClass('fragment')
 <p><aside class='notes'></p>
 
 <p>This will:
-1. preprocess with PCA,
-2. train with 5-fold cross validation, 7 repeats in parallel
-3. will also optimize tuning parameters</p>
+1. preprocess with PCA,</p>
+
+<ol>
+<li><p>train with 5-fold cross validation, 7 repeats in parallel</p></li>
+<li><p>will also optimize tuning parameters</p></li>
+</ol>
 
 <p>Took XX minutes to run</p>
 
@@ -416,6 +420,46 @@ $('ol.incremental li').addClass('fragment')
 
 </section>
 <section class='' data-state='' id='slide-13'>
+  <h2>Basic Syntax</h2>
+  <pre><code>train(Species ~ ., 
+        data=iris,
+        method=&#39;gbm&#39;,
+        preProcess=&#39;knnImpute&#39;,
+        trControl=trainControl(method=&#39;repeatedcv&#39;, number=5, repeats=7),
+        tuneLength=5)
+</code></pre>
+
+<p><img src='assets/img/TrainAlgo.png' height='300'></p>
+
+</section>
+<section class='' data-state='' id='slide-14'>
+  <h2>Adding custom tuning params</h2>
+  <pre><code class="r">gbmGrid &lt;-  expand.grid(interaction.depth = c(1, 5, 9),
+                        n.trees = (1:30)*50,
+                        shrinkage = 0.1,
+                        n.minobsinnode = 20)
+head(gbmGrid)
+</code></pre>
+
+<pre><code>##   interaction.depth n.trees shrinkage n.minobsinnode
+## 1                 1      50       0.1             20
+## 2                 5      50       0.1             20
+## 3                 9      50       0.1             20
+## 4                 1     100       0.1             20
+## 5                 5     100       0.1             20
+## 6                 9     100       0.1             20
+</code></pre>
+
+<pre><code>train(Species ~ ., 
+        data=iris,
+        method=&#39;gbm&#39;,
+        preProcess=&#39;pca&#39;,
+        trControl=trainControl(method=&#39;repeatedcv&#39;, number=5, repeats=7),
+        tuneGrid = gbmGrid)
+</code></pre>
+
+</section>
+<section class='' data-state='' id='slide-15'>
   <h2>What else can caret do?</h2>
   <p><br></p>
 
@@ -441,9 +485,10 @@ $('ol.incremental li').addClass('fragment')
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-14'>
+<section class='' data-state='' id='slide-16'>
   <h2>Data Splitting</h2>
-  <p><em>Example:</em></p>
+  <p><br>
+<br></p>
 
 <pre><code class="r">library(caret)
 trainIndex &lt;- createDataPartition(iris$Species, p = .8,
@@ -462,24 +507,22 @@ irisTest  &lt;- iris[-trainIndex, ]
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-15'>
-  <h2>Data Splitting</h2>
+<section class='' data-state='' id='slide-17'>
+  <h2>Data Splitting | Tuning</h2>
   <p><strong>\[y = x^3\]</strong></p>
 
 <pre><code class="r">y &lt;- seq(2, 10, by=.05)
 x &lt;- seq(2, 10, by=.05)^3
-par(mar=c(0,0,0,0))
-plot(y ~ x, pch=16)
 </code></pre>
 
-<p><img src="assets/fig/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10"> </p>
+<p><img src="assets/fig/unnamed-chunk-12-1.png" alt="plot of chunk unnamed-chunk-12"> </p>
 
 <pre><code class="r">set.seed(1)
 error &lt;- rnorm(length(x), sd=2)
 dat &lt;- data.frame(X = x + error, Y = y + error)
 </code></pre>
 
-<p><img src="assets/fig/unnamed-chunk-12-1.png" alt="plot of chunk unnamed-chunk-12"> </p>
+<p><img src="assets/fig/unnamed-chunk-14-1.png" alt="plot of chunk unnamed-chunk-14"> </p>
 
 <p><aside class='notes'></p>
 
@@ -491,8 +534,8 @@ dat &lt;- data.frame(X = x + error, Y = y + error)
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-16'>
-  
+<section class='' data-state='' id='slide-18'>
+  <h2>Tuning polynomials</h2>
   <pre><code class="r">set.seed(100)
 trainIndex &lt;- createDataPartition(y=dat$Y, p=0.5, list=FALSE)
 
@@ -515,12 +558,20 @@ pred.test &lt;- predict(fit, newdata=test)
 
 <p class='fragment'><strong>Our true fit is:</strong> \(\theta_3=1\), \(\{\theta_2, \theta_1, \theta_0\}=0\)</p>
 
+<p><aside class='notes'></p>
+
+<p>We always fit on the training set</p>
+
+<p>But we will compare analyzing this tuning parameter on both the training &amp; test sets</p>
+
+<p></aside></p>
+
 </section>
-<section class='' data-state='' id='slide-17'>
+<section class='' data-state='' id='slide-19'>
   
   <p>In-sample (<strong>training set</strong>)   |   Out-of-sample (<strong>test set</strong>)</p>
 
-<p><img src="assets/fig/unnamed-chunk-15-1.png" alt="plot of chunk unnamed-chunk-15"> <img src="assets/fig/unnamed-chunk-15-2.png" alt="plot of chunk unnamed-chunk-15"> <img src="assets/fig/unnamed-chunk-15-3.png" alt="plot of chunk unnamed-chunk-15"> <img src="assets/fig/unnamed-chunk-15-4.png" alt="plot of chunk unnamed-chunk-15"> </p>
+<p><img src="assets/fig/unnamed-chunk-17-1.png" alt="plot of chunk unnamed-chunk-17"> <img src="assets/fig/unnamed-chunk-17-2.png" alt="plot of chunk unnamed-chunk-17"> <img src="assets/fig/unnamed-chunk-17-3.png" alt="plot of chunk unnamed-chunk-17"> <img src="assets/fig/unnamed-chunk-17-4.png" alt="plot of chunk unnamed-chunk-17"> </p>
 
 <p><aside class='notes'></p>
 
@@ -531,7 +582,7 @@ pred.test &lt;- predict(fit, newdata=test)
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-18'>
+<section class='' data-state='' id='slide-20'>
   
   <p><img src='assets/img/SL_bias_var_annot.png' height='600'></p>
 
@@ -540,7 +591,7 @@ pred.test &lt;- predict(fit, newdata=test)
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-19'>
+<section class='' data-state='' id='slide-21'>
   <h2>Data Splitting </h2>
   <p><br></p>
 
@@ -566,7 +617,7 @@ $('ol.incremental li').addClass('fragment')
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-20'>
+<section class='' data-state='' id='slide-22'>
   <h2>Data Splitting (Time Series)</h2>
   <p><br></p>
 
@@ -583,7 +634,7 @@ gold &lt;- getSymbols(&#39;GLD&#39;, src=&#39;yahoo&#39;, from=&#39;1970-01-01&#
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-21'>
+<section class='' data-state='' id='slide-23'>
   
   <pre><code class="r">library(caret)
 slices &lt;- createTimeSlices(Cl(gold), initialWindow=1000, 
@@ -603,13 +654,23 @@ str(slices)
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-22'>
+<section class='' data-state='' id='slide-24'>
   <h2>Data Splitting | Class imbalances</h2>
-  <p>copy stuff from this webpage:
-<a href="http://topepo.github.io/caret/sampling.html">http://topepo.github.io/caret/sampling.html</a></p>
+  <pre><code class="r">set.seed(2969)
+imbal_train &lt;- twoClassSim(10000, intercept = -20, linearVars = 20)
+imbal_test  &lt;- twoClassSim(10000, intercept = -20, linearVars = 20)
+table(imbal_train$Class)
+</code></pre>
+
+<pre><code>## 
+## Class1 Class2 
+##   9411    589
+</code></pre>
+
+<p><a href="http://topepo.github.io/caret/sampling.html">http://topepo.github.io/caret/sampling.html</a></p>
 
 </section>
-<section class='' data-state='' id='slide-23'>
+<section class='' data-state='' id='slide-25'>
   <h2>Pre-processing</h2>
   <ol>
 <li><p>Get your data ready for training</p></li>
@@ -639,7 +700,7 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-24'>
+<section class='' data-state='' id='slide-26'>
   <h2>Finding your model</h2>
   <p><aside class='notes'></p>
 
@@ -652,7 +713,7 @@ Applies same parameters to the test set.</p>
 </ol>
 
 </section>
-<section class='' data-state='' id='slide-25'>
+<section class='' data-state='' id='slide-27'>
   <h2>Feature Selection</h2>
   <p>Selecting which subset of predictors will give us the best model</p>
 
@@ -670,7 +731,7 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-26'>
+<section class='' data-state='' id='slide-28'>
   <h2>Model tuning / Resampling</h2>
   <p>Most models have at least one tuning parameter.</p>
 
@@ -693,7 +754,7 @@ random forest: number of trees is a parameter</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-27'>
+<section class='' data-state='' id='slide-29'>
   <h2>Variable Importance</h2>
   <p>Rank predictors by usefulness</p>
 
@@ -711,7 +772,7 @@ random forest: number of trees is a parameter</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-28'>
+<section class='' data-state='' id='slide-30'>
   
   <!------------------H2O-------------------------------------->
 
@@ -733,25 +794,25 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-29'>
+<section class='' data-state='' id='slide-31'>
   <h2>List of models available with H2O</h2>
   <p><aside class='notes'></p>
 
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-30'>
+<section class='' data-state='' id='slide-32'>
   <h2>Use case</h2>
   <p><aside class='notes'></p>
 
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-31'>
+<section class='' data-state='' id='slide-33'>
   <h2>Setting up on Amazon</h2>
   
 </section>
-<section class='' data-state='' id='slide-32'>
+<section class='' data-state='' id='slide-34'>
   
   <!----------------GPU--------------------------------------->
 
@@ -777,7 +838,7 @@ A typical machine will have 4-8 cores</p>
 </aside></p>
 
 </section>
-<section class='' data-state='' id='slide-33'>
+<section class='' data-state='' id='slide-35'>
   
   <!-------------------THE END---------------------------------->
 
@@ -793,11 +854,11 @@ A typical machine will have 4-8 cores</p>
 <p>book1,2 &amp; 3</p>
 
 </section>
-<section class='' data-state='' id='slide-34'>
+<section class='' data-state='' id='slide-36'>
   <h2>References</h2>
   
 </section>
-<section class='' data-state='' id='slide-35'>
+<section class='' data-state='' id='slide-37'>
   <h2>Why  Caret</h2>
   <p>A lot of models made by a lot of different people</p>
 
@@ -810,7 +871,7 @@ A typical machine will have 4-8 cores</p>
 </ul>
 
 </section>
-<section class='' data-state='' id='slide-36'>
+<section class='' data-state='' id='slide-38'>
   <h2>Some models take formula, others take matrix, others take a data.frame</h2>
   <p>Data formating:</p>
 
@@ -824,7 +885,7 @@ A typical machine will have 4-8 cores</p>
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-37'>
+<section class='' data-state='' id='slide-39'>
   <h2>What Caret is good for</h2>
   <p>Converts all of this to standard options</p>
 
@@ -833,13 +894,13 @@ A typical machine will have 4-8 cores</p>
 </ul>
 
 </section>
-<section class='' data-state='' id='slide-38'>
+<section class='' data-state='' id='slide-40'>
   <h2>Models implemented</h2>
   <pre><code class="r">#show the code to list all models
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-39'>
+<section class='' data-state='' id='slide-41'>
   <h2>Tuning parameters</h2>
   <ul>
 <li>Easily parallelize tuning</li>

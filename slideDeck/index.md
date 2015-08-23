@@ -485,20 +485,52 @@ plot(y ~ x, pch=16)
 
 ```r
 set.seed(1)
-error <- rnorm(length(x), sd=1)
+error <- rnorm(length(x), sd=2)
 dat <- data.frame(X = x + error, Y = y + error)
 par(mar=c(0,0,0,0))
-plot(y ~ x, pch=16)
+plot(y ~ x, pch=16, col='gray')
 points(Y ~ X, data=dat, pch='X', col='red2')
 ```
 
 ![plot of chunk unnamed-chunk-10](assets/fig/unnamed-chunk-10-1.png) 
 
+<aside class='notes'>
+
+1. Create data where we know the optimal fit
+
+2. Add some randomness to it
+
+</aside>
+
 ---
 
 
+```r
+set.seed(1)
+trainIndex <- createDataPartition(y=dat$Y, p=0.7, list=FALSE)
+
+training <- dat[trainIndex, ]
+test <- dat[-trainIndex, ]
+```
+
 ---
 
+In-sample (__training set__)   |   Out-of-sample (__test set__)
+
+![plot of chunk unnamed-chunk-12](assets/fig/unnamed-chunk-12-1.png) ![plot of chunk unnamed-chunk-12](assets/fig/unnamed-chunk-12-2.png) ![plot of chunk unnamed-chunk-12](assets/fig/unnamed-chunk-12-3.png) ![plot of chunk unnamed-chunk-12](assets/fig/unnamed-chunk-12-4.png) 
+
+<aside class='notes'>
+
+Error only decreases in training set
+
+At polynomial = 50. Our model no longer works on new data
+
+</aside>
+
+---
+
+
+<img src='assets/img/SL_bias_var_annot.png' height='600'>
 
 
 <aside class='notes'>
@@ -506,8 +538,10 @@ points(Y ~ X, data=dat, pch='X', col='red2')
 
 </aside>
 
+---
 
-Data Splitting | Simple Example
+
+Data Splitting 
 ---------------------------------------------------
 
 <br>

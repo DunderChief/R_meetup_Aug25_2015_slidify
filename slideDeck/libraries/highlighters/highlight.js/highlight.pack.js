@@ -3,7 +3,7 @@ var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/<
 hljs.LANGUAGES.r=(
   function(){var a="(([a-zA-Z]|\\.[a-zA-Z.])[a-zA-Z0-9._]*)";
   return{dM:{c:[hljs.HCM,{b:a, l:a, k:{
-    keyword:"function predict lda round if in break next repeat else for return switch while try tryCatch|10 stop warning require library attach detach source setMethod setGeneric setGroupGeneric setClass ...|10 subset foreach train names lapply confusionMatrix trainControl options read.csv table registerDoMC",
+    keyword:"function predict lda round if in break next repeat else for return switch while try tryCatch|10 stop warning require library attach detach source setMethod setGeneric setGroupGeneric setClass ...|10 subset foreach train names lapply confusionMatrix trainControl options read.csv table registerDoMC seq par plot data.frame length rnorm points lm I createDataPartition poly",
     literal:"NULL NA TRUE FALSE T F Inf NaN NA_integer_|10 NA_real_|10 NA_character_|10 NA_complex_|10"
     }, r:0},
   {cN:"number",b:"0[xX][0-9a-fA-F]+[Li]?\\b",r:0},{cN:"number",b:"\\d+(?:[eE][+\\-]?\\d*)?L\\b",r:0},

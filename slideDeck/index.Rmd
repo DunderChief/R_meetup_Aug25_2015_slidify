@@ -393,12 +393,13 @@ plot(y ~ x, pch=16)
 
 ```{r, fig.height=2}
 set.seed(1)
-error <- rnorm(length(x), sd=1)
+error <- rnorm(length(x), sd=2)
 dat <- data.frame(X = x + error, Y = y + error)
 par(mar=c(0,0,0,0))
-plot(y ~ x, pch=16)
+plot(y ~ x, pch=16, col='gray')
 points(Y ~ X, data=dat, pch='X', col='red2')
 ```
+
 <aside class='notes'>
 
 1. Create data where we know the optimal fit
@@ -409,33 +410,57 @@ points(Y ~ X, data=dat, pch='X', col='red2')
 
 ---
 
-```{r, echo=FALSE, eval=FALSE}
+```{r}
+set.seed(1)
+trainIndex <- createDataPartition(y=dat$Y, p=0.7, list=FALSE)
 
-
-
-plot(Y ~ X, data=trainset, pch='X', xlab='', ylab='',xaxt='n', ann=FALSE, yaxt='n')
-plot(y~x, pch=16, xlab='', ylab='',xaxt='n', ann=FALSE, yaxt='n')
-points(Y ~ X, data=trainset, pch='X', col='red2')
-plot( function(x) x^(1/3), max(trainset$X), col='red', lwd=3, xlab='', ylab='',xaxt='n', ann=FALSE, yaxt='n')  
-points(Y ~ X, data=trainset, pch='X')
-
-# True fit
-truefit <- lm(Y ~ I(X^(1/3)), data=trainset)
-Y_train <- predict(truefit, newdata=trainset)
-lines(trainset$X, Y_train)
-# Poly 1
-fit
-# Poly 10
-fit <- lm(Y ~ poly(X, 3, raw=TRUE), data=trainset)
-lines(x, predict(fit), col="blue", lwd=3) 
-
-# Poly 100
-fit2 <- lm(Y ~ poly(X, 100, raw=TRUE), data=trainset)
-lines(x, predict(fit2), col='green3', lwd=3)
-
+training <- dat[trainIndex, ]
+test <- dat[-trainIndex, ]
 ```
+
 ---
 
+In-sample (__training set__)   |   Out-of-sample (__test set__)
+
+```{r, echo=FALSE, eval=TRUE, fig.height=2, warning=FALSE, message=FALSE}
+polyPlot <- function(training, test, pol, color, return_err) {
+  par(mar=c(0,0,0,0))
+  plot(x, y, pch=16, col='gray',yaxt='n', xaxt='n', ann=FALSE)
+  points(Y ~ X, data=test, pch='X', col=color)
+  fit <- lm(Y ~ poly(X, pol, raw=TRUE), data=training)
+  pred <- predict(fit, newdata=test)
+  lines(training$X, fit$fitted.values, col='blue', lwd=3)
+  error <- mean(abs(test$Y - pred))
+  text(700, 3.5, paste('Error = ', round(error,2)), cex=2)
+  text(675, 1.5, paste('Polynomial =', pol), cex=2)
+  if(return_err) {return(error)} 
+}
+par(mfrow=c(1,2), mar=rep(0,4))
+polyPlot(training, training, 1,  'red2', FALSE)
+polyPlot(training, test, 1, 'green3', FALSE)
+
+polyPlot(training, training, 3,  'red2', FALSE)
+polyPlot(training, test, 3, 'green3', FALSE)
+
+polyPlot(training, training, 20,  'red2', FALSE)
+polyPlot(training, test, 20, 'green3', FALSE)
+
+polyPlot(training, training, 50,  'red2', FALSE)
+polyPlot(training, test, 50, 'green3', FALSE)
+```
+
+<aside class='notes'>
+
+Error only decreases in training set
+
+At polynomial = 50. Our model no longer works on new data
+
+</aside>
+
+---
+
+
+<img src='assets/img/SL_bias_var_annot.png' height='600'>
 
 
 <aside class='notes'>
@@ -443,8 +468,10 @@ lines(x, predict(fit2), col='green3', lwd=3)
 
 </aside>
 
+---
 
-Data Splitting | Simple Example
+
+Data Splitting 
 ---------------------------------------------------
 
 <br>

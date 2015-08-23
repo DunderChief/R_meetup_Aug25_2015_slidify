@@ -453,29 +453,62 @@ plot(y ~ x, pch=16)
 <p><img src="assets/fig/unnamed-chunk-9-1.png" alt="plot of chunk unnamed-chunk-9"> </p>
 
 <pre><code class="r">set.seed(1)
-error &lt;- rnorm(length(x), sd=1)
+error &lt;- rnorm(length(x), sd=2)
 dat &lt;- data.frame(X = x + error, Y = y + error)
 par(mar=c(0,0,0,0))
-plot(y ~ x, pch=16)
+plot(y ~ x, pch=16, col=&#39;gray&#39;)
 points(Y ~ X, data=dat, pch=&#39;X&#39;, col=&#39;red2&#39;)
 </code></pre>
 
 <p><img src="assets/fig/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10"> </p>
 
-</section>
-<section class='' data-state='' id='slide-15'>
-  
-  
-</section>
-<section class='' data-state='' id='slide-16'>
-  
-  <p><aside class='notes'></p>
+<p><aside class='notes'></p>
+
+<ol>
+<li><p>Create data where we know the optimal fit</p></li>
+<li><p>Add some randomness to it</p></li>
+</ol>
 
 <p></aside></p>
 
-<h2>Data Splitting | Simple Example</h2>
+</section>
+<section class='' data-state='' id='slide-15'>
+  
+  <pre><code class="r">set.seed(1)
+trainIndex &lt;- createDataPartition(y=dat$Y, p=0.7, list=FALSE)
 
-<p><br></p>
+training &lt;- dat[trainIndex, ]
+test &lt;- dat[-trainIndex, ]
+</code></pre>
+
+</section>
+<section class='' data-state='' id='slide-16'>
+  
+  <p>In-sample (<strong>training set</strong>)   |   Out-of-sample (<strong>test set</strong>)</p>
+
+<p><img src="assets/fig/unnamed-chunk-12-1.png" alt="plot of chunk unnamed-chunk-12"> <img src="assets/fig/unnamed-chunk-12-2.png" alt="plot of chunk unnamed-chunk-12"> <img src="assets/fig/unnamed-chunk-12-3.png" alt="plot of chunk unnamed-chunk-12"> <img src="assets/fig/unnamed-chunk-12-4.png" alt="plot of chunk unnamed-chunk-12"> </p>
+
+<p><aside class='notes'></p>
+
+<p>Error only decreases in training set</p>
+
+<p>At polynomial = 50. Our model no longer works on new data</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-17'>
+  
+  <p><img src='assets/img/SL_bias_var_annot.png' height='600'></p>
+
+<p><aside class='notes'></p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-18'>
+  <h2>Data Splitting </h2>
+  <p><br></p>
 
 <ol class = "build incremental">
 <li><strong>Training set [70%]:</strong> <br> Train a model 100x with different tuning parameters <br><br></li>
@@ -499,7 +532,7 @@ $('ol.incremental li').addClass('fragment')
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-17'>
+<section class='' data-state='' id='slide-19'>
   <h2>Data Splitting</h2>
   <p><em>Example:</em></p>
 
@@ -520,7 +553,7 @@ irisTest  &lt;- iris[-trainIndex, ]
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-18'>
+<section class='' data-state='' id='slide-20'>
   <h2>Data Splitting (Time Series)</h2>
   <p><br></p>
 
@@ -537,7 +570,7 @@ gold &lt;- getSymbols(&#39;GLD&#39;, src=&#39;yahoo&#39;, from=&#39;1970-01-01&#
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-19'>
+<section class='' data-state='' id='slide-21'>
   
   <pre><code class="r">library(caret)
 slices &lt;- createTimeSlices(Cl(gold), initialWindow=1000, 
@@ -557,13 +590,13 @@ str(slices)
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-20'>
+<section class='' data-state='' id='slide-22'>
   <h2>Data Splitting | Class imbalances</h2>
   <p>copy stuff from this webpage:
 <a href="http://topepo.github.io/caret/sampling.html">http://topepo.github.io/caret/sampling.html</a></p>
 
 </section>
-<section class='' data-state='' id='slide-21'>
+<section class='' data-state='' id='slide-23'>
   <h2>Pre-processing</h2>
   <ol>
 <li><p>Get your data ready for training</p></li>
@@ -593,7 +626,7 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-22'>
+<section class='' data-state='' id='slide-24'>
   <h2>Finding your model</h2>
   <p><aside class='notes'></p>
 
@@ -606,7 +639,7 @@ Applies same parameters to the test set.</p>
 </ol>
 
 </section>
-<section class='' data-state='' id='slide-23'>
+<section class='' data-state='' id='slide-25'>
   <h2>Feature Selection</h2>
   <p>Selecting which subset of predictors will give us the best model</p>
 
@@ -624,7 +657,7 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-24'>
+<section class='' data-state='' id='slide-26'>
   <h2>Model tuning / Resampling</h2>
   <p>Most models have at least one tuning parameter.</p>
 
@@ -647,7 +680,7 @@ random forest: number of trees is a parameter</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-25'>
+<section class='' data-state='' id='slide-27'>
   <h2>Variable Importance</h2>
   <p>Rank predictors by usefulness</p>
 
@@ -665,7 +698,7 @@ random forest: number of trees is a parameter</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-26'>
+<section class='' data-state='' id='slide-28'>
   
   <!------------------H2O-------------------------------------->
 
@@ -687,25 +720,25 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-27'>
+<section class='' data-state='' id='slide-29'>
   <h2>List of models available with H2O</h2>
   <p><aside class='notes'></p>
 
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-28'>
+<section class='' data-state='' id='slide-30'>
   <h2>Use case</h2>
   <p><aside class='notes'></p>
 
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-29'>
+<section class='' data-state='' id='slide-31'>
   <h2>Setting up on Amazon</h2>
   
 </section>
-<section class='' data-state='' id='slide-30'>
+<section class='' data-state='' id='slide-32'>
   
   <!----------------GPU--------------------------------------->
 
@@ -731,7 +764,7 @@ A typical machine will have 4-8 cores</p>
 </aside></p>
 
 </section>
-<section class='' data-state='' id='slide-31'>
+<section class='' data-state='' id='slide-33'>
   
   <!-------------------THE END---------------------------------->
 
@@ -747,11 +780,11 @@ A typical machine will have 4-8 cores</p>
 <p>book1,2 &amp; 3</p>
 
 </section>
-<section class='' data-state='' id='slide-32'>
+<section class='' data-state='' id='slide-34'>
   <h2>References</h2>
   
 </section>
-<section class='' data-state='' id='slide-33'>
+<section class='' data-state='' id='slide-35'>
   <h2>Why  Caret</h2>
   <p>A lot of models made by a lot of different people</p>
 
@@ -764,7 +797,7 @@ A typical machine will have 4-8 cores</p>
 </ul>
 
 </section>
-<section class='' data-state='' id='slide-34'>
+<section class='' data-state='' id='slide-36'>
   <h2>Some models take formula, others take matrix, others take a data.frame</h2>
   <p>Data formating:</p>
 
@@ -778,7 +811,7 @@ A typical machine will have 4-8 cores</p>
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-35'>
+<section class='' data-state='' id='slide-37'>
   <h2>What Caret is good for</h2>
   <p>Converts all of this to standard options</p>
 
@@ -787,13 +820,13 @@ A typical machine will have 4-8 cores</p>
 </ul>
 
 </section>
-<section class='' data-state='' id='slide-36'>
+<section class='' data-state='' id='slide-38'>
   <h2>Models implemented</h2>
   <pre><code class="r">#show the code to list all models
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-37'>
+<section class='' data-state='' id='slide-39'>
   <h2>Tuning parameters</h2>
   <ul>
 <li>Easily parallelize tuning</li>

@@ -276,6 +276,7 @@ Caret
 -----------------------------
 
 Website: <https://topepo.github.io/caret/index.html>
+
 List of Models: <https://topepo.github.io/caret/modelList.html>
 
 <br>
@@ -381,7 +382,30 @@ Prevents common mistakes
 
 ---
 
-Data Splitting | Why?
+Data Splitting
+---------------------------------------------------
+_Example:_
+
+```{r}
+library(caret)
+trainIndex <- createDataPartition(iris$Species, p = .8,
+                                  list = FALSE,
+                                  times = 1)
+irisTrain <- iris[ trainIndex, ]
+irisTest  <- iris[-trainIndex, ]
+```
+
+<aside class='notes'>
+
+__Why split data?__ To avoid overfitting our results
+
+__Example:__ This is a good example of how caret make you do things the right way. I would normally just select random rows instead of breaking down into equal classes.
+
+</aside>
+
+---
+
+Data Splitting
 ---------------------------------------------------
 __$$y = x^3$$__
 ```{r, echo=TRUE, eval=TRUE, fig.height=2}
@@ -492,31 +516,6 @@ $('ol.incremental li').addClass('fragment')
 2. This is our out of sample set for evaluating these params
 
 3. In order to avoid overfitting due to tuning param selection, need a fresh test set
-
-</aside>
-
----
-
-Data Splitting
----------------------------------------------------
-
-
-_Example:_
-
-```{r}
-library(caret)
-trainIndex <- createDataPartition(iris$Species, p = .8,
-                                  list = FALSE,
-                                  times = 1)
-irisTrain <- iris[ trainIndex, ]
-irisTest  <- iris[-trainIndex, ]
-```
-
-<aside class='notes'>
-
-__Why split data?__ To avoid overfitting our results
-
-__Example:__ This is a good example of how caret make you do things the right way. I would normally just select random rows instead of breaking down into equal classes.
 
 </aside>
 

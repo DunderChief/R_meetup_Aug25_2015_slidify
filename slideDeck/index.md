@@ -353,6 +353,7 @@ Caret
 -----------------------------
 
 Website: <https://topepo.github.io/caret/index.html>
+
 List of Models: <https://topepo.github.io/caret/modelList.html>
 
 <br>
@@ -469,7 +470,39 @@ Prevents common mistakes
 
 ---
 
-Data Splitting | Why?
+Data Splitting
+---------------------------------------------------
+_Example:_
+
+
+```r
+library(caret)
+```
+
+```
+## Loading required package: lattice
+## Loading required package: ggplot2
+```
+
+```r
+trainIndex <- createDataPartition(iris$Species, p = .8,
+                                  list = FALSE,
+                                  times = 1)
+irisTrain <- iris[ trainIndex, ]
+irisTest  <- iris[-trainIndex, ]
+```
+
+<aside class='notes'>
+
+__Why split data?__ To avoid overfitting our results
+
+__Example:__ This is a good example of how caret make you do things the right way. I would normally just select random rows instead of breaking down into equal classes.
+
+</aside>
+
+---
+
+Data Splitting
 ---------------------------------------------------
 __$$y = x^3$$__
 
@@ -480,7 +513,7 @@ par(mar=c(0,0,0,0))
 plot(y ~ x, pch=16)
 ```
 
-![plot of chunk unnamed-chunk-9](assets/fig/unnamed-chunk-9-1.png) 
+![plot of chunk unnamed-chunk-10](assets/fig/unnamed-chunk-10-1.png) 
 
 
 ```r
@@ -492,7 +525,7 @@ plot(y ~ x, pch=16, col='gray')
 points(Y ~ X, data=dat, pch='X', col='red2')
 ```
 
-![plot of chunk unnamed-chunk-10](assets/fig/unnamed-chunk-10-1.png) 
+![plot of chunk unnamed-chunk-11](assets/fig/unnamed-chunk-11-1.png) 
 
 <aside class='notes'>
 
@@ -517,7 +550,7 @@ test <- dat[-trainIndex, ]
 
 In-sample (__training set__)   |   Out-of-sample (__test set__)
 
-![plot of chunk unnamed-chunk-12](assets/fig/unnamed-chunk-12-1.png) ![plot of chunk unnamed-chunk-12](assets/fig/unnamed-chunk-12-2.png) ![plot of chunk unnamed-chunk-12](assets/fig/unnamed-chunk-12-3.png) ![plot of chunk unnamed-chunk-12](assets/fig/unnamed-chunk-12-4.png) 
+![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-1.png) ![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-2.png) ![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-3.png) ![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-4.png) 
 
 <aside class='notes'>
 
@@ -567,32 +600,6 @@ $('ol.incremental li').addClass('fragment')
 
 ---
 
-Data Splitting
----------------------------------------------------
-
-
-_Example:_
-
-
-```r
-library(caret)
-trainIndex <- createDataPartition(iris$Species, p = .8,
-                                  list = FALSE,
-                                  times = 1)
-irisTrain <- iris[ trainIndex, ]
-irisTest  <- iris[-trainIndex, ]
-```
-
-<aside class='notes'>
-
-__Why split data?__ To avoid overfitting our results
-
-__Example:__ This is a good example of how caret make you do things the right way. I would normally just select random rows instead of breaking down into equal classes.
-
-</aside>
-
----
-
 Data Splitting (Time Series)
 ---------------------------------------------------
 
@@ -601,6 +608,9 @@ Data Splitting (Time Series)
 <img src='assets/img/Split_time.png'>
 
 
+```
+## Error in library(quantmod): there is no package called 'quantmod'
+```
 
 
 ```r
@@ -623,19 +633,18 @@ Time series can't be split randomly because the slice we're predicting depends o
 library(caret)
 slices <- createTimeSlices(Cl(gold), initialWindow=1000, 
                            fixedWindow=TRUE, horizon=500, skip=500)
+```
+
+```
+## Error in seq(along = y): could not find function "Cl"
+```
+
+```r
 str(slices)
 ```
 
 ```
-## List of 2
-##  $ train:List of 3
-##   ..$ Training0001: int [1:1000] 1 2 3 4 5 6 7 8 9 10 ...
-##   ..$ Training0502: int [1:1000] 502 503 504 505 506 507 508 509 510 511 ...
-##   ..$ Training1003: int [1:1000] 1003 1004 1005 1006 1007 1008 1009 1010 1011 1012 ...
-##  $ test :List of 3
-##   ..$ Testing0001: int [1:500] 1001 1002 1003 1004 1005 1006 1007 1008 1009 1010 ...
-##   ..$ Testing0502: int [1:500] 1502 1503 1504 1505 1506 1507 1508 1509 1510 1511 ...
-##   ..$ Testing1003: int [1:500] 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 ...
+## Error in str(slices): object 'slices' not found
 ```
 
 

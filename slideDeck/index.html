@@ -336,8 +336,9 @@ $('ol.incremental li').addClass('fragment')
 </section>
 <section class='' data-state='' id='slide-10'>
   <h2>Caret</h2>
-  <p>Website: <a href="https://topepo.github.io/caret/index.html">https://topepo.github.io/caret/index.html</a>
-List of Models: <a href="https://topepo.github.io/caret/modelList.html">https://topepo.github.io/caret/modelList.html</a></p>
+  <p>Website: <a href="https://topepo.github.io/caret/index.html">https://topepo.github.io/caret/index.html</a></p>
+
+<p>List of Models: <a href="https://topepo.github.io/caret/modelList.html">https://topepo.github.io/caret/modelList.html</a></p>
 
 <p><br></p>
 
@@ -441,7 +442,34 @@ $('ol.incremental li').addClass('fragment')
 
 </section>
 <section class='' data-state='' id='slide-14'>
-  <h2>Data Splitting | Why?</h2>
+  <h2>Data Splitting</h2>
+  <p><em>Example:</em></p>
+
+<pre><code class="r">library(caret)
+</code></pre>
+
+<pre><code>## Loading required package: lattice
+## Loading required package: ggplot2
+</code></pre>
+
+<pre><code class="r">trainIndex &lt;- createDataPartition(iris$Species, p = .8,
+                                  list = FALSE,
+                                  times = 1)
+irisTrain &lt;- iris[ trainIndex, ]
+irisTest  &lt;- iris[-trainIndex, ]
+</code></pre>
+
+<p><aside class='notes'></p>
+
+<p><strong>Why split data?</strong> To avoid overfitting our results</p>
+
+<p><strong>Example:</strong> This is a good example of how caret make you do things the right way. I would normally just select random rows instead of breaking down into equal classes.</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-15'>
+  <h2>Data Splitting</h2>
   <p><strong>\[y = x^3\]</strong></p>
 
 <pre><code class="r">y &lt;- seq(1, 10, by=.1)
@@ -450,7 +478,7 @@ par(mar=c(0,0,0,0))
 plot(y ~ x, pch=16)
 </code></pre>
 
-<p><img src="assets/fig/unnamed-chunk-9-1.png" alt="plot of chunk unnamed-chunk-9"> </p>
+<p><img src="assets/fig/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10"> </p>
 
 <pre><code class="r">set.seed(1)
 error &lt;- rnorm(length(x), sd=2)
@@ -460,7 +488,7 @@ plot(y ~ x, pch=16, col=&#39;gray&#39;)
 points(Y ~ X, data=dat, pch=&#39;X&#39;, col=&#39;red2&#39;)
 </code></pre>
 
-<p><img src="assets/fig/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10"> </p>
+<p><img src="assets/fig/unnamed-chunk-11-1.png" alt="plot of chunk unnamed-chunk-11"> </p>
 
 <p><aside class='notes'></p>
 
@@ -472,7 +500,7 @@ points(Y ~ X, data=dat, pch=&#39;X&#39;, col=&#39;red2&#39;)
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-15'>
+<section class='' data-state='' id='slide-16'>
   
   <pre><code class="r">set.seed(1)
 trainIndex &lt;- createDataPartition(y=dat$Y, p=0.7, list=FALSE)
@@ -482,11 +510,11 @@ test &lt;- dat[-trainIndex, ]
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-16'>
+<section class='' data-state='' id='slide-17'>
   
   <p>In-sample (<strong>training set</strong>)   |   Out-of-sample (<strong>test set</strong>)</p>
 
-<p><img src="assets/fig/unnamed-chunk-12-1.png" alt="plot of chunk unnamed-chunk-12"> <img src="assets/fig/unnamed-chunk-12-2.png" alt="plot of chunk unnamed-chunk-12"> <img src="assets/fig/unnamed-chunk-12-3.png" alt="plot of chunk unnamed-chunk-12"> <img src="assets/fig/unnamed-chunk-12-4.png" alt="plot of chunk unnamed-chunk-12"> </p>
+<p><img src="assets/fig/unnamed-chunk-13-1.png" alt="plot of chunk unnamed-chunk-13"> <img src="assets/fig/unnamed-chunk-13-2.png" alt="plot of chunk unnamed-chunk-13"> <img src="assets/fig/unnamed-chunk-13-3.png" alt="plot of chunk unnamed-chunk-13"> <img src="assets/fig/unnamed-chunk-13-4.png" alt="plot of chunk unnamed-chunk-13"> </p>
 
 <p><aside class='notes'></p>
 
@@ -497,7 +525,7 @@ test &lt;- dat[-trainIndex, ]
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-17'>
+<section class='' data-state='' id='slide-18'>
   
   <p><img src='assets/img/SL_bias_var_annot.png' height='600'></p>
 
@@ -506,7 +534,7 @@ test &lt;- dat[-trainIndex, ]
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-18'>
+<section class='' data-state='' id='slide-19'>
   <h2>Data Splitting </h2>
   <p><br></p>
 
@@ -532,32 +560,14 @@ $('ol.incremental li').addClass('fragment')
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-19'>
-  <h2>Data Splitting</h2>
-  <p><em>Example:</em></p>
-
-<pre><code class="r">library(caret)
-trainIndex &lt;- createDataPartition(iris$Species, p = .8,
-                                  list = FALSE,
-                                  times = 1)
-irisTrain &lt;- iris[ trainIndex, ]
-irisTest  &lt;- iris[-trainIndex, ]
-</code></pre>
-
-<p><aside class='notes'></p>
-
-<p><strong>Why split data?</strong> To avoid overfitting our results</p>
-
-<p><strong>Example:</strong> This is a good example of how caret make you do things the right way. I would normally just select random rows instead of breaking down into equal classes.</p>
-
-<p></aside></p>
-
-</section>
 <section class='' data-state='' id='slide-20'>
   <h2>Data Splitting (Time Series)</h2>
   <p><br></p>
 
 <p><img src='assets/img/Split_time.png'></p>
+
+<pre><code>## Error in library(quantmod): there is no package called &#39;quantmod&#39;
+</code></pre>
 
 <pre><code class="r">library(quantmod)
 gold &lt;- getSymbols(&#39;GLD&#39;, src=&#39;yahoo&#39;, from=&#39;1970-01-01&#39;, auto.assign=FALSE)
@@ -575,18 +585,15 @@ gold &lt;- getSymbols(&#39;GLD&#39;, src=&#39;yahoo&#39;, from=&#39;1970-01-01&#
   <pre><code class="r">library(caret)
 slices &lt;- createTimeSlices(Cl(gold), initialWindow=1000, 
                            fixedWindow=TRUE, horizon=500, skip=500)
-str(slices)
 </code></pre>
 
-<pre><code>## List of 2
-##  $ train:List of 3
-##   ..$ Training0001: int [1:1000] 1 2 3 4 5 6 7 8 9 10 ...
-##   ..$ Training0502: int [1:1000] 502 503 504 505 506 507 508 509 510 511 ...
-##   ..$ Training1003: int [1:1000] 1003 1004 1005 1006 1007 1008 1009 1010 1011 1012 ...
-##  $ test :List of 3
-##   ..$ Testing0001: int [1:500] 1001 1002 1003 1004 1005 1006 1007 1008 1009 1010 ...
-##   ..$ Testing0502: int [1:500] 1502 1503 1504 1505 1506 1507 1508 1509 1510 1511 ...
-##   ..$ Testing1003: int [1:500] 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 ...
+<pre><code>## Error in seq(along = y): could not find function &quot;Cl&quot;
+</code></pre>
+
+<pre><code class="r">str(slices)
+</code></pre>
+
+<pre><code>## Error in str(slices): object &#39;slices&#39; not found
 </code></pre>
 
 </section>

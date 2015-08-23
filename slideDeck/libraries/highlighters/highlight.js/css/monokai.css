@@ -14,15 +14,28 @@ pre .params .identifier .keymethods {
 pre .tag,
 pre .tag .title,
 pre .keyword,
-pre .literal,
 pre .change,
 pre .winutils,
 pre .flow,
 pre .lisp .title,
 pre .tex .special {
-  color: #F92672;
+  color: #4d9cd9;
 }
-
+pre .literal {
+  color: #c4220c;
+}
+pre .operators {
+  font-weight: bold;
+  color: white;
+}
+pre .assignment {
+  font-weight: bold;
+  color: #e8279b;
+}
+pre .parenthesis {
+  font-weight: bold;
+  color: white;
+}
 pre code {
   color: #DDD;
 }
@@ -104,6 +117,10 @@ pre .tex .special,
 pre .request,
 pre .status {
   font-weight: bold;
+}
+
+pre .number {
+  color: #f5871f;
 }
 
 pre .coffeescript .javascript,

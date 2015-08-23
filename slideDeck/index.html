@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="stylesheet" href="libraries/frameworks/revealjs/css/reveal.min.css">
   <link rel="stylesheet" href="libraries/frameworks/revealjs/css/theme/sky.css" id="theme">
-  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" id="theme">
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/monokai.css" id="theme">
   <!--[if lt IE 9]>
   <script src="lib/js/html5shiv.js"></script>
   <![endif]-->  <link rel="stylesheet" href = "assets/css/ribbons.css">
@@ -234,7 +234,7 @@ $('ol.incremental li').addClass('fragment')
 <pre><code class="r">library(MASS)
 trainset &lt;- iris[-example_row, ] 
 fit.lda &lt;- lda(Species ~ ., data=trainset, prior=c(1/3, 1/3, 1/3)) 
-pred &lt;- predict(fit.lda, iris[example_row, ])
+pred &lt;- predict(fit.lda, newdata=iris[example_row, ])
 round(pred$posterior, 3)
 </code></pre>
 
@@ -244,14 +244,7 @@ round(pred$posterior, 3)
 
 <p><br> </p>
 
-<p><strong>Inputs:</strong></p>
-
-<ul>
-<li>formula</li>
-<li>data.frame</li>
-<li>matrix</li>
-<li>X, Y</li>
-</ul>
+<p class='fragment'><strong>Data Inputs:</strong> <br> formula, data.frame, matrix, or seperate X &amp; Y objects </p>
 
 <p><aside class='notes'></p>
 
@@ -259,6 +252,11 @@ round(pred$posterior, 3)
 they often have different option names/ input structure</p>
 
 <p></aside></p>
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
 
 </section>
 <section class='' data-state='' id='slide-8'>
@@ -274,70 +272,86 @@ they often have different option names/ input structure</p>
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> lda </td>
-   <td style="text-align:left;"> None needed </td>
-  </tr>
-  <tr>
    <td style="text-align:left;"> gbm </td>
-   <td style="text-align:left;"> response </td>
+   <td style="text-align:left;"> &quot;response&quot; </td>
   </tr>
   <tr>
    <td style="text-align:left;"> mda </td>
-   <td style="text-align:left;"> posterior </td>
+   <td style="text-align:left;"> &quot;posterior&quot; </td>
   </tr>
   <tr>
    <td style="text-align:left;"> rpart </td>
-   <td style="text-align:left;"> prob </td>
+   <td style="text-align:left;"> &quot;prob&quot; </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Weka </td>
-   <td style="text-align:left;"> probability </td>
+   <td style="text-align:left;"> &quot;probability&quot; </td>
   </tr>
   <tr>
    <td style="text-align:left;"> LogitBoost </td>
-   <td style="text-align:left;"> raw </td>
+   <td style="text-align:left;"> &quot;raw&quot; </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> lda </td>
+   <td style="text-align:left;"> None needed </td>
   </tr>
 </tbody>
 </table>
 
 <p><aside class='notes'></p>
 
-<p>There is some standardization, such as the predict function to test our model on a new datasets
-</aside></p>
+<p>There is some standardization, such as the predict function to test our model on a new datasets</p>
+
+<p></aside></p>
 
 </section>
 <section class='' data-state='' id='slide-9'>
   <h2>Typical flow for trying a new algorithm:</h2>
   <ol>
-<li>Find the appropriate package(s) and install them</li>
+<li>Find the package(s) and install</li>
 <li>Find training function </li>
+<li>Split data into multiple train/test sets</li>
 <li>Set up your data to fit the training model
 
 <ul>
+<li>Formula</li>
 <li>Matrix</li>
 <li>Data.frame</li>
 <li>X, Y as seperate</li>
 </ul></li>
-<li>Look up training optimization </li>
+<li>Pre-process data</li>
+<li>Look up tuning params</li>
+<li>Write loops for model tuning / repeated cross-validation</li>
+<li>Analyze results</li>
 </ol>
 
 <p><aside class='notes'></p>
 
-<p>Why caret package is useful</p>
+<p>Typical flow for base r</p>
 
-<p>base R is not really great if you want to train multiple models</p>
+<p>in caret all of this is contained in less than 5 lines of code</p>
 
 <p></aside></p>
 
 </section>
 <section class='' data-state='' id='slide-10'>
   <h2>Caret</h2>
-  <p>List of Models: <a href="https://topepo.github.io/caret/modelList.html">https://topepo.github.io/caret/modelList.html</a></p>
+  <p>Website: <a href="https://topepo.github.io/caret/index.html">https://topepo.github.io/caret/index.html</a>
+List of Models: <a href="https://topepo.github.io/caret/modelList.html">https://topepo.github.io/caret/modelList.html</a></p>
+
+<p><br></p>
 
 <pre><code class="r">options(stringsAsFactors=FALSE)
 models &lt;- read.csv(&#39;../caret_models.csv&#39;)
-#table(models$Type)
-class_models &lt;- subset(models, Type %in% c(&#39;Classification&#39;, &#39;Dual Use&#39;),
+table(models$Type)
+</code></pre>
+
+<pre><code>## 
+## Classification       Dual Use     Regression 
+##             74             73             45
+</code></pre>
+
+<pre><code class="r">class_models &lt;- subset(models, Type %in% c(&#39;Classification&#39;, &#39;Dual Use&#39;),
                        select=&#39;method.Argument&#39;)
 </code></pre>
 
@@ -346,17 +360,28 @@ $('ul.incremental li').addClass('fragment')
 $('ol.incremental li').addClass('fragment')
 </script>
 
-<pre><code class="r">library(caret); library(MASS); library(doMC); registerDoMC(4)
+<p><aside class='notes'></p>
+
+<p>91 Machine learning packages</p>
+
+<p>With all these dependencies, probably a few thousand packages in total???</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-11'>
+  <h2>Train lots of models at once</h2>
+  <p><br></p>
+
+<pre><code class="r">library(caret); library(doMC); registerDoMC(7)
 myFits &lt;- foreach(this.model = class_models) %do% {
   train(Species ~ ., 
-         data=iris,
-         method=this.model,
-         preProcess=&#39;pca&#39;,
-         trControl=trainControl(method=&#39;repeatedcv&#39;, repeats=10),
-         tuneLength=6, verbose=FALSE)
+        data=iris,
+        method=this.model,
+        preProcess=&#39;pca&#39;,
+        trControl=trainControl(method=&#39;repeatedcv&#39;, number=5, repeats=7),
+        tuneLength=5)
 }
-names(myFits) &lt;- da_models
-lapply(myFits, confusionMatrix)
 </code></pre>
 
 <script>
@@ -366,8 +391,21 @@ $('ol.incremental li').addClass('fragment')
 
 <p><br></p>
 
+<p><aside class='notes'></p>
+
+<p>This will:
+1. preprocess with PCA,
+2. train with 5-fold cross validation, 7 repeats in parallel
+3. will also optimize tuning parameters</p>
+
+<p>Took XX minutes to run</p>
+
+<p>Not all models worked because we have 3 categories</p>
+
+<p></aside></p>
+
 </section>
-<section class='' data-state='' id='slide-11'>
+<section class='' data-state='' id='slide-12'>
   
   <p><img src='assets/img/authors.png'></p>
 
@@ -376,9 +414,9 @@ $('ol.incremental li').addClass('fragment')
 <p><img src='assets/img/abstract_highlight.png'></p>
 
 </section>
-<section class='' data-state='' id='slide-12'>
+<section class='' data-state='' id='slide-13'>
   <h2>What else can caret do?</h2>
-  <p>caret: <a href="http://topepo.github.io/caret/index.html">http://topepo.github.io/caret/index.html</a></p>
+  <p><br></p>
 
 <ul class = "build incremental">
 <li><p>Data Splitting</p></li>
@@ -388,22 +426,82 @@ $('ol.incremental li').addClass('fragment')
 <li><p>Variable Importance</p></li>
 </ul>
 
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
 <p><aside class='notes'></p>
 
 <p>Easier to use than base R</p>
 
 <p>Prevents common mistakes</p>
 
-<p>Here is the overview, I will go over each of these in detail</p>
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-14'>
+  <h2>Data Splitting | Why?</h2>
+  <p><strong>\[y = x^3\]</strong></p>
+
+<pre><code class="r">y &lt;- seq(1, 10, by=.1)
+x &lt;- seq(1, 10, by=.1)^3
+par(mar=c(0,0,0,0))
+plot(y ~ x, pch=16)
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-9-1.png" alt="plot of chunk unnamed-chunk-9"> </p>
+
+<pre><code class="r">set.seed(1)
+error &lt;- rnorm(length(x), sd=1)
+dat &lt;- data.frame(X = x + error, Y = y + error)
+par(mar=c(0,0,0,0))
+plot(y ~ x, pch=16)
+points(Y ~ X, data=dat, pch=&#39;X&#39;, col=&#39;red2&#39;)
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10"> </p>
+
+</section>
+<section class='' data-state='' id='slide-15'>
+  
+  
+</section>
+<section class='' data-state='' id='slide-16'>
+  
+  <p><aside class='notes'></p>
+
+<p></aside></p>
+
+<h2>Data Splitting | Simple Example</h2>
+
+<p><br></p>
+
+<ol class = "build incremental">
+<li><strong>Training set [70%]:</strong> <br> Train a model 100x with different tuning parameters <br><br></li>
+<li><strong>Cross-validation set [15%]:</strong> <br> Evaluate these 100 models <br><br></li>
+<li><strong>Test set [15%]:</strong> <br> Use final model <strong>(only one!)</strong> to evaluate your the accuracy of your analysis</li>
+</ol>
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
+<p><aside class='notes'></p>
+
+<ol>
+<li><p>Most ML models have tuning parameters &amp; we need to optimize these useing an out of sample dataset</p></li>
+<li><p>This is our out of sample set for evaluating these params</p></li>
+<li><p>In order to avoid overfitting due to tuning param selection, need a fresh test set</p></li>
+</ol>
 
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-13'>
+<section class='' data-state='' id='slide-17'>
   <h2>Data Splitting</h2>
-  <p>Why split data?</p>
-
-<p><em>Example:</em></p>
+  <p><em>Example:</em></p>
 
 <pre><code class="r">library(caret)
 trainIndex &lt;- createDataPartition(iris$Species, p = .8,
@@ -422,7 +520,7 @@ irisTest  &lt;- iris[-trainIndex, ]
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-14'>
+<section class='' data-state='' id='slide-18'>
   <h2>Data Splitting (Time Series)</h2>
   <p><br></p>
 
@@ -439,7 +537,7 @@ gold &lt;- getSymbols(&#39;GLD&#39;, src=&#39;yahoo&#39;, from=&#39;1970-01-01&#
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-15'>
+<section class='' data-state='' id='slide-19'>
   
   <pre><code class="r">library(caret)
 slices &lt;- createTimeSlices(Cl(gold), initialWindow=1000, 
@@ -459,13 +557,13 @@ str(slices)
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-16'>
+<section class='' data-state='' id='slide-20'>
   <h2>Data Splitting | Class imbalances</h2>
   <p>copy stuff from this webpage:
 <a href="http://topepo.github.io/caret/sampling.html">http://topepo.github.io/caret/sampling.html</a></p>
 
 </section>
-<section class='' data-state='' id='slide-17'>
+<section class='' data-state='' id='slide-21'>
   <h2>Pre-processing</h2>
   <ol>
 <li><p>Get your data ready for training</p></li>
@@ -495,7 +593,7 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-18'>
+<section class='' data-state='' id='slide-22'>
   <h2>Finding your model</h2>
   <p><aside class='notes'></p>
 
@@ -508,7 +606,7 @@ Applies same parameters to the test set.</p>
 </ol>
 
 </section>
-<section class='' data-state='' id='slide-19'>
+<section class='' data-state='' id='slide-23'>
   <h2>Feature Selection</h2>
   <p>Selecting which subset of predictors will give us the best model</p>
 
@@ -526,7 +624,7 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-20'>
+<section class='' data-state='' id='slide-24'>
   <h2>Model tuning / Resampling</h2>
   <p>Most models have at least one tuning parameter.</p>
 
@@ -549,7 +647,7 @@ random forest: number of trees is a parameter</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-21'>
+<section class='' data-state='' id='slide-25'>
   <h2>Variable Importance</h2>
   <p>Rank predictors by usefulness</p>
 
@@ -567,7 +665,7 @@ random forest: number of trees is a parameter</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-22'>
+<section class='' data-state='' id='slide-26'>
   
   <!------------------H2O-------------------------------------->
 
@@ -589,25 +687,25 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-23'>
+<section class='' data-state='' id='slide-27'>
   <h2>List of models available with H2O</h2>
   <p><aside class='notes'></p>
 
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-24'>
+<section class='' data-state='' id='slide-28'>
   <h2>Use case</h2>
   <p><aside class='notes'></p>
 
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-25'>
+<section class='' data-state='' id='slide-29'>
   <h2>Setting up on Amazon</h2>
   
 </section>
-<section class='' data-state='' id='slide-26'>
+<section class='' data-state='' id='slide-30'>
   
   <!----------------GPU--------------------------------------->
 
@@ -633,7 +731,7 @@ A typical machine will have 4-8 cores</p>
 </aside></p>
 
 </section>
-<section class='' data-state='' id='slide-27'>
+<section class='' data-state='' id='slide-31'>
   
   <!-------------------THE END---------------------------------->
 
@@ -649,11 +747,11 @@ A typical machine will have 4-8 cores</p>
 <p>book1,2 &amp; 3</p>
 
 </section>
-<section class='' data-state='' id='slide-28'>
+<section class='' data-state='' id='slide-32'>
   <h2>References</h2>
   
 </section>
-<section class='' data-state='' id='slide-29'>
+<section class='' data-state='' id='slide-33'>
   <h2>Why  Caret</h2>
   <p>A lot of models made by a lot of different people</p>
 
@@ -666,7 +764,7 @@ A typical machine will have 4-8 cores</p>
 </ul>
 
 </section>
-<section class='' data-state='' id='slide-30'>
+<section class='' data-state='' id='slide-34'>
   <h2>Some models take formula, others take matrix, others take a data.frame</h2>
   <p>Data formating:</p>
 
@@ -680,7 +778,7 @@ A typical machine will have 4-8 cores</p>
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-31'>
+<section class='' data-state='' id='slide-35'>
   <h2>What Caret is good for</h2>
   <p>Converts all of this to standard options</p>
 
@@ -689,13 +787,13 @@ A typical machine will have 4-8 cores</p>
 </ul>
 
 </section>
-<section class='' data-state='' id='slide-32'>
+<section class='' data-state='' id='slide-36'>
   <h2>Models implemented</h2>
   <pre><code class="r">#show the code to list all models
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-33'>
+<section class='' data-state='' id='slide-37'>
   <h2>Tuning parameters</h2>
   <ul>
 <li>Easily parallelize tuning</li>
@@ -729,7 +827,21 @@ A typical machine will have 4-8 cores</p>
       //{ src: 'libraries/frameworks/revealjs/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
       ]
   });
-  </script>  <!-- LOAD HIGHLIGHTER JS FILES -->
+  </script>  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script> -->
+<script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- LOAD HIGHLIGHTER JS FILES -->
 <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 <!-- DONE LOADING HIGHLIGHTER JS FILES -->

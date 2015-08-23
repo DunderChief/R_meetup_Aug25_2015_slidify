@@ -7,8 +7,8 @@ framework   : revealjs        # {io2012, html5slides, shower, dzslides, ...}
 revealjs    : {theme:      sky, 
                transition: concave} #cube, page, zoom, concave, linear, fade, default, none
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
-hitheme     : tomorrow
-widgets     : []            # {mathjax, quiz, bootstrap}
+hitheme     : monokai
+widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
 mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
 ---
@@ -243,7 +243,7 @@ Implementation in R:
 library(MASS)
 trainset <- iris[-example_row, ] 
 fit.lda <- lda(Species ~ ., data=trainset, prior=c(1/3, 1/3, 1/3)) 
-pred <- predict(fit.lda, iris[example_row, ])
+pred <- predict(fit.lda, newdata=iris[example_row, ])
 round(pred$posterior, 3)
 ```
 
@@ -254,12 +254,7 @@ round(pred$posterior, 3)
 
 <br> 
 
-__Inputs:__
-
-- formula
-- data.frame
-- matrix
-- X, Y
+.fragment __Data Inputs:__ <br> formula, data.frame, matrix, or seperate X & Y objects 
 
 <aside class='notes'>
 
@@ -267,6 +262,13 @@ Since most of the predictive modeling packages are written by different people,
 they often have different option names/ input structure
 
 </aside>
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
+
 
 --- 
 
@@ -285,28 +287,28 @@ predict(fitObject, type = __???__)
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> lda </td>
-   <td style="text-align:left;"> None needed </td>
-  </tr>
-  <tr>
    <td style="text-align:left;"> gbm </td>
-   <td style="text-align:left;"> response </td>
+   <td style="text-align:left;"> &quot;response&quot; </td>
   </tr>
   <tr>
    <td style="text-align:left;"> mda </td>
-   <td style="text-align:left;"> posterior </td>
+   <td style="text-align:left;"> &quot;posterior&quot; </td>
   </tr>
   <tr>
    <td style="text-align:left;"> rpart </td>
-   <td style="text-align:left;"> prob </td>
+   <td style="text-align:left;"> &quot;prob&quot; </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Weka </td>
-   <td style="text-align:left;"> probability </td>
+   <td style="text-align:left;"> &quot;probability&quot; </td>
   </tr>
   <tr>
    <td style="text-align:left;"> LogitBoost </td>
-   <td style="text-align:left;"> raw </td>
+   <td style="text-align:left;"> &quot;raw&quot; </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> lda </td>
+   <td style="text-align:left;"> None needed </td>
   </tr>
 </tbody>
 </table>
@@ -315,6 +317,7 @@ predict(fitObject, type = __???__)
 <aside class='notes'>
 
 There is some standardization, such as the predict function to test our model on a new datasets
+
 </aside>
 
 ---
@@ -322,19 +325,24 @@ There is some standardization, such as the predict function to test our model on
 Typical flow for trying a new algorithm:
 --------------------------------------------------------------
 
-1. Find the appropriate package(s) and install them
+1. Find the package(s) and install
 2. Find training function 
-3. Set up your data to fit the training model
+3. Split data into multiple train/test sets
+4. Set up your data to fit the training model
+    - Formula
     - Matrix
     - Data.frame
     - X, Y as seperate
-4. Look up training optimization 
+5. Pre-process data
+6. Look up tuning params
+7. Write loops for model tuning / repeated cross-validation
+8. Analyze results
 
 <aside class='notes'>
 
-Why caret package is useful
+Typical flow for base r
 
-base R is not really great if you want to train multiple models
+in caret all of this is contained in less than 5 lines of code
 
 </aside>
 
@@ -344,13 +352,25 @@ base R is not really great if you want to train multiple models
 Caret
 -----------------------------
 
-List of Models: https://topepo.github.io/caret/modelList.html
+Website: <https://topepo.github.io/caret/index.html>
+List of Models: <https://topepo.github.io/caret/modelList.html>
+
+<br>
 
 
 ```r
 options(stringsAsFactors=FALSE)
 models <- read.csv('../caret_models.csv')
-#table(models$Type)
+table(models$Type)
+```
+
+```
+## 
+## Classification       Dual Use     Regression 
+##             74             73             45
+```
+
+```r
 class_models <- subset(models, Type %in% c('Classification', 'Dual Use'),
                        select='method.Argument')
 ```
@@ -360,19 +380,32 @@ $('ul.incremental li').addClass('fragment')
 $('ol.incremental li').addClass('fragment')
 </script>
 
+<aside class='notes'>
+
+91 Machine learning packages
+
+With all these dependencies, probably a few thousand packages in total???
+
+</aside>
+
+---
+
+Train lots of models at once
+---------------------------------------
+
+<br>
+
 
 ```r
-library(caret); library(MASS); library(doMC); registerDoMC(4)
+library(caret); library(doMC); registerDoMC(7)
 myFits <- foreach(this.model = class_models) %do% {
   train(Species ~ ., 
-         data=iris,
-         method=this.model,
-         preProcess='pca',
-         trControl=trainControl(method='repeatedcv', repeats=10),
-         tuneLength=6, verbose=FALSE)
+        data=iris,
+        method=this.model,
+        preProcess='pca',
+        trControl=trainControl(method='repeatedcv', number=5, repeats=7),
+        tuneLength=5)
 }
-names(myFits) <- da_models
-lapply(myFits, confusionMatrix)
 ```
 
 <script>
@@ -382,7 +415,19 @@ $('ol.incremental li').addClass('fragment')
 
 <br>
 
+<aside class='notes'>
 
+This will:
+1. preprocess with PCA,
+2. train with 5-fold cross validation, 7 repeats in parallel
+3. will also optimize tuning parameters
+
+Took XX minutes to run
+
+Not all models worked because we have 3 categories
+
+
+</aside>
 
 ---
 
@@ -397,7 +442,7 @@ $('ol.incremental li').addClass('fragment')
 What else can caret do?
 ---------------------------------------
 
-caret: <http://topepo.github.io/caret/index.html>
+<br>
 
 > - Data Splitting
 
@@ -409,6 +454,10 @@ caret: <http://topepo.github.io/caret/index.html>
 
 > - Variable Importance
 
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
 
 <aside class='notes'>
 
@@ -416,7 +465,69 @@ Easier to use than base R
 
 Prevents common mistakes
 
-Here is the overview, I will go over each of these in detail
+</aside>
+
+---
+
+Data Splitting | Why?
+---------------------------------------------------
+__$$y = x^3$$__
+
+```r
+y <- seq(1, 10, by=.1)
+x <- seq(1, 10, by=.1)^3
+par(mar=c(0,0,0,0))
+plot(y ~ x, pch=16)
+```
+
+![plot of chunk unnamed-chunk-9](assets/fig/unnamed-chunk-9-1.png) 
+
+
+```r
+set.seed(1)
+error <- rnorm(length(x), sd=1)
+dat <- data.frame(X = x + error, Y = y + error)
+par(mar=c(0,0,0,0))
+plot(y ~ x, pch=16)
+points(Y ~ X, data=dat, pch='X', col='red2')
+```
+
+![plot of chunk unnamed-chunk-10](assets/fig/unnamed-chunk-10-1.png) 
+
+---
+
+
+---
+
+
+
+<aside class='notes'>
+
+
+</aside>
+
+
+Data Splitting | Simple Example
+---------------------------------------------------
+
+<br>
+
+>  1. __Training set [70%]:__ <br> Train a model 100x with different tuning parameters <br><br>
+>  2. __Cross-validation set [15%]:__ <br> Evaluate these 100 models <br><br>
+>  3. __Test set [15%]:__ <br> Use final model __(only one!)__ to evaluate your the accuracy of your analysis
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
+<aside class='notes'>
+
+1. Most ML models have tuning parameters & we need to optimize these useing an out of sample dataset
+
+2. This is our out of sample set for evaluating these params
+
+3. In order to avoid overfitting due to tuning param selection, need a fresh test set
 
 </aside>
 
@@ -425,7 +536,6 @@ Here is the overview, I will go over each of these in detail
 Data Splitting
 ---------------------------------------------------
 
-Why split data?
 
 _Example:_
 

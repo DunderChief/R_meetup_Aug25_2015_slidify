@@ -477,14 +477,6 @@ _Example:_
 
 ```r
 library(caret)
-```
-
-```
-## Loading required package: lattice
-## Loading required package: ggplot2
-```
-
-```r
 trainIndex <- createDataPartition(iris$Species, p = .8,
                                   list = FALSE,
                                   times = 1)
@@ -507,8 +499,8 @@ Data Splitting
 __$$y = x^3$$__
 
 ```r
-y <- seq(1, 10, by=.1)
-x <- seq(1, 10, by=.1)^3
+y <- seq(2, 10, by=.05)
+x <- seq(2, 10, by=.05)^3
 par(mar=c(0,0,0,0))
 plot(y ~ x, pch=16)
 ```
@@ -520,12 +512,9 @@ plot(y ~ x, pch=16)
 set.seed(1)
 error <- rnorm(length(x), sd=2)
 dat <- data.frame(X = x + error, Y = y + error)
-par(mar=c(0,0,0,0))
-plot(y ~ x, pch=16, col='gray')
-points(Y ~ X, data=dat, pch='X', col='red2')
 ```
 
-![plot of chunk unnamed-chunk-11](assets/fig/unnamed-chunk-11-1.png) 
+![plot of chunk unnamed-chunk-12](assets/fig/unnamed-chunk-12-1.png) 
 
 <aside class='notes'>
 
@@ -539,18 +528,38 @@ points(Y ~ X, data=dat, pch='X', col='red2')
 
 
 ```r
-set.seed(1)
-trainIndex <- createDataPartition(y=dat$Y, p=0.7, list=FALSE)
+set.seed(100)
+trainIndex <- createDataPartition(y=dat$Y, p=0.5, list=FALSE)
 
 training <- dat[trainIndex, ]
 test <- dat[-trainIndex, ]
 ```
 
+<br> 
+
+
+
+
+
+```r
+fit <- lm(Y ~ poly(X, 3, raw=TRUE), data=training)
+pred.training <- predict(fit, newdata=training)
+pred.test <- predict(fit, newdata=test)
+```
+
+<br>
+
+$$y=\theta_3x^3 + \theta_2x^2 + \theta_1x + \theta_0$$
+
+<br>
+
+.fragment __Our true fit is:__ $\theta_3=1$, $\{\theta_2, \theta_1, \theta_0\}=0$
+
 ---
 
 In-sample (__training set__)   |   Out-of-sample (__test set__)
 
-![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-1.png) ![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-2.png) ![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-3.png) ![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-4.png) 
+![plot of chunk unnamed-chunk-15](assets/fig/unnamed-chunk-15-1.png) ![plot of chunk unnamed-chunk-15](assets/fig/unnamed-chunk-15-2.png) ![plot of chunk unnamed-chunk-15](assets/fig/unnamed-chunk-15-3.png) ![plot of chunk unnamed-chunk-15](assets/fig/unnamed-chunk-15-4.png) 
 
 <aside class='notes'>
 
@@ -608,9 +617,6 @@ Data Splitting (Time Series)
 <img src='assets/img/Split_time.png'>
 
 
-```
-## Error in library(quantmod): there is no package called 'quantmod'
-```
 
 
 ```r
@@ -633,18 +639,19 @@ Time series can't be split randomly because the slice we're predicting depends o
 library(caret)
 slices <- createTimeSlices(Cl(gold), initialWindow=1000, 
                            fixedWindow=TRUE, horizon=500, skip=500)
-```
-
-```
-## Error in seq(along = y): could not find function "Cl"
-```
-
-```r
 str(slices)
 ```
 
 ```
-## Error in str(slices): object 'slices' not found
+## List of 2
+##  $ train:List of 3
+##   ..$ Training0001: int [1:1000] 1 2 3 4 5 6 7 8 9 10 ...
+##   ..$ Training0502: int [1:1000] 502 503 504 505 506 507 508 509 510 511 ...
+##   ..$ Training1003: int [1:1000] 1003 1004 1005 1006 1007 1008 1009 1010 1011 1012 ...
+##  $ test :List of 3
+##   ..$ Testing0001: int [1:500] 1001 1002 1003 1004 1005 1006 1007 1008 1009 1010 ...
+##   ..$ Testing0502: int [1:500] 1502 1503 1504 1505 1506 1507 1508 1509 1510 1511 ...
+##   ..$ Testing1003: int [1:500] 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 ...
 ```
 
 

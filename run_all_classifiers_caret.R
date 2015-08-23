@@ -23,6 +23,14 @@ class_models <- subset(models, Type %in% c('Classification', 'Dual Use'))
 class_packs <- getReqPackages(class_models$Packages)
 length(unique(class_packs))
 
+do.call(c, 
+lapply(class_packs, function(this.package){
+  if(!require(MASS)){
+    return(this.package)
+  } else {return(1)}
+})
+)
+
 Sys.time()
 myFits <- foreach(this.model = class_models$method.Argument, .errorhandling='pass') %do% {
   print(this.model)
@@ -31,7 +39,7 @@ myFits <- foreach(this.model = class_models$method.Argument, .errorhandling='pas
                  data=iris,
                  method=this.model,
                  preProcess='pca',
-                 trControl=trainControl(method='repeatedcv', number=5, repeats=7),
+                 trControl=trainControl(method='repeatedcv', number=7, repeats=1),
                  tuneLength=5)
   )
   return(list(fit, timing))

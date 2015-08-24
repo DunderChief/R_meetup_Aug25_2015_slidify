@@ -460,8 +460,12 @@ test set is a better reflection of this
 
 Parsimony / Occam's Razor
 ---------------------------------------------------
+<br>
+The simplest model is usually the best. 
+<br>
+Only use least number of parameters that are necessary.
 
-
+---
 
 
 Data Splitting 
@@ -491,7 +495,7 @@ example of this is on prev slide
 
 ---
 
-30% of data on testing?!?http://www.omscs.gatech.edu/
+30% of data on testing?!?
 --------------------------------------
 
 <br>
@@ -531,6 +535,32 @@ train(Species ~ .,
 
 ---
 
+train():
+----------------------------------------
+
+>- method: _our machine learning algorithm (select from 192)_
+>- preProcess: 
+
+```{r, echo=FALSE, results='asis'}
+
+out <- data.frame(Train_Options=c("BoxCox", "YeoJohnson", "expoTrans", "center", "scale", "range", "knnImpute", "bagImpute", "medianImpute", "pca", "ica", "spatialSign"))
+
+frag_it(kable(out, format='html'))
+```
+
+---
+
+trainControl():
+----------------------------------------
+
+```{r}
+out <- data.frame(Resampling_Method=c("boot", "boot632", "cv", "repeatedcv", "LOOCV", "LGOCV", "none", "oob", "adaptive_cv", "adaptive_boot", "adaptive_LGOCV"))
+kable(out, format='html')
+```
+
+
+---
+
 Adding custom tuning params
 ----------------------------------------
 
@@ -541,13 +571,14 @@ gbmGrid <-  expand.grid(interaction.depth = c(1, 5, 9),
                         n.minobsinnode = 20)
 head(gbmGrid)
 ```
-```
+
+```{r, eval=FALSE}
 train(Species ~ ., 
-        data=iris,
-        method='gbm',
-        preProcess='pca',
-        trControl=trainControl(method='repeatedcv', number=5, repeats=7),
-        tuneGrid = gbmGrid)
+      data=iris,
+      method='gbm',
+      preProcess='pca',
+      trControl=trainControl(method='repeatedcv', number=5, repeats=7),
+      tuneGrid = gbmGrid)
 ```   
 
 
@@ -670,12 +701,7 @@ Pre-processing
 
 <br>
 
-```{r, echo=FALSE}
 
-out <- data.frame(Train_Options=c("BoxCox", "YeoJohnson", "expoTrans", "center", "scale", "range", "knnImpute", "bagImpute", "medianImpute", "pca", "ica", "spatialSign"))
-
-kable(out, format='html')
-```
 
 ---
 
@@ -762,13 +788,40 @@ __method 1, 2, 3, etc.....__
 
 ---
 
-
+Recursive Feature Elimination:
 ```{r, eval=FALSE}
 rfe() 
 rfeControl()
+# <img src='assets/img/RFE.png'>
+```
+Genetic Algorithms:
+```{r}
+gafs()
+gafsControl()
 ```
 
-<img src='assets/img/RFE.png'>
+Univariate Filters:
+```{r}
+gafs()
+gafsControl()
+```
+Simalated Annealing:
+```{r}
+safs()
+safsControl()
+```
+
+<aside class='notes'>
+
+UnivariateFilters = Uses statistics, like t-tests or anovas, to determine whether a feature is statistically different between Outcome Classes
+
+rfe = backward/forward feat selection
+
+GA = mimic darwinism where the best models have 'offspring' that are combined in the next iteration.
+
+SA =
+
+</aside>
 
 ---
 
@@ -777,20 +830,22 @@ rfeControl()
 
 <!------------------H2O-------------------------------------->
 
-h2o package: What and Why?
+h2o package:
 ---------------------------------------------------------------------
 
 http://h2o.ai/
 
 - Open Source Java library
 
-- Over multiple nodes
+- Runs Single model over multiple nodes
 
 - Hadoop & Spark
 
 - EC2 / Azure / Compute ENgine
 
 - R, Scala, Python, Web Browser, REST API
+
+- Run locally
 
 <aside class='notes'>
 
@@ -825,38 +880,68 @@ Models available with H2O
 ```{r, eval=FALSE}
 h2o.deeplearning(
    x, y, training_frame, model_id = "",
-   overwrite_with_best_model, validation_frame, checkpoint,
-   autoencoder = FALSE, use_all_factor_levels = TRUE,
+   overwrite_with_best_model, 
+   validation_frame, checkpoint,
+   autoencoder = FALSE, 
+   use_all_factor_levels = TRUE,
    activation = c("Rectifier", "Tanh", "TanhWithDropout",
    "RectifierWithDropout", "Maxout", "MaxoutWithDropout"), 
-   hidden = c(200, 200), epochs = 10, 
-   train_samples_per_iteration = -2, seed, adaptive_rate=TRUE, 
-   rho = 0.99, epsilon = 1e-08, rate = 0.005,
-   rate_annealing = 1e-06, rate_decay = 1, momentum_start=0,
-   momentum_ramp = 1e+06, momentum_stable = 0,
+   hidden = c(200, 200), 
+   epochs = 10, 
+   train_samples_per_iteration = -2, 
+   seed, 
+   adaptive_rate=TRUE, 
+   rho = 0.99, 
+   epsilon = 1e-08, 
+   rate = 0.005,
+   rate_annealing = 1e-06, 
+   rate_decay = 1, 
+   momentum_start=0,
+   momentum_ramp = 1e+06, 
+   momentum_stable = 0,
    nesterov_accelerated_gradient = TRUE, 
-   input_dropout_ratio=0, hidden_dropout_ratios, 
-   l1 = 0, l2 = 0, max_w2 = Inf,initial_weight_distribution=
-     c("UniformAdaptive","Uniform","Normal"),
+   input_dropout_ratio=0, 
+   hidden_dropout_ratios, 
+   l1 = 0, l2 = 0, max_w2 = Inf,
+   initial_weight_distribution=c("UniformAdaptive",
+                                 "Uniform","Normal"),
    initial_weight_scale = 1, 
    loss = c("Automatic", "CrossEntropy", "MeanSquare", 
             "Absolute", "Huber"), 
    distribution = c("AUTO", "gaussian", "bernoulli", 
                     "multinomial", "poisson", "gamma", 
                     "tweedie", "laplace","huber"), 
-   tweedie_power = 1.5, score_interval = 5, 
-   score_training_samples,score_validation_samples, 
-   score_duty_cycle, classification_stop,regression_stop, 
-   quiet_mode, max_confusion_matrix_size, max_hit_ratio_k,
-   balance_classes = FALSE, class_sampling_factors, 
-   max_after_balance_size,score_validation_sampling, 
-   diagnostics, variable_importances, fast_mode, 
-   ignore_const_cols,  force_load_balance, 
-   replicate_training_data, single_node_mode, 
-   shuffle_training_data, sparse, col_major,
-   average_activation, sparsity_beta, max_categorical_features,
-   reproducible = FALSE, export_weights_and_biases = FALSE,
-   offset_column = NULL, weights_column = NULL, nfolds = 0,
+   tweedie_power = 1.5, 
+   score_interval = 5, 
+   score_training_samples,
+   score_validation_samples, 
+   score_duty_cycle, 
+   classification_stop,
+   regression_stop, 
+   quiet_mode, 
+   max_confusion_matrix_size, 
+   max_hit_ratio_k,
+   balance_classes = FALSE, 
+   class_sampling_factors, 
+   max_after_balance_size,
+   score_validation_sampling, 
+   diagnostics, 
+   variable_importances, 
+   fast_mode, 
+   ignore_const_cols,  
+   force_load_balance, 
+   replicate_training_data, 
+   single_node_mode, 
+   shuffle_training_data, 
+   sparse, col_major,
+   average_activation, 
+   sparsity_beta, 
+   max_categorical_features,
+   reproducible = FALSE, 
+   export_weights_and_biases = FALSE,
+   offset_column = NULL, 
+   weights_column = NULL, 
+   nfolds = 0,
    fold_column = NULL, 
    fold_assignment = c("AUTO", "Random", "Modulo"),
    keep_cross_validation_predictions = FALSE, ...)

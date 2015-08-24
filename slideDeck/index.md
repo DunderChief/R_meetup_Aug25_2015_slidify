@@ -439,6 +439,14 @@ Machine Learning Basics
 
 ```r
 library(caret)
+```
+
+```
+## Loading required package: lattice
+## Loading required package: ggplot2
+```
+
+```r
 trainIndex <- createDataPartition(iris$Species, p = .8,
                                   list = FALSE,
                                   times = 1)
@@ -565,8 +573,12 @@ test set is a better reflection of this
 
 Parsimony / Occam's Razor
 ---------------------------------------------------
+<br>
+The simplest model is usually the best. 
+<br>
+Only use least number of parameters that are necessary.
 
-
+---
 
 
 Data Splitting 
@@ -596,7 +608,7 @@ example of this is on prev slide
 
 ---
 
-30% of data on testing?!?http://www.omscs.gatech.edu/
+30% of data on testing?!?
 --------------------------------------
 
 <br>
@@ -633,6 +645,115 @@ train(Species ~ .,
 ```
 
 <img src='assets/img/TrainAlgo.png' height='300'>
+
+---
+
+train():
+----------------------------------------
+
+>- method: _our machine learning algorithm (select from 192)_
+>- preProcess: 
+
+<table class="fragment">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Train_Options </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> BoxCox </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> YeoJohnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> expoTrans </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> center </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> scale </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> range </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> knnImpute </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> bagImpute </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> medianImpute </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> pca </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ica </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> spatialSign </td>
+  </tr>
+</tbody>
+</table>
+
+---
+
+trainControl():
+----------------------------------------
+
+
+```r
+out <- data.frame(Resampling_Method=c("boot", "boot632", "cv", "repeatedcv", "LOOCV", "LGOCV", "none", "oob", "adaptive_cv", "adaptive_boot", "adaptive_LGOCV"))
+kable(out, format='html')
+```
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Resampling_Method </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> boot </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> boot632 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cv </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> repeatedcv </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> LOOCV </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> LGOCV </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> none </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> oob </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> adaptive_cv </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> adaptive_boot </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> adaptive_LGOCV </td>
+  </tr>
+</tbody>
+</table>
+
 
 ---
 
@@ -693,7 +814,7 @@ fitControl2 <- trainControl(method = "adaptive_cv",
 ```
 
 
-
+ref: http://arxiv.org/abs/1405.6974
 
 ---
 
@@ -802,51 +923,7 @@ Pre-processing
 
 <br>
 
-<table>
- <thead>
-  <tr>
-   <th style="text-align:left;"> Train_Options </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> BoxCox </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> YeoJohnson </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> expoTrans </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> center </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> scale </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> range </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> knnImpute </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> bagImpute </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> medianImpute </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> pca </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ica </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> spatialSign </td>
-  </tr>
-</tbody>
-</table>
+
 
 ---
 
@@ -935,14 +1012,397 @@ __method 1, 2, 3, etc.....__
 
 ---
 
-
+Recursive Feature Elimination:
 
 ```r
 rfe() 
 rfeControl()
+# <img src='assets/img/RFE.png'>
+```
+Genetic Algorithms:
+
+```r
+gafs()
 ```
 
-<img src='assets/img/RFE.png'>
+```
+## Error in gafs.default(): promise already under evaluation: recursive default argument reference or earlier problems?
+```
+
+```r
+gafsControl()
+```
+
+```
+## $functions
+## $functions$summary
+## function (data, lev = NULL, model = NULL) 
+## {
+##     if (is.character(data$obs)) 
+##         data$obs <- factor(data$obs, levels = lev)
+##     postResample(data[, "pred"], data[, "obs"])
+## }
+## <environment: namespace:caret>
+## 
+## $functions$fit
+## function (x, y, first, last, ...) 
+## train(x, y, ...)
+## <environment: namespace:caret>
+## 
+## $functions$pred
+## function (object, x) 
+## {
+##     tmp <- predict(object, x)
+##     if (object$modelType == "Classification" & !is.null(object$modelInfo$prob)) {
+##         out <- cbind(data.frame(pred = tmp), as.data.frame(predict(object, 
+##             x, type = "prob")))
+##     }
+##     else out <- tmp
+##     out
+## }
+## <environment: namespace:caret>
+## 
+## $functions$rank
+## function (object, x, y) 
+## {
+##     vimp <- varImp(object, scale = FALSE)$importance
+##     if (object$modelType == "Regression") {
+##         vimp <- vimp[order(vimp[, 1], decreasing = TRUE), , drop = FALSE]
+##     }
+##     else {
+##         if (all(levels(y) %in% colnames(vimp))) {
+##             avImp <- apply(vimp[, levels(y), drop = TRUE], 1, 
+##                 mean)
+##             vimp$Overall <- avImp
+##         }
+##     }
+##     vimp$var <- rownames(vimp)
+##     vimp
+## }
+## <environment: namespace:caret>
+## 
+## $functions$selectSize
+## function (x, metric, maximize) 
+## {
+##     best <- if (maximize) 
+##         which.max(x[, metric])
+##     else which.min(x[, metric])
+##     min(x[best, "Variables"])
+## }
+## <environment: namespace:caret>
+## 
+## $functions$selectVar
+## function (y, size) 
+## {
+##     finalImp <- ddply(y[, c("Overall", "var")], .(var), function(x) mean(x$Overall, 
+##         na.rm = TRUE))
+##     names(finalImp)[2] <- "Overall"
+##     finalImp <- finalImp[order(finalImp$Overall, decreasing = TRUE), 
+##         ]
+##     as.character(finalImp$var[1:size])
+## }
+## <environment: namespace:caret>
+## 
+## 
+## $method
+## [1] "repeatedcv"
+## 
+## $metric
+## NULL
+## 
+## $maximize
+## NULL
+## 
+## $number
+## [1] 10
+## 
+## $repeats
+## [1] 1
+## 
+## $returnResamp
+## [1] "final"
+## 
+## $verbose
+## [1] FALSE
+## 
+## $p
+## [1] 0.75
+## 
+## $index
+## NULL
+## 
+## $indexOut
+## NULL
+## 
+## $seeds
+## NULL
+## 
+## $holdout
+## [1] 0
+## 
+## $genParallel
+## [1] FALSE
+## 
+## $allowParallel
+## [1] TRUE
+```
+
+Univariate Filters:
+
+```r
+gafs()
+```
+
+```
+## Error in gafs.default(): promise already under evaluation: recursive default argument reference or earlier problems?
+```
+
+```r
+gafsControl()
+```
+
+```
+## $functions
+## $functions$summary
+## function (data, lev = NULL, model = NULL) 
+## {
+##     if (is.character(data$obs)) 
+##         data$obs <- factor(data$obs, levels = lev)
+##     postResample(data[, "pred"], data[, "obs"])
+## }
+## <environment: namespace:caret>
+## 
+## $functions$fit
+## function (x, y, first, last, ...) 
+## train(x, y, ...)
+## <environment: namespace:caret>
+## 
+## $functions$pred
+## function (object, x) 
+## {
+##     tmp <- predict(object, x)
+##     if (object$modelType == "Classification" & !is.null(object$modelInfo$prob)) {
+##         out <- cbind(data.frame(pred = tmp), as.data.frame(predict(object, 
+##             x, type = "prob")))
+##     }
+##     else out <- tmp
+##     out
+## }
+## <environment: namespace:caret>
+## 
+## $functions$rank
+## function (object, x, y) 
+## {
+##     vimp <- varImp(object, scale = FALSE)$importance
+##     if (object$modelType == "Regression") {
+##         vimp <- vimp[order(vimp[, 1], decreasing = TRUE), , drop = FALSE]
+##     }
+##     else {
+##         if (all(levels(y) %in% colnames(vimp))) {
+##             avImp <- apply(vimp[, levels(y), drop = TRUE], 1, 
+##                 mean)
+##             vimp$Overall <- avImp
+##         }
+##     }
+##     vimp$var <- rownames(vimp)
+##     vimp
+## }
+## <environment: namespace:caret>
+## 
+## $functions$selectSize
+## function (x, metric, maximize) 
+## {
+##     best <- if (maximize) 
+##         which.max(x[, metric])
+##     else which.min(x[, metric])
+##     min(x[best, "Variables"])
+## }
+## <environment: namespace:caret>
+## 
+## $functions$selectVar
+## function (y, size) 
+## {
+##     finalImp <- ddply(y[, c("Overall", "var")], .(var), function(x) mean(x$Overall, 
+##         na.rm = TRUE))
+##     names(finalImp)[2] <- "Overall"
+##     finalImp <- finalImp[order(finalImp$Overall, decreasing = TRUE), 
+##         ]
+##     as.character(finalImp$var[1:size])
+## }
+## <environment: namespace:caret>
+## 
+## 
+## $method
+## [1] "repeatedcv"
+## 
+## $metric
+## NULL
+## 
+## $maximize
+## NULL
+## 
+## $number
+## [1] 10
+## 
+## $repeats
+## [1] 1
+## 
+## $returnResamp
+## [1] "final"
+## 
+## $verbose
+## [1] FALSE
+## 
+## $p
+## [1] 0.75
+## 
+## $index
+## NULL
+## 
+## $indexOut
+## NULL
+## 
+## $seeds
+## NULL
+## 
+## $holdout
+## [1] 0
+## 
+## $genParallel
+## [1] FALSE
+## 
+## $allowParallel
+## [1] TRUE
+```
+Simalated Annealing:
+
+```r
+safs()
+```
+
+```
+## Error in safs.default(): promise already under evaluation: recursive default argument reference or earlier problems?
+```
+
+```r
+safsControl()
+```
+
+```
+## $functions
+## $functions$summary
+## function (data, lev = NULL, model = NULL) 
+## {
+##     if (is.character(data$obs)) 
+##         data$obs <- factor(data$obs, levels = lev)
+##     postResample(data[, "pred"], data[, "obs"])
+## }
+## <environment: namespace:caret>
+## 
+## $functions$fit
+## function (x, y, first, last, ...) 
+## train(x, y, ...)
+## <environment: namespace:caret>
+## 
+## $functions$pred
+## function (object, x) 
+## {
+##     tmp <- predict(object, x)
+##     if (object$modelType == "Classification" & !is.null(object$modelInfo$prob)) {
+##         out <- cbind(data.frame(pred = tmp), as.data.frame(predict(object, 
+##             x, type = "prob")))
+##     }
+##     else out <- tmp
+##     out
+## }
+## <environment: namespace:caret>
+## 
+## $functions$rank
+## function (object, x, y) 
+## {
+##     vimp <- varImp(object, scale = FALSE)$importance
+##     if (object$modelType == "Regression") {
+##         vimp <- vimp[order(vimp[, 1], decreasing = TRUE), , drop = FALSE]
+##     }
+##     else {
+##         if (all(levels(y) %in% colnames(vimp))) {
+##             avImp <- apply(vimp[, levels(y), drop = TRUE], 1, 
+##                 mean)
+##             vimp$Overall <- avImp
+##         }
+##     }
+##     vimp$var <- rownames(vimp)
+##     vimp
+## }
+## <environment: namespace:caret>
+## 
+## $functions$selectSize
+## function (x, metric, maximize) 
+## {
+##     best <- if (maximize) 
+##         which.max(x[, metric])
+##     else which.min(x[, metric])
+##     min(x[best, "Variables"])
+## }
+## <environment: namespace:caret>
+## 
+## $functions$selectVar
+## function (y, size) 
+## {
+##     finalImp <- ddply(y[, c("Overall", "var")], .(var), function(x) mean(x$Overall, 
+##         na.rm = TRUE))
+##     names(finalImp)[2] <- "Overall"
+##     finalImp <- finalImp[order(finalImp$Overall, decreasing = TRUE), 
+##         ]
+##     as.character(finalImp$var[1:size])
+## }
+## <environment: namespace:caret>
+## 
+## 
+## $method
+## [1] "repeatedcv"
+## 
+## $metric
+## NULL
+## 
+## $maximize
+## NULL
+## 
+## $number
+## [1] 10
+## 
+## $repeats
+## [1] 1
+## 
+## $returnResamp
+## [1] "final"
+## 
+## $verbose
+## [1] FALSE
+## 
+## $p
+## [1] 0.75
+## 
+## $index
+## NULL
+## 
+## $indexOut
+## NULL
+## 
+## $seeds
+## NULL
+## 
+## $holdout
+## [1] 0
+## 
+## $improve
+## [1] Inf
+## 
+## $allowParallel
+## [1] TRUE
+```
+
+
 
 ---
 
@@ -951,20 +1411,22 @@ rfeControl()
 
 <!------------------H2O-------------------------------------->
 
-h2o package: What and Why?
+h2o package:
 ---------------------------------------------------------------------
 
 http://h2o.ai/
 
 - Open Source Java library
 
-- Over multiple nodes
+- Runs Single model over multiple nodes
 
 - Hadoop & Spark
 
 - EC2 / Azure / Compute ENgine
 
 - R, Scala, Python, Web Browser, REST API
+
+- Run locally
 
 <aside class='notes'>
 
@@ -1000,38 +1462,68 @@ Models available with H2O
 ```r
 h2o.deeplearning(
    x, y, training_frame, model_id = "",
-   overwrite_with_best_model, validation_frame, checkpoint,
-   autoencoder = FALSE, use_all_factor_levels = TRUE,
+   overwrite_with_best_model, 
+   validation_frame, checkpoint,
+   autoencoder = FALSE, 
+   use_all_factor_levels = TRUE,
    activation = c("Rectifier", "Tanh", "TanhWithDropout",
    "RectifierWithDropout", "Maxout", "MaxoutWithDropout"), 
-   hidden = c(200, 200), epochs = 10, 
-   train_samples_per_iteration = -2, seed, adaptive_rate=TRUE, 
-   rho = 0.99, epsilon = 1e-08, rate = 0.005,
-   rate_annealing = 1e-06, rate_decay = 1, momentum_start=0,
-   momentum_ramp = 1e+06, momentum_stable = 0,
+   hidden = c(200, 200), 
+   epochs = 10, 
+   train_samples_per_iteration = -2, 
+   seed, 
+   adaptive_rate=TRUE, 
+   rho = 0.99, 
+   epsilon = 1e-08, 
+   rate = 0.005,
+   rate_annealing = 1e-06, 
+   rate_decay = 1, 
+   momentum_start=0,
+   momentum_ramp = 1e+06, 
+   momentum_stable = 0,
    nesterov_accelerated_gradient = TRUE, 
-   input_dropout_ratio=0, hidden_dropout_ratios, 
-   l1 = 0, l2 = 0, max_w2 = Inf,initial_weight_distribution=
-     c("UniformAdaptive","Uniform","Normal"),
+   input_dropout_ratio=0, 
+   hidden_dropout_ratios, 
+   l1 = 0, l2 = 0, max_w2 = Inf,
+   initial_weight_distribution=c("UniformAdaptive",
+                                 "Uniform","Normal"),
    initial_weight_scale = 1, 
    loss = c("Automatic", "CrossEntropy", "MeanSquare", 
             "Absolute", "Huber"), 
    distribution = c("AUTO", "gaussian", "bernoulli", 
                     "multinomial", "poisson", "gamma", 
                     "tweedie", "laplace","huber"), 
-   tweedie_power = 1.5, score_interval = 5, 
-   score_training_samples,score_validation_samples, 
-   score_duty_cycle, classification_stop,regression_stop, 
-   quiet_mode, max_confusion_matrix_size, max_hit_ratio_k,
-   balance_classes = FALSE, class_sampling_factors, 
-   max_after_balance_size,score_validation_sampling, 
-   diagnostics, variable_importances, fast_mode, 
-   ignore_const_cols,  force_load_balance, 
-   replicate_training_data, single_node_mode, 
-   shuffle_training_data, sparse, col_major,
-   average_activation, sparsity_beta, max_categorical_features,
-   reproducible = FALSE, export_weights_and_biases = FALSE,
-   offset_column = NULL, weights_column = NULL, nfolds = 0,
+   tweedie_power = 1.5, 
+   score_interval = 5, 
+   score_training_samples,
+   score_validation_samples, 
+   score_duty_cycle, 
+   classification_stop,
+   regression_stop, 
+   quiet_mode, 
+   max_confusion_matrix_size, 
+   max_hit_ratio_k,
+   balance_classes = FALSE, 
+   class_sampling_factors, 
+   max_after_balance_size,
+   score_validation_sampling, 
+   diagnostics, 
+   variable_importances, 
+   fast_mode, 
+   ignore_const_cols,  
+   force_load_balance, 
+   replicate_training_data, 
+   single_node_mode, 
+   shuffle_training_data, 
+   sparse, col_major,
+   average_activation, 
+   sparsity_beta, 
+   max_categorical_features,
+   reproducible = FALSE, 
+   export_weights_and_biases = FALSE,
+   offset_column = NULL, 
+   weights_column = NULL, 
+   nfolds = 0,
    fold_column = NULL, 
    fold_assignment = c("AUTO", "Random", "Modulo"),
    keep_cross_validation_predictions = FALSE, ...)

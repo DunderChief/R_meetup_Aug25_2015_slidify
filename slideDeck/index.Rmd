@@ -5,7 +5,7 @@ author      : David O'Brien <dunder.chief@gmail.com>
 job         : 
 framework   : revealjs        # {io2012, html5slides, shower, dzslides, ...}
 revealjs    : {theme:      sky, 
-               transition: concave} #cube, page, zoom, concave, linear, fade, default, none
+               transition: default} #cube, page, zoom, concave, linear, fade, default, none
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
 hitheme     : monokai
 widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
@@ -76,8 +76,8 @@ makeShow <- function() {slidify('index.Rmd'); browseURL('index.html');}
 frag_it <- function(xx) {
   sub('<table>', '<table class="fragment">', xx)
 }
-example_row <- 55
-ex_iris1 <- iris[example_row, ]
+our_flower <- 55
+ex_iris1 <- iris[our_flower, ]
 ex_iris1$Species <- '???'
 iris_names <- paste(gsub('\\.', ' ', colnames(iris)), 
                     c('[X1]','[X2]','[X3]','[X4]','[Y]'), sep='\n')
@@ -95,20 +95,22 @@ Our guess:
 kable(ex_iris1, row.names=FALSE, col.names=iris_names, align='c', format='html')
 ```
 
+```{r, echo=FALSE, results='asis'}
+ex_iris2 <- rbind(iris[1:3, ], iris[51:53, ], iris[101:103, ])
+out <- kable(data.frame(ex_iris2), row.names=FALSE, col.names=iris_names,
+      align='c', format='html', padding=100)
+#sub('<table>', '<table class="fragment" width="871" style="text-align: center;">', out)
+frag_it(out)
+```
 
-<img src='assets/img/down1.png' height='75' style='border: none; box-shadow: none;' class='fragment'>
 
-
-.fragment <img src='assets/img/LDA_eq.png' height='75'>
-
-
-<img src='assets/img/down1.png' height='75' style='border: none; box-shadow: none;' class='fragment'>
+.fragment <img src='assets/img/LDA_eq.png' height='75'> 
 
 ```{r echo=FALSE, results='asis'}
-fit <- lda(Species ~ ., iris[-example_row, ])
-pred <- t(predict(fit, iris[example_row, ])$posterior)
+fit <- lda(Species ~ ., iris[-our_flower, ])
+pred <- t(predict(fit, iris[our_flower, ])$posterior)
 colnames(pred) <- 'Probablity'
-out <- kable(round(pred, 3), format='html')
+out <- kable(t(round(pred, 3)), format='html')
 cat(sub('<table>', '<table class="fragment">', out))
 ```
 
@@ -121,30 +123,15 @@ $('ol.incremental li').addClass('fragment')
 
 --- 
 
-How do we estimate these parameters: 
------------------------------
-
-<br>
-<img src='assets/img/LDA_eq.png' height='100'>
-<br>
-```{r, echo=FALSE, results='asis'}
-ex_iris2 <- rbind(iris[1:3, ], iris[51:53, ], iris[101:103, ])
-out <- kable(data.frame(ex_iris2), row.names=FALSE, col.names=iris_names,
-      align='c', format='html')
-frag_it(out)
-```
-
---- 
-
 
 Implementation in R: 
 ------------------------------------------
 <br>
 ```{r}
 library(MASS)
-trainset <- iris[-example_row, ] 
+trainset <- iris[-our_flower, ] 
 fit.lda <- lda(Species ~ ., data=trainset, prior=c(1/3, 1/3, 1/3)) 
-pred <- predict(fit.lda, newdata=iris[example_row, ])
+pred <- predict(fit.lda, newdata=iris[our_flower, ])
 round(pred$posterior, 3)
 ```
 
@@ -504,7 +491,7 @@ example of this is on prev slide
 
 ---
 
-30% of data on testing?!?
+30% of data on testing?!?http://www.omscs.gatech.edu/
 --------------------------------------
 
 <br>
@@ -566,6 +553,33 @@ train(Species ~ .,
 
 
 ---
+
+Adaptive Resampling
+---------------------------------------
+
+Speed up the optimazion process
+
+```{r, eval=FALSE}
+fitControl2 <- trainControl(method = "adaptive_cv",
+                            number = 10,
+                            repeats = 5,
+                            ## Estimate class probabilities
+                            classProbs = TRUE,
+                            ## Evaluate performance using 
+                            ## the following function
+                            summaryFunction = twoClassSummary,
+                            ## Adaptive resampling information:
+                            adaptive = list(min = 10,
+                                            alpha = 0.05,
+                                            method = "gls",
+                                            complete = TRUE))
+```
+
+
+ref: http://arxiv.org/abs/1405.6974
+
+---
+
 
 What else can caret do?
 ---------------------------------------
@@ -728,7 +742,8 @@ __Examples__
 Feature Selection
 ---------------------------------------------------
 
-Selecting which subset of predictors will give us the best model
+
+<img src='assets/img/rand_feat.png' height='600' class='fragment'>
 
 <aside class='notes'>
 
@@ -743,6 +758,17 @@ How to do it:
 __method 1, 2, 3, etc.....__
 
 </aside>
+
+
+---
+
+
+```{r, eval=FALSE}
+rfe() 
+rfeControl()
+```
+
+<img src='assets/img/RFE.png'>
 
 ---
 

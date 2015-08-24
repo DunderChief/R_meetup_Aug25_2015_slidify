@@ -101,49 +101,6 @@ $('ol.incremental li').addClass('fragment')
 </tbody>
 </table>
 
-<p><img src='assets/img/down1.png' height='75' style='border: none; box-shadow: none;' class='fragment'></p>
-
-<p class='fragment'><img src='assets/img/LDA_eq.png' height='75'></p>
-
-<p><img src='assets/img/down1.png' height='75' style='border: none; box-shadow: none;' class='fragment'></p>
-
-<table class="fragment">
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Probablity </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> setosa </td>
-   <td style="text-align:right;"> 0.000 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> versicolor </td>
-   <td style="text-align:right;"> 0.995 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> virginica </td>
-   <td style="text-align:right;"> 0.005 </td>
-  </tr>
-</tbody>
-</table>
-
-<p style="color:red" class="fragment">Versicolor!</p>
-
-<script>
-$('ul.incremental li').addClass('fragment')
-$('ol.incremental li').addClass('fragment')
-</script>
-
-</section>
-<section class='' data-state='' id='slide-6'>
-  <h2>How do we estimate these parameters: </h2>
-  <p><br>
-<img src='assets/img/LDA_eq.png' height='100'>
-<br></p>
-
 <table class="fragment">
  <thead>
   <tr>
@@ -226,15 +183,43 @@ $('ol.incremental li').addClass('fragment')
 </tbody>
 </table>
 
+<p class='fragment'><img src='assets/img/LDA_eq.png' height='75'> </p>
+
+<table class="fragment">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> setosa </th>
+   <th style="text-align:right;"> versicolor </th>
+   <th style="text-align:right;"> virginica </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Probablity </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.995 </td>
+   <td style="text-align:right;"> 0.005 </td>
+  </tr>
+</tbody>
+</table>
+
+<p style="color:red" class="fragment">Versicolor!</p>
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
 </section>
-<section class='' data-state='' id='slide-7'>
+<section class='' data-state='' id='slide-6'>
   <h2>Implementation in R: </h2>
   <p><br></p>
 
 <pre><code class="r">library(MASS)
-trainset &lt;- iris[-example_row, ] 
+trainset &lt;- iris[-our_flower, ] 
 fit.lda &lt;- lda(Species ~ ., data=trainset, prior=c(1/3, 1/3, 1/3)) 
-pred &lt;- predict(fit.lda, newdata=iris[example_row, ])
+pred &lt;- predict(fit.lda, newdata=iris[our_flower, ])
 round(pred$posterior, 3)
 </code></pre>
 
@@ -257,7 +242,7 @@ $('ol.incremental li').addClass('fragment')
 </script>
 
 </section>
-<section class='' data-state='' id='slide-8'>
+<section class='' data-state='' id='slide-7'>
   <h2>predict(fitObject, type = <strong>???</strong>)</h2>
   <p><br></p>
 
@@ -303,7 +288,7 @@ $('ol.incremental li').addClass('fragment')
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-9'>
+<section class='' data-state='' id='slide-8'>
   <h2>Typical flow for trying a new algorithm:</h2>
   <ol>
 <li>Find the package(s) and install</li>
@@ -333,7 +318,7 @@ in caret all of this is contained in less than 5 lines of code</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-10'>
+<section class='' data-state='' id='slide-9'>
   <h2>Caret</h2>
   <p>Website: <a href="https://topepo.github.io/caret/index.html">https://topepo.github.io/caret/index.html</a></p>
 
@@ -373,7 +358,7 @@ $('ol.incremental li').addClass('fragment')
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-11'>
+<section class='' data-state='' id='slide-10'>
   <h2>Train lots of models at once</h2>
   <p><br></p>
 
@@ -412,7 +397,7 @@ $('ol.incremental li').addClass('fragment')
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-12'>
+<section class='' data-state='' id='slide-11'>
   
   <p><img src='assets/img/authors.png'></p>
 
@@ -421,7 +406,7 @@ $('ol.incremental li').addClass('fragment')
 <p><img src='assets/img/abstract_highlight.png'></p>
 
 </section>
-<section class='' data-state='' id='slide-13'>
+<section class='' data-state='' id='slide-12'>
   <h2>Machine Learning Basics</h2>
   <p><br>
 <br></p>
@@ -446,7 +431,7 @@ irisTest  &lt;- iris[-trainIndex, ]
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-14'>
+<section class='' data-state='' id='slide-13'>
   <h2>Cross-validation: Avoid overfitting</h2>
   <p><strong>\[y = x^3\]</strong></p>
 
@@ -473,7 +458,7 @@ dat &lt;- data.frame(X = x + error, Y = y + error)
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-15'>
+<section class='' data-state='' id='slide-14'>
   <h2>Tuning polynomials</h2>
   <pre><code class="r">set.seed(100)
 trainIndex &lt;- createDataPartition(y=dat$Y, p=0.5, list=FALSE)
@@ -506,7 +491,7 @@ pred.test &lt;- predict(fit, newdata=test)
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-16'>
+<section class='' data-state='' id='slide-15'>
   
   <p>In-sample (<strong>training set</strong>)   |   Out-of-sample (<strong>test set</strong>)</p>
 
@@ -521,7 +506,7 @@ pred.test &lt;- predict(fit, newdata=test)
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-17'>
+<section class='' data-state='' id='slide-16'>
   
   <p><img src='assets/img/SL_bias_var_annot.png' height='600'></p>
 
@@ -537,7 +522,7 @@ error: lower is better. grey line is our training error. Test is red</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-18'>
+<section class='' data-state='' id='slide-17'>
   <h2>Parsimony / Occam&#39;s Razor</h2>
   <h2>Data Splitting </h2>
 
@@ -566,14 +551,14 @@ example of this is on prev slide</p></li>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-19'>
-  <h2>30% of data on testing?!?</h2>
+<section class='' data-state='' id='slide-18'>
+  <h2>30% of data on testing?!?<a href="http://www.omscs.gatech.edu/">http://www.omscs.gatech.edu/</a></h2>
   <p><br></p>
 
 <p><img src='assets/img/Performance_Rows.png'></p>
 
 </section>
-<section class='' data-state='' id='slide-20'>
+<section class='' data-state='' id='slide-19'>
   <h2>k-fold cross-validation</h2>
   <p><br>
 <img src='assets/img/k-fold_CV.png'></p>
@@ -587,7 +572,7 @@ example of this is on prev slide</p></li>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-21'>
+<section class='' data-state='' id='slide-20'>
   <h2>caret: Basic Syntax</h2>
   <pre><code>train(Species ~ ., 
         data=iris,
@@ -600,7 +585,7 @@ example of this is on prev slide</p></li>
 <p><img src='assets/img/TrainAlgo.png' height='300'></p>
 
 </section>
-<section class='' data-state='' id='slide-22'>
+<section class='' data-state='' id='slide-21'>
   <h2>Adding custom tuning params</h2>
   <pre><code class="r">gbmGrid &lt;-  expand.grid(interaction.depth = c(1, 5, 9),
                         n.trees = (1:30)*50,
@@ -624,6 +609,26 @@ head(gbmGrid)
         preProcess=&#39;pca&#39;,
         trControl=trainControl(method=&#39;repeatedcv&#39;, number=5, repeats=7),
         tuneGrid = gbmGrid)
+</code></pre>
+
+</section>
+<section class='' data-state='' id='slide-22'>
+  <h2>Adaptive Resampling</h2>
+  <p>Speed up the optimazion process</p>
+
+<pre><code class="r">fitControl2 &lt;- trainControl(method = &quot;adaptive_cv&quot;,
+                            number = 10,
+                            repeats = 5,
+                            ## Estimate class probabilities
+                            classProbs = TRUE,
+                            ## Evaluate performance using 
+                            ## the following function
+                            summaryFunction = twoClassSummary,
+                            ## Adaptive resampling information:
+                            adaptive = list(min = 10,
+                                            alpha = 0.05,
+                                            method = &quot;gls&quot;,
+                                            complete = TRUE))
 </code></pre>
 
 </section>
@@ -816,7 +821,7 @@ Applies same parameters to the test set.</p>
 </section>
 <section class='' data-state='' id='slide-30'>
   <h2>Feature Selection</h2>
-  <p>Selecting which subset of predictors will give us the best model</p>
+  <p><img src='assets/img/rand_feat.png' height='600' class='fragment'></p>
 
 <p><aside class='notes'></p>
 
@@ -833,6 +838,15 @@ Applies same parameters to the test set.</p>
 
 </section>
 <section class='' data-state='' id='slide-31'>
+  
+  <pre><code class="r">rfe() 
+rfeControl()
+</code></pre>
+
+<p><img src='assets/img/RFE.png'></p>
+
+</section>
+<section class='' data-state='' id='slide-32'>
   
   <!------------------H2O-------------------------------------->
 
@@ -858,7 +872,7 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-32'>
+<section class='' data-state='' id='slide-33'>
   <h2>Models available with H2O</h2>
   <p><br></p>
 
@@ -877,7 +891,7 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-33'>
+<section class='' data-state='' id='slide-34'>
   
   <pre><code class="r">h2o.deeplearning(
    x, y, training_frame, model_id = &quot;&quot;,
@@ -919,7 +933,7 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-34'>
+<section class='' data-state='' id='slide-35'>
   <h2>Use case</h2>
   <pre><code class="r">library(h2o)
 # Initialize h2o with nthreads (default is 2)
@@ -945,7 +959,7 @@ performance = h2o.performance(model = model, data=iris.test.h2o)
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-35'>
+<section class='' data-state='' id='slide-36'>
   
   <!----------------GPU--------------------------------------->
 
@@ -969,7 +983,7 @@ A typical machine will have 4-8 cores</p>
 </aside></p>
 
 </section>
-<section class='' data-state='' id='slide-36'>
+<section class='' data-state='' id='slide-37'>
   <h2>gputools</h2>
   <pre><code class="r">gpuGLM()
 gpuLM()
@@ -983,7 +997,7 @@ gpuHclust(gpuDist())
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-37'>
+<section class='' data-state='' id='slide-38'>
   <h2>rpud</h2>
   <p><a href="http://www.r-tutor.com/gpu-computing">http://www.r-tutor.com/gpu-computing</a></p>
 
@@ -1001,7 +1015,7 @@ rvbm() = Bayesian Classification with Gaussian Process</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-38'>
+<section class='' data-state='' id='slide-39'>
   
   <!-------------------THE END---------------------------------->
 
@@ -1015,7 +1029,7 @@ rvbm() = Bayesian Classification with Gaussian Process</p>
 </ul>
 
 </section>
-<section class='' data-state='' id='slide-39'>
+<section class='' data-state='' id='slide-40'>
   <h2>References</h2>
   <p><br></p>
 
@@ -1036,7 +1050,7 @@ rvbm() = Bayesian Classification with Gaussian Process</p>
     history: true,
     center: true,
     theme: Reveal.getQueryHash().theme || 'sky', 
-    transition: Reveal.getQueryHash().transition || 'concave', 
+    transition: Reveal.getQueryHash().transition || 'default', 
     dependencies: [
     // Cross-browser shim that fully implements classList -
     // https://github.com/eligrey/classList.js/

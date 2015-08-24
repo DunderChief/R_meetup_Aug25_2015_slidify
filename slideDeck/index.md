@@ -5,7 +5,7 @@ author      : David O'Brien <dunder.chief@gmail.com>
 job         : 
 framework   : revealjs        # {io2012, html5slides, shower, dzslides, ...}
 revealjs    : {theme:      sky, 
-               transition: concave} #cube, page, zoom, concave, linear, fade, default, none
+               transition: default} #cube, page, zoom, concave, linear, fade, default, none
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
 hitheme     : monokai
 widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
@@ -101,53 +101,6 @@ Our guess:
 </tbody>
 </table>
 
-
-<img src='assets/img/down1.png' height='75' style='border: none; box-shadow: none;' class='fragment'>
-
-
-.fragment <img src='assets/img/LDA_eq.png' height='75'>
-
-
-<img src='assets/img/down1.png' height='75' style='border: none; box-shadow: none;' class='fragment'>
-
-<table class="fragment">
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Probablity </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> setosa </td>
-   <td style="text-align:right;"> 0.000 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> versicolor </td>
-   <td style="text-align:right;"> 0.995 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> virginica </td>
-   <td style="text-align:right;"> 0.005 </td>
-  </tr>
-</tbody>
-</table>
-
-<p style="color:red" class="fragment">Versicolor!</p>
-
-<script>
-$('ul.incremental li').addClass('fragment')
-$('ol.incremental li').addClass('fragment')
-</script>
-
---- 
-
-How do we estimate these parameters: 
------------------------------
-
-<br>
-<img src='assets/img/LDA_eq.png' height='100'>
-<br>
 <table class="fragment">
  <thead>
   <tr>
@@ -230,6 +183,35 @@ How do we estimate these parameters:
 </tbody>
 </table>
 
+
+.fragment <img src='assets/img/LDA_eq.png' height='75'> 
+
+<table class="fragment">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> setosa </th>
+   <th style="text-align:right;"> versicolor </th>
+   <th style="text-align:right;"> virginica </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Probablity </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.995 </td>
+   <td style="text-align:right;"> 0.005 </td>
+  </tr>
+</tbody>
+</table>
+
+<p style="color:red" class="fragment">Versicolor!</p>
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
 --- 
 
 
@@ -239,9 +221,9 @@ Implementation in R:
 
 ```r
 library(MASS)
-trainset <- iris[-example_row, ] 
+trainset <- iris[-our_flower, ] 
 fit.lda <- lda(Species ~ ., data=trainset, prior=c(1/3, 1/3, 1/3)) 
-pred <- predict(fit.lda, newdata=iris[example_row, ])
+pred <- predict(fit.lda, newdata=iris[our_flower, ])
 round(pred$posterior, 3)
 ```
 
@@ -614,7 +596,7 @@ example of this is on prev slide
 
 ---
 
-30% of data on testing?!?
+30% of data on testing?!?http://www.omscs.gatech.edu/
 --------------------------------------
 
 <br>
@@ -687,6 +669,34 @@ train(Species ~ .,
 
 
 ---
+
+Adaptive Resampling
+---------------------------------------
+
+Speed up the optimazion process
+
+
+```r
+fitControl2 <- trainControl(method = "adaptive_cv",
+                            number = 10,
+                            repeats = 5,
+                            ## Estimate class probabilities
+                            classProbs = TRUE,
+                            ## Evaluate performance using 
+                            ## the following function
+                            summaryFunction = twoClassSummary,
+                            ## Adaptive resampling information:
+                            adaptive = list(min = 10,
+                                            alpha = 0.05,
+                                            method = "gls",
+                                            complete = TRUE))
+```
+
+
+
+
+---
+
 
 What else can caret do?
 ---------------------------------------
@@ -905,7 +915,8 @@ __Examples__
 Feature Selection
 ---------------------------------------------------
 
-Selecting which subset of predictors will give us the best model
+
+<img src='assets/img/rand_feat.png' height='600' class='fragment'>
 
 <aside class='notes'>
 
@@ -920,6 +931,18 @@ How to do it:
 __method 1, 2, 3, etc.....__
 
 </aside>
+
+
+---
+
+
+
+```r
+rfe() 
+rfeControl()
+```
+
+<img src='assets/img/RFE.png'>
 
 ---
 

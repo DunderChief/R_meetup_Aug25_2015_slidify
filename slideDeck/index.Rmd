@@ -26,57 +26,6 @@ $('ul.incremental li').addClass('fragment')
 $('ol.incremental li').addClass('fragment')
 </script>
 
-```{r, echo=FALSE}
-# This code fixes incremental stuff with slidify and reveal.js
-# https://gist.github.com/zross/edb5d1e42998da286e17
-library(knitr)
-opts_chunk$set(collapse=TRUE, echo=TRUE, 
-               error=FALSE, message=FALSE, 
-               warning=FALSE, cache=FALSE)
-
-s0 <- knitr::knit_hooks$get('source')
-o0 <- knitr::knit_hooks$get('output')
-p0 <- knitr::knit_hooks$get('plot')
-
-knitr::knit_hooks$set(
-  list(
-       
-    source=function(x,options){
-      if (is.null(options$class) & options$fig.num!=0) s0(x, options)
-        
-      else if (is.null(options$class) & options$fig.num==0)
-       
-      paste0("<pre><code class='r'>",paste0(x, collapse="\n"))  
-      else
-        
-        paste0("<pre class='", options$class, "'><code class='r'>",paste0(x, collapse="\n"))          
-      
-    },
-    output = function(x,options){
-      if (is.null(options$class) & options$fig.num!=0) o0(x, options)
-      else if (is.null(options$class))
-        paste0('\n',x,'</code></pre>')
-      else 
-        #print(x)
-        paste0('\n',x,'</code></pre>')
-    },
-    #    plot = function(x, options){
-    #      print(p0(x, options))
-    #    },
-    chunk=function(x,options){
-      
-      if (is.null(options$class) & options$fig.num!=0){return(x)}
-      else{
-        if(grepl('</code></pre>',x)==1){return(x)}
-        if(grepl('</code></pre>',x)!=1){return(paste0(x,'</code></pre>'))}
-    }
-
-      return(x)
-    }
-  )
-)
-```
-
 
 What is Predictive Modeling?
 -----------------------------------------------
@@ -297,6 +246,8 @@ $('ol.incremental li').addClass('fragment')
 
 <aside class='notes'>
 
+Wrapper for 192 models
+
 91 Machine learning packages
 
 With all these dependencies, probably a few thousand packages in total???
@@ -359,76 +310,9 @@ Not all models worked because we have 3 categories
 
 ---
 
-Basic Syntax
---------------------------------------
-
-```
-train(Species ~ ., 
-        data=iris,
-        method='gbm',
-        preProcess='knnImpute',
-        trControl=trainControl(method='repeatedcv', number=5, repeats=7),
-        tuneLength=5)
-```
-
-<img src='assets/img/TrainAlgo.png' height='300'>
-
----
-
-Adding custom tuning params
-----------------------------------------
-
-```{r}
-gbmGrid <-  expand.grid(interaction.depth = c(1, 5, 9),
-                        n.trees = (1:30)*50,
-                        shrinkage = 0.1,
-                        n.minobsinnode = 20)
-head(gbmGrid)
-```
-```
-train(Species ~ ., 
-        data=iris,
-        method='gbm',
-        preProcess='pca',
-        trControl=trainControl(method='repeatedcv', number=5, repeats=7),
-        tuneGrid = gbmGrid)
-```   
 
 
-
----
-
-What else can caret do?
----------------------------------------
-
-<br>
-
-> - Data Splitting
-
-> - Pre-processing
-
-> - Feature Selection 
-
-> - Model tuning / Resampling
-
-> - Variable Importance
-
-<script>
-$('ul.incremental li').addClass('fragment')
-$('ol.incremental li').addClass('fragment')
-</script>
-
-<aside class='notes'>
-
-Easier to use than base R
-
-Prevents common mistakes
-
-</aside>
-
----
-
-Data Splitting
+Machine Learning Basics
 ---------------------------------------------------
 <br>
 <br>
@@ -442,6 +326,9 @@ irisTrain <- iris[ trainIndex, ]
 irisTest  <- iris[-trainIndex, ]
 ```
 
+<br>
+
+<img src='assets/img/train_test.png'>
 <aside class='notes'>
 
 __Why split data?__ To avoid overfitting our results
@@ -452,7 +339,7 @@ __Example:__ This is a good example of how caret make you do things the right wa
 
 ---
 
-Data Splitting | Tuning
+Cross-validation: Avoid overfitting
 ---------------------------------------------------
 __$$y = x^3$$__
 ```{r, echo=TRUE, eval=TRUE, fig.height=2}
@@ -572,11 +459,22 @@ At polynomial = 50. Our model no longer works on new data
 
 
 <aside class='notes'>
+error: lower is better. grey line is our training error. Test is red
 
+training error will always go down as the model gets more flexible
+
+but we want to know how well it does on new data
+
+test set is a better reflection of this
 
 </aside>
 
 ---
+
+Parsimony / Occam's Razor
+---------------------------------------------------
+
+
 
 
 Data Splitting 
@@ -600,6 +498,100 @@ $('ol.incremental li').addClass('fragment')
 2. This is our out of sample set for evaluating these params
 
 3. In order to avoid overfitting due to tuning param selection, need a fresh test set
+example of this is on prev slide
+
+</aside>
+
+---
+
+30% of data on testing?!?
+--------------------------------------
+
+<br>
+
+<img src='assets/img/Performance_Rows.png'>
+
+---
+
+k-fold cross-validation
+--------------------------------------
+<br>
+<img src='assets/img/k-fold_CV.png'>
+
+<aside class='notes'>
+
+in this case we have 5-fold cross-validation
+
+Average the error for all 5 of these to pick the best model
+
+</aside>
+
+---
+
+caret: Basic Syntax
+--------------------------------------
+
+```
+train(Species ~ ., 
+        data=iris,
+        method='gbm',
+        preProcess='knnImpute',
+        trControl=trainControl(method='repeatedcv', number=5, repeats=7),
+        tuneLength=5)
+```
+
+<img src='assets/img/TrainAlgo.png' height='300'>
+
+---
+
+Adding custom tuning params
+----------------------------------------
+
+```{r}
+gbmGrid <-  expand.grid(interaction.depth = c(1, 5, 9),
+                        n.trees = (1:30)*50,
+                        shrinkage = 0.1,
+                        n.minobsinnode = 20)
+head(gbmGrid)
+```
+```
+train(Species ~ ., 
+        data=iris,
+        method='gbm',
+        preProcess='pca',
+        trControl=trainControl(method='repeatedcv', number=5, repeats=7),
+        tuneGrid = gbmGrid)
+```   
+
+
+
+---
+
+What else can caret do?
+---------------------------------------
+
+<br>
+
+> - Data Splitting
+
+> - Pre-processing
+
+> - Feature Selection 
+
+> - Model tuning / Resampling
+
+> - Variable Importance
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
+<aside class='notes'>
+
+Easier to use than base R
+
+Prevents common mistakes
 
 </aside>
 
@@ -633,6 +625,9 @@ Time series can't be split randomly because the slice we're predicting depends o
 
 ---
 
+Time Series
+-------------------------------------------------------
+
 ```{r}
 library(caret)
 slices <- createTimeSlices(Cl(gold), initialWindow=1000, 
@@ -659,20 +654,35 @@ http://topepo.github.io/caret/sampling.html
 Pre-processing
 ---------------------------------------------------
 
-1. Get your data ready for training
+<br>
 
-2. Apply these training set transformations to test set
+```{r, echo=FALSE}
 
-Example:
+out <- data.frame(Train_Options=c("BoxCox", "YeoJohnson", "expoTrans", "center", "scale", "range", "knnImpute", "bagImpute", "medianImpute", "pca", "ica", "spatialSign"))
 
-```{r}
-
+kable(out, format='html')
 ```
 
+---
+
+Other functions
+------------------------------------------
+<br>
+
+```{r, eval=FALSE}
+dummyVars()
+
+nearZeroVar()
+
+findCorrelation()
+
+findLinearCombos()
+
+classDist()
+```
 <aside class='notes'>
 
-What it is: Transforming predictor variables
-Why: 
+The list goes into 
 
 1. Center and scale so mean is 0 for all predictors with a STDEV of 1
 2. Dimensionality reduction
@@ -689,20 +699,28 @@ Imputation???
 
 ---
 
-Finding your model
----------------------------------------------------
+Variable Importance
+----------------------------------------------------
 
-```{r}
+<br>
+<br>
 
+```{r, eval=FALSE}
+varImp()
 ```
 
 <aside class='notes'>
 
-Caret has 192 models available how do we find these?
+What
+__A way to rank our predictors by how important they are to the model__
 
-1. Website
+Why
+__Help us remove predictors we don't want. And give us an idea about what causes our outcome variable__
 
-2. code example
+How
+__Examples__
+
+
 </aside>
 
 ---
@@ -728,62 +746,25 @@ __method 1, 2, 3, etc.....__
 
 ---
 
-Model tuning / Resampling
-----------------------------------------------------
-
-Most models have at least one tuning parameter.
-
-To optimize training parameters without overfitting our data,
-we need to use resampling 
-
-<aside class='notes'>
-
-What
-__Tune our model__
-
-Why
-__Avoid overfitting, get the best model__
-
-How
-__Examples__
-k-nearest neighbor k is the tuning parameter
-random forest: number of trees is a parameter
- 
-</aside>
-
----
-
-Variable Importance
-----------------------------------------------------
-
-Rank predictors by usefulness
-
-<aside class='notes'>
-
-What
-__A way to rank our predictors by how important they are to the model__
-
-Why
-__Help us remove predictors we don't want. And give us an idea about what causes our outcome variable__
-
-How
-__Examples__
 
 
-</aside>
-
----
 
 <!------------------H2O-------------------------------------->
 
 h2o package: What and Why?
 ---------------------------------------------------------------------
 
-- Java library utilizing hadoop for certain models
+http://h2o.ai/
+
+- Open Source Java library
 
 - Over multiple nodes
 
-- http://h2o.ai/
+- Hadoop & Spark
+
+- EC2 / Azure / Compute ENgine
+
+- R, Scala, Python, Web Browser, REST API
 
 <aside class='notes'>
 
@@ -796,25 +777,101 @@ may want to parallelize a siCan be challenging with many predictors & we can'ngl
 
 ---
 
-List of models available with H2O
+Models available with H2O
 -------------------------------------------------------------
+
+<br>
+
+- K-Means
+- GLM
+- DRF
+- Naïve Bayes
+- PCA
+- GBM
+- Deep Learning
 
 <aside class='notes'>
 
 </aside>
+
+---
+
+```{r, eval=FALSE}
+h2o.deeplearning(
+   x, y, training_frame, model_id = "",
+   overwrite_with_best_model, validation_frame, checkpoint,
+   autoencoder = FALSE, use_all_factor_levels = TRUE,
+   activation = c("Rectifier", "Tanh", "TanhWithDropout",
+   "RectifierWithDropout", "Maxout", "MaxoutWithDropout"), 
+   hidden = c(200, 200), epochs = 10, 
+   train_samples_per_iteration = -2, seed, adaptive_rate=TRUE, 
+   rho = 0.99, epsilon = 1e-08, rate = 0.005,
+   rate_annealing = 1e-06, rate_decay = 1, momentum_start=0,
+   momentum_ramp = 1e+06, momentum_stable = 0,
+   nesterov_accelerated_gradient = TRUE, 
+   input_dropout_ratio=0, hidden_dropout_ratios, 
+   l1 = 0, l2 = 0, max_w2 = Inf,initial_weight_distribution=
+     c("UniformAdaptive","Uniform","Normal"),
+   initial_weight_scale = 1, 
+   loss = c("Automatic", "CrossEntropy", "MeanSquare", 
+            "Absolute", "Huber"), 
+   distribution = c("AUTO", "gaussian", "bernoulli", 
+                    "multinomial", "poisson", "gamma", 
+                    "tweedie", "laplace","huber"), 
+   tweedie_power = 1.5, score_interval = 5, 
+   score_training_samples,score_validation_samples, 
+   score_duty_cycle, classification_stop,regression_stop, 
+   quiet_mode, max_confusion_matrix_size, max_hit_ratio_k,
+   balance_classes = FALSE, class_sampling_factors, 
+   max_after_balance_size,score_validation_sampling, 
+   diagnostics, variable_importances, fast_mode, 
+   ignore_const_cols,  force_load_balance, 
+   replicate_training_data, single_node_mode, 
+   shuffle_training_data, sparse, col_major,
+   average_activation, sparsity_beta, max_categorical_features,
+   reproducible = FALSE, export_weights_and_biases = FALSE,
+   offset_column = NULL, weights_column = NULL, nfolds = 0,
+   fold_column = NULL, 
+   fold_assignment = c("AUTO", "Random", "Modulo"),
+   keep_cross_validation_predictions = FALSE, ...)
+```
 
 ---
 
 Use case
 -------------------------------------------------------------
+
+```{r, eval=FALSE, echo=FALSE}
+library(h2o); library(caret)
+trainIndex <- createDataPartition(iris$Species, p=.75, list=FALSE)
+iris.train <- iris[trainIndex, ]
+iris.test <- iris[-trainIndex, ]
+```
+
+```{r, eval=FALSE}
+library(h2o)
+# Initialize h2o with nthreads (default is 2)
+localH2O <- h2o.init(nthreads = 4)
+# Convert our datasets
+iris.train.h2o <- as.h2o(iris.train, localH2O)
+iris.test.h2o <- as.h2o(iris.test, localH2O)
+
+# Run the model
+model = h2o.deeplearning(x = colnames(iris)[-ncol(iris)],
+                         y = "Species",
+                         training_frame = iris.train.h2o,
+                         activation = "Tanh",
+                         hidden = c(10, 10, 10),
+                         epochs = 10000)
+
+# Check performance of test set
+performance = h2o.performance(model = model, data=iris.test.h2o)
+```
+
 <aside class='notes'>
 
 </aside>
 
----
-
-Setting up on Amazon
--------------------------------------------------------------
 
 ---
 
@@ -826,8 +883,6 @@ __Packages:__
 
 - gputools
 - rpud
-- gmatrix
-- Rth
 
 <aside class='notes'>
 A typical machine will have 4-8 cores
@@ -840,105 +895,62 @@ OpenMP????
 </aside>
 
 ---
+
+gputools
+--------------------------------------------------------------
+
+```{r, eval=FALSE}
+gpuGLM()
+gpuLM()
+gpuHclust(gpuDist())
+```
+
+<aside class='notes'>
+
+Many more mathmatic functions
+
+</aside>
+
+---
+
+
+rpud
+--------------------------------------------------------------
+
+http://www.r-tutor.com/gpu-computing
+
+```{r, eval=FALSE}
+rpuHclust()
+rvbm()
+rhierLinearModel()
+rpusvm()
+```
+
+<aside class='notes'>
+
+rhierLinearModel() = Hierarchical Linear Model
+rvbm() = Bayesian Classification with Gaussian Process
+
+</aside>
+
+---
+
 <!-------------------THE END---------------------------------->
 
 Places to Learn all about machine learning
 ---------------------------------------------------------------
 
-- JHU datascience course
-- Andrew Ng
-- Statistical Learning
-- Georgia Tech program
-
-book1,2 & 3
+- Andrew Ng, Coursera/Stanford   https://www.coursera.org/learn/machine-learning
+- Trevor Hastie, Rob Tibirashi Statistical Learning  http://online.stanford.edu/course/statistical-learning-winter-2014
+- JHU Practical Machine Learning   https://www.coursera.org/course/predmachlearn
+- Georgia Tech / Udacity M.S. in comp. sci.  <br> http://www.omscs.gatech.edu/
 
 ---
 
 References
 ---------------------------------------------------------------
 
+<br>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
----
-
-Why  Caret
-----------------------------------------------------
-
-A lot of models made by a lot of different people
-
-- Syntactical minutea
-- Baked in a lot of training control, tuning, and preprocessing (important b/c automatically applies to test set)
-- Protects people from doing the wrong thing
-- feature select the right way
-- Table with a bunch of predict functions with different arguments
-
-
-
----
-
-
-## Some models take formula, others take matrix, others take a data.frame
-
-Data formating:
-
-- formula
-- data.frame
-- matrix / vector
-  
-```{r}
-# Examples of each
-```
-
----
-
-## What Caret is good for
-
-Converts all of this to standard options
-
-- Basically a wrapper for a lot of different models
-
----
-
-## Models implemented
-
-```{r}
-#show the code to list all models
-```
-
----
-
-## Tuning parameters
-
-- Easily parallelize tuning
-
-
-
-
-
-
-
-
+<img src='assets/img/ESL.jpg' height='400'> <img src='assets/img/ISL.jpg' height='400'> <img src='assets/img/APM.png' height='400'>
 

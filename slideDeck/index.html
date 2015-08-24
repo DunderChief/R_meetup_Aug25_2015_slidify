@@ -362,6 +362,8 @@ $('ol.incremental li').addClass('fragment')
 
 <p><aside class='notes'></p>
 
+<p>Wrapper for 192 models</p>
+
 <p>91 Machine learning packages</p>
 
 <p>With all these dependencies, probably a few thousand packages in total???</p>
@@ -420,73 +422,7 @@ $('ol.incremental li').addClass('fragment')
 
 </section>
 <section class='' data-state='' id='slide-13'>
-  <h2>Basic Syntax</h2>
-  <pre><code>train(Species ~ ., 
-        data=iris,
-        method=&#39;gbm&#39;,
-        preProcess=&#39;knnImpute&#39;,
-        trControl=trainControl(method=&#39;repeatedcv&#39;, number=5, repeats=7),
-        tuneLength=5)
-</code></pre>
-
-<p><img src='assets/img/TrainAlgo.png' height='300'></p>
-
-</section>
-<section class='' data-state='' id='slide-14'>
-  <h2>Adding custom tuning params</h2>
-  <pre><code class="r">gbmGrid &lt;-  expand.grid(interaction.depth = c(1, 5, 9),
-                        n.trees = (1:30)*50,
-                        shrinkage = 0.1,
-                        n.minobsinnode = 20)
-head(gbmGrid)
-</code></pre>
-
-<pre><code>##   interaction.depth n.trees shrinkage n.minobsinnode
-## 1                 1      50       0.1             20
-## 2                 5      50       0.1             20
-## 3                 9      50       0.1             20
-## 4                 1     100       0.1             20
-## 5                 5     100       0.1             20
-## 6                 9     100       0.1             20
-</code></pre>
-
-<pre><code>train(Species ~ ., 
-        data=iris,
-        method=&#39;gbm&#39;,
-        preProcess=&#39;pca&#39;,
-        trControl=trainControl(method=&#39;repeatedcv&#39;, number=5, repeats=7),
-        tuneGrid = gbmGrid)
-</code></pre>
-
-</section>
-<section class='' data-state='' id='slide-15'>
-  <h2>What else can caret do?</h2>
-  <p><br></p>
-
-<ul class = "build incremental">
-<li><p>Data Splitting</p></li>
-<li><p>Pre-processing</p></li>
-<li><p>Feature Selection </p></li>
-<li><p>Model tuning / Resampling</p></li>
-<li><p>Variable Importance</p></li>
-</ul>
-
-<script>
-$('ul.incremental li').addClass('fragment')
-$('ol.incremental li').addClass('fragment')
-</script>
-
-<p><aside class='notes'></p>
-
-<p>Easier to use than base R</p>
-
-<p>Prevents common mistakes</p>
-
-<p></aside></p>
-
-</section>
-<section class='' data-state='' id='slide-16'>
-  <h2>Data Splitting</h2>
+  <h2>Machine Learning Basics</h2>
   <p><br>
 <br></p>
 
@@ -498,7 +434,10 @@ irisTrain &lt;- iris[ trainIndex, ]
 irisTest  &lt;- iris[-trainIndex, ]
 </code></pre>
 
-<p><aside class='notes'></p>
+<p><br></p>
+
+<p><img src='assets/img/train_test.png'>
+<aside class='notes'></p>
 
 <p><strong>Why split data?</strong> To avoid overfitting our results</p>
 
@@ -507,22 +446,22 @@ irisTest  &lt;- iris[-trainIndex, ]
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-17'>
-  <h2>Data Splitting | Tuning</h2>
+<section class='' data-state='' id='slide-14'>
+  <h2>Cross-validation: Avoid overfitting</h2>
   <p><strong>\[y = x^3\]</strong></p>
 
 <pre><code class="r">y &lt;- seq(2, 10, by=.05)
 x &lt;- seq(2, 10, by=.05)^3
 </code></pre>
 
-<p><img src="assets/fig/unnamed-chunk-12-1.png" alt="plot of chunk unnamed-chunk-12"> </p>
+<p><img src="assets/fig/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10"> </p>
 
 <pre><code class="r">set.seed(1)
 error &lt;- rnorm(length(x), sd=2)
 dat &lt;- data.frame(X = x + error, Y = y + error)
 </code></pre>
 
-<p><img src="assets/fig/unnamed-chunk-14-1.png" alt="plot of chunk unnamed-chunk-14"> </p>
+<p><img src="assets/fig/unnamed-chunk-12-1.png" alt="plot of chunk unnamed-chunk-12"> </p>
 
 <p><aside class='notes'></p>
 
@@ -534,7 +473,7 @@ dat &lt;- data.frame(X = x + error, Y = y + error)
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-18'>
+<section class='' data-state='' id='slide-15'>
   <h2>Tuning polynomials</h2>
   <pre><code class="r">set.seed(100)
 trainIndex &lt;- createDataPartition(y=dat$Y, p=0.5, list=FALSE)
@@ -567,11 +506,11 @@ pred.test &lt;- predict(fit, newdata=test)
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-19'>
+<section class='' data-state='' id='slide-16'>
   
   <p>In-sample (<strong>training set</strong>)   |   Out-of-sample (<strong>test set</strong>)</p>
 
-<p><img src="assets/fig/unnamed-chunk-17-1.png" alt="plot of chunk unnamed-chunk-17"> <img src="assets/fig/unnamed-chunk-17-2.png" alt="plot of chunk unnamed-chunk-17"> <img src="assets/fig/unnamed-chunk-17-3.png" alt="plot of chunk unnamed-chunk-17"> <img src="assets/fig/unnamed-chunk-17-4.png" alt="plot of chunk unnamed-chunk-17"> </p>
+<p><img src="assets/fig/unnamed-chunk-15-1.png" alt="plot of chunk unnamed-chunk-15"> <img src="assets/fig/unnamed-chunk-15-2.png" alt="plot of chunk unnamed-chunk-15"> <img src="assets/fig/unnamed-chunk-15-3.png" alt="plot of chunk unnamed-chunk-15"> <img src="assets/fig/unnamed-chunk-15-4.png" alt="plot of chunk unnamed-chunk-15"> </p>
 
 <p><aside class='notes'></p>
 
@@ -582,18 +521,27 @@ pred.test &lt;- predict(fit, newdata=test)
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-20'>
+<section class='' data-state='' id='slide-17'>
   
   <p><img src='assets/img/SL_bias_var_annot.png' height='600'></p>
 
-<p><aside class='notes'></p>
+<p><aside class='notes'>
+error: lower is better. grey line is our training error. Test is red</p>
+
+<p>training error will always go down as the model gets more flexible</p>
+
+<p>but we want to know how well it does on new data</p>
+
+<p>test set is a better reflection of this</p>
 
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-21'>
+<section class='' data-state='' id='slide-18'>
+  <h2>Parsimony / Occam&#39;s Razor</h2>
   <h2>Data Splitting </h2>
-  <p><br></p>
+
+<p><br></p>
 
 <ol class = "build incremental">
 <li><strong>Training set [70%]:</strong> <br> Train a model 100x with different tuning parameters <br><br></li>
@@ -611,13 +559,101 @@ $('ol.incremental li').addClass('fragment')
 <ol>
 <li><p>Most ML models have tuning parameters &amp; we need to optimize these useing an out of sample dataset</p></li>
 <li><p>This is our out of sample set for evaluating these params</p></li>
-<li><p>In order to avoid overfitting due to tuning param selection, need a fresh test set</p></li>
+<li><p>In order to avoid overfitting due to tuning param selection, need a fresh test set
+example of this is on prev slide</p></li>
 </ol>
 
 <p></aside></p>
 
 </section>
+<section class='' data-state='' id='slide-19'>
+  <h2>30% of data on testing?!?</h2>
+  <p><br></p>
+
+<p><img src='assets/img/Performance_Rows.png'></p>
+
+</section>
+<section class='' data-state='' id='slide-20'>
+  <h2>k-fold cross-validation</h2>
+  <p><br>
+<img src='assets/img/k-fold_CV.png'></p>
+
+<p><aside class='notes'></p>
+
+<p>in this case we have 5-fold cross-validation</p>
+
+<p>Average the error for all 5 of these to pick the best model</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-21'>
+  <h2>caret: Basic Syntax</h2>
+  <pre><code>train(Species ~ ., 
+        data=iris,
+        method=&#39;gbm&#39;,
+        preProcess=&#39;knnImpute&#39;,
+        trControl=trainControl(method=&#39;repeatedcv&#39;, number=5, repeats=7),
+        tuneLength=5)
+</code></pre>
+
+<p><img src='assets/img/TrainAlgo.png' height='300'></p>
+
+</section>
 <section class='' data-state='' id='slide-22'>
+  <h2>Adding custom tuning params</h2>
+  <pre><code class="r">gbmGrid &lt;-  expand.grid(interaction.depth = c(1, 5, 9),
+                        n.trees = (1:30)*50,
+                        shrinkage = 0.1,
+                        n.minobsinnode = 20)
+head(gbmGrid)
+</code></pre>
+
+<pre><code>##   interaction.depth n.trees shrinkage n.minobsinnode
+## 1                 1      50       0.1             20
+## 2                 5      50       0.1             20
+## 3                 9      50       0.1             20
+## 4                 1     100       0.1             20
+## 5                 5     100       0.1             20
+## 6                 9     100       0.1             20
+</code></pre>
+
+<pre><code>train(Species ~ ., 
+        data=iris,
+        method=&#39;gbm&#39;,
+        preProcess=&#39;pca&#39;,
+        trControl=trainControl(method=&#39;repeatedcv&#39;, number=5, repeats=7),
+        tuneGrid = gbmGrid)
+</code></pre>
+
+</section>
+<section class='' data-state='' id='slide-23'>
+  <h2>What else can caret do?</h2>
+  <p><br></p>
+
+<ul class = "build incremental">
+<li><p>Data Splitting</p></li>
+<li><p>Pre-processing</p></li>
+<li><p>Feature Selection </p></li>
+<li><p>Model tuning / Resampling</p></li>
+<li><p>Variable Importance</p></li>
+</ul>
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
+<p><aside class='notes'></p>
+
+<p>Easier to use than base R</p>
+
+<p>Prevents common mistakes</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-24'>
   <h2>Data Splitting (Time Series)</h2>
   <p><br></p>
 
@@ -634,8 +670,8 @@ gold &lt;- getSymbols(&#39;GLD&#39;, src=&#39;yahoo&#39;, from=&#39;1970-01-01&#
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-23'>
-  
+<section class='' data-state='' id='slide-25'>
+  <h2>Time Series</h2>
   <pre><code class="r">library(caret)
 slices &lt;- createTimeSlices(Cl(gold), initialWindow=1000, 
                            fixedWindow=TRUE, horizon=500, skip=500)
@@ -654,7 +690,7 @@ str(slices)
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-24'>
+<section class='' data-state='' id='slide-26'>
   <h2>Data Splitting | Class imbalances</h2>
   <pre><code class="r">set.seed(2969)
 imbal_train &lt;- twoClassSim(10000, intercept = -20, linearVars = 20)
@@ -670,19 +706,75 @@ table(imbal_train$Class)
 <p><a href="http://topepo.github.io/caret/sampling.html">http://topepo.github.io/caret/sampling.html</a></p>
 
 </section>
-<section class='' data-state='' id='slide-25'>
+<section class='' data-state='' id='slide-27'>
   <h2>Pre-processing</h2>
-  <ol>
-<li><p>Get your data ready for training</p></li>
-<li><p>Apply these training set transformations to test set</p></li>
-</ol>
+  <p><br></p>
 
-<p>Example:</p>
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Train_Options </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> BoxCox </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> YeoJohnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> expoTrans </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> center </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> scale </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> range </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> knnImpute </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> bagImpute </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> medianImpute </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> pca </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ica </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> spatialSign </td>
+  </tr>
+</tbody>
+</table>
+
+</section>
+<section class='' data-state='' id='slide-28'>
+  <h2>Other functions</h2>
+  <p><br></p>
+
+<pre><code class="r">dummyVars()
+
+nearZeroVar()
+
+findCorrelation()
+
+findLinearCombos()
+
+classDist()
+</code></pre>
 
 <p><aside class='notes'></p>
 
-<p>What it is: Transforming predictor variables
-Why: </p>
+<p>The list goes into </p>
 
 <ol>
 <li>Center and scale so mean is 0 for all predictors with a STDEV of 1</li>
@@ -700,20 +792,29 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-26'>
-  <h2>Finding your model</h2>
-  <p><aside class='notes'></p>
+<section class='' data-state='' id='slide-29'>
+  <h2>Variable Importance</h2>
+  <p><br>
+<br></p>
 
-<p>Caret has 192 models available how do we find these?</p>
+<pre><code class="r">varImp()
+</code></pre>
 
-<ol>
-<li><p>Website</p></li>
-<li><p>code example
-</aside></p></li>
-</ol>
+<p><aside class='notes'></p>
+
+<p>What
+<strong>A way to rank our predictors by how important they are to the model</strong></p>
+
+<p>Why
+<strong>Help us remove predictors we don&#39;t want. And give us an idea about what causes our outcome variable</strong></p>
+
+<p>How
+<strong>Examples</strong></p>
+
+<p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-27'>
+<section class='' data-state='' id='slide-30'>
   <h2>Feature Selection</h2>
   <p>Selecting which subset of predictors will give us the best model</p>
 
@@ -731,57 +832,20 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-28'>
-  <h2>Model tuning / Resampling</h2>
-  <p>Most models have at least one tuning parameter.</p>
-
-<p>To optimize training parameters without overfitting our data,
-we need to use resampling </p>
-
-<p><aside class='notes'></p>
-
-<p>What
-<strong>Tune our model</strong></p>
-
-<p>Why
-<strong>Avoid overfitting, get the best model</strong></p>
-
-<p>How
-<strong>Examples</strong>
-k-nearest neighbor k is the tuning parameter
-random forest: number of trees is a parameter</p>
-
-<p></aside></p>
-
-</section>
-<section class='' data-state='' id='slide-29'>
-  <h2>Variable Importance</h2>
-  <p>Rank predictors by usefulness</p>
-
-<p><aside class='notes'></p>
-
-<p>What
-<strong>A way to rank our predictors by how important they are to the model</strong></p>
-
-<p>Why
-<strong>Help us remove predictors we don&#39;t want. And give us an idea about what causes our outcome variable</strong></p>
-
-<p>How
-<strong>Examples</strong></p>
-
-<p></aside></p>
-
-</section>
-<section class='' data-state='' id='slide-30'>
+<section class='' data-state='' id='slide-31'>
   
   <!------------------H2O-------------------------------------->
 
 <h2>h2o package: What and Why?</h2>
 
+<p><a href="http://h2o.ai/">http://h2o.ai/</a></p>
+
 <ul>
-<li><p>Java library utilizing hadoop for certain models</p></li>
+<li><p>Open Source Java library</p></li>
 <li><p>Over multiple nodes</p></li>
-<li><p><a href="http://h2o.ai/">http://h2o.ai/</a></p></li>
+<li><p>Hadoop &amp; Spark</p></li>
+<li><p>EC2 / Azure / Compute ENgine</p></li>
+<li><p>R, Scala, Python, Web Browser, REST API</p></li>
 </ul>
 
 <p><aside class='notes'></p>
@@ -794,25 +858,94 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-31'>
-  <h2>List of models available with H2O</h2>
-  <p><aside class='notes'></p>
-
-<p></aside></p>
-
-</section>
 <section class='' data-state='' id='slide-32'>
-  <h2>Use case</h2>
-  <p><aside class='notes'></p>
+  <h2>Models available with H2O</h2>
+  <p><br></p>
+
+<ul>
+<li>K-Means</li>
+<li>GLM</li>
+<li>DRF</li>
+<li>Naïve Bayes</li>
+<li>PCA</li>
+<li>GBM</li>
+<li>Deep Learning</li>
+</ul>
+
+<p><aside class='notes'></p>
 
 <p></aside></p>
 
 </section>
 <section class='' data-state='' id='slide-33'>
-  <h2>Setting up on Amazon</h2>
   
+  <pre><code class="r">h2o.deeplearning(
+   x, y, training_frame, model_id = &quot;&quot;,
+   overwrite_with_best_model, validation_frame, checkpoint,
+   autoencoder = FALSE, use_all_factor_levels = TRUE,
+   activation = c(&quot;Rectifier&quot;, &quot;Tanh&quot;, &quot;TanhWithDropout&quot;,
+   &quot;RectifierWithDropout&quot;, &quot;Maxout&quot;, &quot;MaxoutWithDropout&quot;), 
+   hidden = c(200, 200), epochs = 10, 
+   train_samples_per_iteration = -2, seed, adaptive_rate=TRUE, 
+   rho = 0.99, epsilon = 1e-08, rate = 0.005,
+   rate_annealing = 1e-06, rate_decay = 1, momentum_start=0,
+   momentum_ramp = 1e+06, momentum_stable = 0,
+   nesterov_accelerated_gradient = TRUE, 
+   input_dropout_ratio=0, hidden_dropout_ratios, 
+   l1 = 0, l2 = 0, max_w2 = Inf,initial_weight_distribution=
+     c(&quot;UniformAdaptive&quot;,&quot;Uniform&quot;,&quot;Normal&quot;),
+   initial_weight_scale = 1, 
+   loss = c(&quot;Automatic&quot;, &quot;CrossEntropy&quot;, &quot;MeanSquare&quot;, 
+            &quot;Absolute&quot;, &quot;Huber&quot;), 
+   distribution = c(&quot;AUTO&quot;, &quot;gaussian&quot;, &quot;bernoulli&quot;, 
+                    &quot;multinomial&quot;, &quot;poisson&quot;, &quot;gamma&quot;, 
+                    &quot;tweedie&quot;, &quot;laplace&quot;,&quot;huber&quot;), 
+   tweedie_power = 1.5, score_interval = 5, 
+   score_training_samples,score_validation_samples, 
+   score_duty_cycle, classification_stop,regression_stop, 
+   quiet_mode, max_confusion_matrix_size, max_hit_ratio_k,
+   balance_classes = FALSE, class_sampling_factors, 
+   max_after_balance_size,score_validation_sampling, 
+   diagnostics, variable_importances, fast_mode, 
+   ignore_const_cols,  force_load_balance, 
+   replicate_training_data, single_node_mode, 
+   shuffle_training_data, sparse, col_major,
+   average_activation, sparsity_beta, max_categorical_features,
+   reproducible = FALSE, export_weights_and_biases = FALSE,
+   offset_column = NULL, weights_column = NULL, nfolds = 0,
+   fold_column = NULL, 
+   fold_assignment = c(&quot;AUTO&quot;, &quot;Random&quot;, &quot;Modulo&quot;),
+   keep_cross_validation_predictions = FALSE, ...)
+</code></pre>
+
 </section>
 <section class='' data-state='' id='slide-34'>
+  <h2>Use case</h2>
+  <pre><code class="r">library(h2o)
+# Initialize h2o with nthreads (default is 2)
+localH2O &lt;- h2o.init(nthreads = 4)
+# Convert our datasets
+iris.train.h2o &lt;- as.h2o(iris.train, localH2O)
+iris.test.h2o &lt;- as.h2o(iris.test, localH2O)
+
+# Run the model
+model = h2o.deeplearning(x = colnames(iris)[-ncol(iris)],
+                         y = &quot;Species&quot;,
+                         training_frame = iris.train.h2o,
+                         activation = &quot;Tanh&quot;,
+                         hidden = c(10, 10, 10),
+                         epochs = 10000)
+
+# Check performance of test set
+performance = h2o.performance(model = model, data=iris.test.h2o)
+</code></pre>
+
+<p><aside class='notes'></p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-35'>
   
   <!----------------GPU--------------------------------------->
 
@@ -823,8 +956,6 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 <ul>
 <li>gputools</li>
 <li>rpud</li>
-<li>gmatrix</li>
-<li>Rth</li>
 </ul>
 
 <p><aside class='notes'>
@@ -838,73 +969,57 @@ A typical machine will have 4-8 cores</p>
 </aside></p>
 
 </section>
-<section class='' data-state='' id='slide-35'>
+<section class='' data-state='' id='slide-36'>
+  <h2>gputools</h2>
+  <pre><code class="r">gpuGLM()
+gpuLM()
+gpuHclust(gpuDist())
+</code></pre>
+
+<p><aside class='notes'></p>
+
+<p>Many more mathmatic functions</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-37'>
+  <h2>rpud</h2>
+  <p><a href="http://www.r-tutor.com/gpu-computing">http://www.r-tutor.com/gpu-computing</a></p>
+
+<pre><code class="r">rpuHclust()
+rvbm()
+rhierLinearModel()
+rpusvm()
+</code></pre>
+
+<p><aside class='notes'></p>
+
+<p>rhierLinearModel() = Hierarchical Linear Model
+rvbm() = Bayesian Classification with Gaussian Process</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-38'>
   
   <!-------------------THE END---------------------------------->
 
 <h2>Places to Learn all about machine learning</h2>
 
 <ul>
-<li>JHU datascience course</li>
-<li>Andrew Ng</li>
-<li>Statistical Learning</li>
-<li>Georgia Tech program</li>
+<li>Andrew Ng, Coursera/Stanford   <a href="https://www.coursera.org/learn/machine-learning">https://www.coursera.org/learn/machine-learning</a></li>
+<li>Trevor Hastie, Rob Tibirashi Statistical Learning  <a href="http://online.stanford.edu/course/statistical-learning-winter-2014">http://online.stanford.edu/course/statistical-learning-winter-2014</a></li>
+<li>JHU Practical Machine Learning   <a href="https://www.coursera.org/course/predmachlearn">https://www.coursera.org/course/predmachlearn</a></li>
+<li>Georgia Tech / Udacity M.S. in comp. sci.  <br> <a href="http://www.omscs.gatech.edu/">http://www.omscs.gatech.edu/</a></li>
 </ul>
-
-<p>book1,2 &amp; 3</p>
-
-</section>
-<section class='' data-state='' id='slide-36'>
-  <h2>References</h2>
-  
-</section>
-<section class='' data-state='' id='slide-37'>
-  <h2>Why  Caret</h2>
-  <p>A lot of models made by a lot of different people</p>
-
-<ul>
-<li>Syntactical minutea</li>
-<li>Baked in a lot of training control, tuning, and preprocessing (important b/c automatically applies to test set)</li>
-<li>Protects people from doing the wrong thing</li>
-<li>feature select the right way</li>
-<li>Table with a bunch of predict functions with different arguments</li>
-</ul>
-
-</section>
-<section class='' data-state='' id='slide-38'>
-  <h2>Some models take formula, others take matrix, others take a data.frame</h2>
-  <p>Data formating:</p>
-
-<ul>
-<li>formula</li>
-<li>data.frame</li>
-<li>matrix / vector</li>
-</ul>
-
-<pre><code class="r"># Examples of each
-</code></pre>
 
 </section>
 <section class='' data-state='' id='slide-39'>
-  <h2>What Caret is good for</h2>
-  <p>Converts all of this to standard options</p>
+  <h2>References</h2>
+  <p><br></p>
 
-<ul>
-<li>Basically a wrapper for a lot of different models</li>
-</ul>
-
-</section>
-<section class='' data-state='' id='slide-40'>
-  <h2>Models implemented</h2>
-  <pre><code class="r">#show the code to list all models
-</code></pre>
-
-</section>
-<section class='' data-state='' id='slide-41'>
-  <h2>Tuning parameters</h2>
-  <ul>
-<li>Easily parallelize tuning</li>
-</ul>
+<p><img src='assets/img/ESL.jpg' height='400'> <img src='assets/img/ISL.jpg' height='400'> <img src='assets/img/APM.png' height='400'></p>
 
 </section>
     </div>

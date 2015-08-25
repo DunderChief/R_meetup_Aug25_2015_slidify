@@ -256,7 +256,7 @@ Machine Learning Basics
 
 ```r
 library(caret)
-trainIndex <- createDataPartition(iris$Species, p = .8,
+trainIndex <- createDataPartition(iris$Species, p = .5,
                                   list = FALSE,
                                   times = 1)
 irisTrain <- iris[ trainIndex, ]
@@ -381,9 +381,10 @@ test set is a better reflection of this
 Parsimony / Occam's Razor
 ---------------------------------------------------
 <br>
+<br>
 The simplest model is usually the best. 
 <br>
-Only use least number of parameters that are necessary.
+
 
 ---
 
@@ -393,9 +394,9 @@ Data Splitting
 
 <br>
 
->  1. __Training set [70%]:__ <br> Train a model 100x with different tuning parameters <br><br>
->  2. __Cross-validation set [15%]:__ <br> Evaluate these 100 models <br><br>
->  3. __Test set [15%]:__ <br> Use final model __(only one!)__ to evaluate your the accuracy of your analysis
+>  1. __Training set [60%]:__ <br> Train a model 100x with different tuning parameters <br><br>
+>  2. __Cross-validation set [20%]:__ <br> Evaluate these 100 models <br><br>
+>  3. __Test set [20%]:__ <br> Use final model __(only one!)__ to evaluate your the accuracy of your analysis
 
 <script>
 $('ul.incremental li').addClass('fragment')
@@ -415,7 +416,7 @@ example of this is on prev slide
 
 ---
 
-30% of data on testing?!?
+40% of data on testing?!?
 --------------------------------------
 
 <br>
@@ -644,7 +645,7 @@ train():
 <table class="fragment">
  <thead>
   <tr>
-   <th style="text-align:left;"> Train_Options </th>
+   <th style="text-align:left;"> PreProcess_Option </th>
   </tr>
  </thead>
 <tbody>
@@ -842,10 +843,6 @@ Data Splitting (Time Series)
 
 
 
-```r
-library(quantmod)
-gold <- getSymbols('GLD', src='yahoo', from='1970-01-01', auto.assign=FALSE)
-```
 
 <aside class='notes'>
 
@@ -857,6 +854,12 @@ Time series can't be split randomly because the slice we're predicting depends o
 
 Time Series
 -------------------------------------------------------
+
+
+```r
+library(quantmod)
+gold <- getSymbols('GLD', src='yahoo', from='1970-01-01', auto.assign=FALSE)
+```
 
 
 ```r
@@ -1005,7 +1008,6 @@ Recursive Feature Elimination:
 ```r
 rfe() 
 rfeControl()
-# <img src='assets/img/RFE.png'>
 ```
 Genetic Algorithms:
 
@@ -1017,8 +1019,8 @@ gafsControl()
 Univariate Filters:
 
 ```r
-gafs()
-gafsControl()
+sbf()
+sbfControl()
 ```
 Simalated Annealing:
 

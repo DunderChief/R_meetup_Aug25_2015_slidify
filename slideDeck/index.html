@@ -248,7 +248,7 @@ $('ol.incremental li').addClass('fragment')
 <br></p>
 
 <pre><code class="r">library(caret)
-trainIndex &lt;- createDataPartition(iris$Species, p = .8,
+trainIndex &lt;- createDataPartition(iris$Species, p = .5,
                                   list = FALSE,
                                   times = 1)
 irisTrain &lt;- iris[ trainIndex, ]
@@ -361,9 +361,9 @@ error: lower is better. grey line is our training error. Test is red</p>
 <section class='' data-state='' id='slide-12'>
   <h2>Parsimony / Occam&#39;s Razor</h2>
   <p><br>
-The simplest model is usually the best. 
 <br>
-Only use least number of parameters that are necessary.</p>
+The simplest model is usually the best. 
+<br></p>
 
 </section>
 <section class='' data-state='' id='slide-13'>
@@ -371,9 +371,9 @@ Only use least number of parameters that are necessary.</p>
   <p><br></p>
 
 <ol class = "build incremental">
-<li><strong>Training set [70%]:</strong> <br> Train a model 100x with different tuning parameters <br><br></li>
-<li><strong>Cross-validation set [15%]:</strong> <br> Evaluate these 100 models <br><br></li>
-<li><strong>Test set [15%]:</strong> <br> Use final model <strong>(only one!)</strong> to evaluate your the accuracy of your analysis</li>
+<li><strong>Training set [60%]:</strong> <br> Train a model 100x with different tuning parameters <br><br></li>
+<li><strong>Cross-validation set [20%]:</strong> <br> Evaluate these 100 models <br><br></li>
+<li><strong>Test set [20%]:</strong> <br> Use final model <strong>(only one!)</strong> to evaluate your the accuracy of your analysis</li>
 </ol>
 
 <script>
@@ -394,7 +394,7 @@ example of this is on prev slide</p></li>
 
 </section>
 <section class='' data-state='' id='slide-14'>
-  <h2>30% of data on testing?!?</h2>
+  <h2>40% of data on testing?!?</h2>
   <p><br></p>
 
 <p><img src='assets/img/Performance_Rows.png'></p>
@@ -601,7 +601,7 @@ $('ol.incremental li').addClass('fragment')
 <table class="fragment">
  <thead>
   <tr>
-   <th style="text-align:left;"> Train_Options </th>
+   <th style="text-align:left;"> PreProcess_Option </th>
   </tr>
  </thead>
 <tbody>
@@ -772,10 +772,6 @@ $('ol.incremental li').addClass('fragment')
 
 <p><img src='assets/img/Split_time.png'></p>
 
-<pre><code class="r">library(quantmod)
-gold &lt;- getSymbols(&#39;GLD&#39;, src=&#39;yahoo&#39;, from=&#39;1970-01-01&#39;, auto.assign=FALSE)
-</code></pre>
-
 <p><aside class='notes'></p>
 
 <p>Time series can&#39;t be split randomly because the slice we&#39;re predicting depends on the previous samples.</p>
@@ -785,7 +781,11 @@ gold &lt;- getSymbols(&#39;GLD&#39;, src=&#39;yahoo&#39;, from=&#39;1970-01-01&#
 </section>
 <section class='' data-state='' id='slide-28'>
   <h2>Time Series</h2>
-  <pre><code class="r">library(caret)
+  <pre><code class="r">library(quantmod)
+gold &lt;- getSymbols(&#39;GLD&#39;, src=&#39;yahoo&#39;, from=&#39;1970-01-01&#39;, auto.assign=FALSE)
+</code></pre>
+
+<pre><code class="r">library(caret)
 slices &lt;- createTimeSlices(Cl(gold), initialWindow=1000, 
                            fixedWindow=TRUE, horizon=500, skip=500)
 str(slices)
@@ -911,7 +911,6 @@ Applies same parameters to the test set.</p>
 
 <pre><code class="r">rfe() 
 rfeControl()
-# &lt;img src=&#39;assets/img/RFE.png&#39;&gt;
 </code></pre>
 
 <p>Genetic Algorithms:</p>
@@ -922,8 +921,8 @@ gafsControl()
 
 <p>Univariate Filters:</p>
 
-<pre><code class="r">gafs()
-gafsControl()
+<pre><code class="r">sbf()
+sbfControl()
 </code></pre>
 
 <p>Simalated Annealing:</p>

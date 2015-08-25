@@ -268,8 +268,8 @@ irisTest  &lt;- iris[-trainIndex, ]
 
 </section>
 <section class='' data-state='' id='slide-8'>
-  <h2>Cross-validation: Avoid overfitting</h2>
-  <p><strong>\[y = x^3\]</strong></p>
+  <h2>Model Tuning</h2>
+  <p><strong>\[y = \sin(2x)\]</strong></p>
 
 <pre><code class="r">x &lt;- seq(pi, 5, by=.05)
 y &lt;- sin(2*x)
@@ -314,10 +314,6 @@ pred.test &lt;- predict(fit, newdata=test)
 
 <p>\[y=\theta_3x^3 + \theta_2x^2 + \theta_1x + \theta_0\]</p>
 
-<p><br></p>
-
-<p class='fragment'><strong>Our true fit is:</strong> \(\theta_3=1\), \(\{\theta_2, \theta_1, \theta_0\}=0\)</p>
-
 <p><aside class='notes'></p>
 
 <p>We always fit on the training set</p>
@@ -331,7 +327,9 @@ pred.test &lt;- predict(fit, newdata=test)
   
   <p>In-sample (<strong>training set</strong>)   |   Out-of-sample (<strong>test set</strong>)</p>
 
-<p><img src="assets/fig/unnamed-chunk-13-1.png" alt="plot of chunk unnamed-chunk-13"> <img src="assets/fig/unnamed-chunk-13-2.png" alt="plot of chunk unnamed-chunk-13"> <img src="assets/fig/unnamed-chunk-13-3.png" alt="plot of chunk unnamed-chunk-13"> <img src="assets/fig/unnamed-chunk-13-4.png" alt="plot of chunk unnamed-chunk-13"> </p>
+<p><img src='assets/img/poly1.png' height='175' class='fragment'> <img src='assets/img/poly3.png' height='175' class='fragment'></p>
+
+<p><img src='assets/img/poly9.png' height='175' class='fragment'> <img src='assets/img/poly50.png' height='175' class='fragment'></p>
 
 <p><aside class='notes'></p>
 
@@ -360,10 +358,10 @@ error: lower is better. grey line is our training error. Test is red</p>
 </section>
 <section class='' data-state='' id='slide-12'>
   <h2>Parsimony / Occam&#39;s Razor</h2>
-  <p><br>
-<br>
-The simplest model is usually the best. 
+  <p>The simplest model is usually the best. 
 <br></p>
+
+<p><img src='assets/img/parsimony.png' class='fragment' height='400'></p>
 
 </section>
 <section class='' data-state='' id='slide-13'>

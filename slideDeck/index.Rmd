@@ -178,9 +178,9 @@ __Example:__ This is a good example of how caret make you do things the right wa
 
 ---
 
-Cross-validation: Avoid overfitting
+Model Tuning
 ---------------------------------------------------
-__$$y = x^3$$__
+__$$y = \sin(2x)$$__
 ```{r, echo=TRUE, eval=TRUE, fig.height=2}
 x <- seq(pi, 5, by=.05)
 y <- sin(2*x)
@@ -238,9 +238,6 @@ pred.test <- predict(fit, newdata=test)
 
 $$y=\theta_3x^3 + \theta_2x^2 + \theta_1x + \theta_0$$
 
-<br>
-
-.fragment __Our true fit is:__ $\theta_3=1$, $\{\theta_2, \theta_1, \theta_0\}=0$
 
 <aside class='notes'>
 
@@ -254,17 +251,17 @@ But we will compare analyzing this tuning parameter on both the training & test 
 
 In-sample (__training set__)   |   Out-of-sample (__test set__)
 
-```{r, echo=FALSE, eval=TRUE, fig.height=2, warning=FALSE, message=FALSE}
+```{r, echo=FALSE, eval=FALSE, fig.height=2, warning=FALSE, message=FALSE}
 polyPlot <- function(training, test, pol, color, return_err) {
   par(mar=c(0,0,0,0))
-  plot(x, y, pch=16, col='gray',yaxt='n', xaxt='n', ann=FALSE)
-  points(Y ~ X, data=test, pch='X', col=color)
+  plot(x, y, pch=16, col='gray',yaxt='n', xaxt='n', ann=FALSE, ylim=c(-.7, 1.8))
+  points(Y ~ X, data=test, pch='X', col=color, cex=2)
   fit <- lm(Y ~ poly(X, pol, raw=TRUE), data=training)
   pred <- predict(fit, newdata=test)
-  lines(training$X[order(training$X)], fit$fitted.values[order(training$X)], col='blue', lwd=3)
+  lines(training$X[order(training$X)], fit$fitted.values[order(training$X)], col='blue', lwd=4)
   error <- mean(abs(test$Y - pred))
-  text(700, 3.75, paste('Error = ', round(error,2)), cex=1.5)
-  text(675, 2.5, paste('Polynomial =', pol), cex=1.5)
+  text(3.5, -.4, paste('Error = ', round(error,2)), cex=1.5)
+  text(3.5, -.6, paste('Polynomial =', pol), cex=1.5)
   if(return_err) {return(error)} 
 }
 par(mfrow=c(1,2), mar=rep(0,4))
@@ -275,11 +272,25 @@ polyPlot(training, training, 3,  'red2', FALSE)
 polyPlot(training, test, 3, 'black', FALSE)
 
 polyPlot(training, training, 9,  'red2', FALSE)
-polyPlot(training, test, 20, 'black', FALSE)
+polyPlot(training, test, 9, 'black', FALSE)
 
 polyPlot(training, training, 50,  'red2', FALSE)
 polyPlot(training, test, 50, 'black', FALSE)
+
+err <- foreach(poly=1:50, .combine=rbind) %do% {
+  data.frame(
+    train.err= polyPlot(training, training, poly,  'red2', TRUE),
+    test.err = polyPlot(training, test, poly, 'black', TRUE)
+  )
+}
+
+par(mar=rep(2, 4), mfrow=c(2,1))
+plot(1:10, err$test.err[1:10], col='red3', xlab='polynomial', ylab='Error', type='l', lwd=4)
+plot(1:50, err$train.err[1:50], col='gray', type='l', lwd=4)
 ```
+<img src='assets/img/poly1.png' height='175' class='fragment'> <img src='assets/img/poly3.png' height='175' class='fragment'>
+
+<img src='assets/img/poly9.png' height='175' class='fragment'> <img src='assets/img/poly50.png' height='175' class='fragment'>
 
 <aside class='notes'>
 
@@ -310,10 +321,11 @@ test set is a better reflection of this
 
 Parsimony / Occam's Razor
 ---------------------------------------------------
-<br>
-<br>
+
 The simplest model is usually the best. 
 <br>
+
+<img src='assets/img/parsimony.png' class='fragment' height='400'>
 
 
 ---

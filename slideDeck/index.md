@@ -276,9 +276,9 @@ __Example:__ This is a good example of how caret make you do things the right wa
 
 ---
 
-Cross-validation: Avoid overfitting
+Model Tuning
 ---------------------------------------------------
-__$$y = x^3$$__
+__$$y = \sin(2x)$$__
 
 ```r
 x <- seq(pi, 5, by=.05)
@@ -333,9 +333,6 @@ pred.test <- predict(fit, newdata=test)
 
 $$y=\theta_3x^3 + \theta_2x^2 + \theta_1x + \theta_0$$
 
-<br>
-
-.fragment __Our true fit is:__ $\theta_3=1$, $\{\theta_2, \theta_1, \theta_0\}=0$
 
 <aside class='notes'>
 
@@ -349,7 +346,10 @@ But we will compare analyzing this tuning parameter on both the training & test 
 
 In-sample (__training set__)   |   Out-of-sample (__test set__)
 
-![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-1.png) ![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-2.png) ![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-3.png) ![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-4.png) 
+
+<img src='assets/img/poly1.png' height='175' class='fragment'> <img src='assets/img/poly3.png' height='175' class='fragment'>
+
+<img src='assets/img/poly9.png' height='175' class='fragment'> <img src='assets/img/poly50.png' height='175' class='fragment'>
 
 <aside class='notes'>
 
@@ -380,10 +380,11 @@ test set is a better reflection of this
 
 Parsimony / Occam's Razor
 ---------------------------------------------------
-<br>
-<br>
+
 The simplest model is usually the best. 
 <br>
+
+<img src='assets/img/parsimony.png' class='fragment' height='400'>
 
 
 ---

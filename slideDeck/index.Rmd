@@ -1073,7 +1073,7 @@ Places to Learn all about machine learning
 - Trevor Hastie, Rob Tibirashi Statistical Learning  http://online.stanford.edu/course/statistical-learning-winter-2014
 - JHU Practical Machine Learning   https://www.coursera.org/course/predmachlearn
 - Georgia Tech / Udacity M.S. in comp. sci.  <br> http://www.omscs.gatech.edu/
-
+- Learn by doing <br> https://www.kaggle.com/
 ---
 
 Good reads

@@ -741,32 +741,6 @@ head(gbmGrid)
 
 </section>
 <section class='' data-state='' id='slide-26'>
-  <h2>What else can caret do?</h2>
-  <p><br></p>
-
-<ul class = "build incremental">
-<li><p>Data Splitting</p></li>
-<li><p>Pre-processing</p></li>
-<li><p>Feature Selection </p></li>
-<li><p>Model tuning / Resampling</p></li>
-<li><p>Variable Importance</p></li>
-</ul>
-
-<script>
-$('ul.incremental li').addClass('fragment')
-$('ol.incremental li').addClass('fragment')
-</script>
-
-<p><aside class='notes'></p>
-
-<p>Easier to use than base R</p>
-
-<p>Prevents common mistakes</p>
-
-<p></aside></p>
-
-</section>
-<section class='' data-state='' id='slide-27'>
   <h2>Data Splitting (Time Series)</h2>
   <p><br></p>
 
@@ -779,7 +753,7 @@ $('ol.incremental li').addClass('fragment')
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-28'>
+<section class='' data-state='' id='slide-27'>
   <h2>Time Series</h2>
   <pre><code class="r">library(quantmod)
 gold &lt;- getSymbols(&#39;GLD&#39;, src=&#39;yahoo&#39;, from=&#39;1970-01-01&#39;, auto.assign=FALSE)
@@ -803,7 +777,7 @@ str(slices)
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-29'>
+<section class='' data-state='' id='slide-28'>
   <h2>Data Splitting | Class imbalances</h2>
   <pre><code class="r">imbal_train &lt;- twoClassSim(10000, intercept = -20, linearVars = 20)
 imbal_test  &lt;- twoClassSim(10000, intercept = -20, linearVars = 20)
@@ -830,7 +804,7 @@ SMOTE()
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-30'>
+<section class='' data-state='' id='slide-29'>
   <h2>Pre-processing</h2>
   <p><br></p>
 
@@ -865,7 +839,7 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-31'>
+<section class='' data-state='' id='slide-30'>
   <h2>Variable Importance</h2>
   <p><br>
 <br></p>
@@ -887,7 +861,7 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-32'>
+<section class='' data-state='' id='slide-31'>
   <h2>Feature Selection</h2>
   <p><img src='assets/img/rand_feat.png' height='600' class='fragment'></p>
 
@@ -905,7 +879,7 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-33'>
+<section class='' data-state='' id='slide-32'>
   
   <p>Recursive Feature Elimination:</p>
 
@@ -944,7 +918,7 @@ safsControl()
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-34'>
+<section class='' data-state='' id='slide-33'>
   
   <!------------------H2O-------------------------------------->
 
@@ -971,7 +945,7 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-35'>
+<section class='' data-state='' id='slide-34'>
   <h2>Models available with H2O</h2>
   <p><br></p>
 
@@ -990,7 +964,7 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-36'>
+<section class='' data-state='' id='slide-35'>
   
   <pre><code class="r">h2o.deeplearning(
    x, y, training_frame, model_id = &quot;&quot;,
@@ -1062,7 +1036,7 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-37'>
+<section class='' data-state='' id='slide-36'>
   <h2>Use case</h2>
   <pre><code class="r">library(h2o)
 # Initialize h2o with nthreads (default is 2)
@@ -1088,7 +1062,7 @@ performance = h2o.performance(model = model, data=iris.test.h2o)
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-38'>
+<section class='' data-state='' id='slide-37'>
   
   <!----------------GPU--------------------------------------->
 
@@ -1112,7 +1086,7 @@ A typical machine will have 4-8 cores</p>
 </aside></p>
 
 </section>
-<section class='' data-state='' id='slide-39'>
+<section class='' data-state='' id='slide-38'>
   <h2>gputools</h2>
   <pre><code class="r">gpuGLM()
 gpuLM()
@@ -1126,7 +1100,7 @@ gpuHclust(gpuDist())
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-40'>
+<section class='' data-state='' id='slide-39'>
   <h2>rpud</h2>
   <p><a href="http://www.r-tutor.com/gpu-computing">http://www.r-tutor.com/gpu-computing</a></p>
 
@@ -1144,7 +1118,7 @@ rvbm() = Bayesian Classification with Gaussian Process</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-41'>
+<section class='' data-state='' id='slide-40'>
   
   <!-------------------THE END---------------------------------->
 
@@ -1159,7 +1133,7 @@ rvbm() = Bayesian Classification with Gaussian Process</p>
 </ul>
 
 </section>
-<section class='' data-state='' id='slide-42'>
+<section class='' data-state='' id='slide-41'>
   <h2>Good reads</h2>
   <p><br></p>
 

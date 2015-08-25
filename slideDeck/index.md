@@ -808,37 +808,6 @@ ref: http://arxiv.org/abs/1405.6974
 
 ---
 
-
-What else can caret do?
----------------------------------------
-
-<br>
-
-> - Data Splitting
-
-> - Pre-processing
-
-> - Feature Selection 
-
-> - Model tuning / Resampling
-
-> - Variable Importance
-
-<script>
-$('ul.incremental li').addClass('fragment')
-$('ol.incremental li').addClass('fragment')
-</script>
-
-<aside class='notes'>
-
-Easier to use than base R
-
-Prevents common mistakes
-
-</aside>
-
----
-
 Data Splitting (Time Series)
 ---------------------------------------------------
 

@@ -182,8 +182,8 @@ Cross-validation: Avoid overfitting
 ---------------------------------------------------
 __$$y = x^3$$__
 ```{r, echo=TRUE, eval=TRUE, fig.height=2}
-x <- seq(2, 10, by=.05)
-y <- x^3
+x <- seq(pi, 5, by=.05)
+y <- sin(2*x)
 ```
 
 ```{r, echo=FALSE, fig.height=2}
@@ -194,8 +194,8 @@ plot(y ~ x, pch=16)
 
 ```{r, fig.height=2}
 set.seed(1)
-error <- rnorm(length(x), sd=2)
-dat <- data.frame(X = x + error, Y = y + error)
+error <- rnorm(length(x), sd=.5)
+dat <- data.frame(X = x , Y = y + error)
 ```
 
 ```{r, echo=FALSE, fig.height=2}

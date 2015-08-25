@@ -281,8 +281,8 @@ Cross-validation: Avoid overfitting
 __$$y = x^3$$__
 
 ```r
-x <- seq(2, 10, by=.05)
-y <- x^3
+x <- seq(pi, 5, by=.05)
+y <- sin(2*x)
 ```
 
 ![plot of chunk unnamed-chunk-8](assets/fig/unnamed-chunk-8-1.png) 
@@ -291,8 +291,8 @@ y <- x^3
 
 ```r
 set.seed(1)
-error <- rnorm(length(x), sd=2)
-dat <- data.frame(X = x + error, Y = y + error)
+error <- rnorm(length(x), sd=.5)
+dat <- data.frame(X = x , Y = y + error)
 ```
 
 ![plot of chunk unnamed-chunk-10](assets/fig/unnamed-chunk-10-1.png) 
@@ -898,7 +898,7 @@ table(imbal_train$Class)
 ```
 ## 
 ## Class1 Class2 
-##   9436    564
+##   9452    548
 ```
 
 

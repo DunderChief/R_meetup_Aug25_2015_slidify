@@ -271,15 +271,15 @@ irisTest  &lt;- iris[-trainIndex, ]
   <h2>Cross-validation: Avoid overfitting</h2>
   <p><strong>\[y = x^3\]</strong></p>
 
-<pre><code class="r">x &lt;- seq(2, 10, by=.05)
-y &lt;- x^3
+<pre><code class="r">x &lt;- seq(pi, 5, by=.05)
+y &lt;- sin(2*x)
 </code></pre>
 
 <p><img src="assets/fig/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"> </p>
 
 <pre><code class="r">set.seed(1)
-error &lt;- rnorm(length(x), sd=2)
-dat &lt;- data.frame(X = x + error, Y = y + error)
+error &lt;- rnorm(length(x), sd=.5)
+dat &lt;- data.frame(X = x , Y = y + error)
 </code></pre>
 
 <p><img src="assets/fig/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10"> </p>
@@ -814,7 +814,7 @@ table(imbal_train$Class)
 
 <pre><code>## 
 ## Class1 Class2 
-##   9436    564
+##   9452    548
 </code></pre>
 
 <pre><code class="r">upSample()

@@ -281,8 +281,8 @@ Cross-validation: Avoid overfitting
 __$$y = x^3$$__
 
 ```r
-y <- seq(2, 10, by=.05)
-x <- seq(2, 10, by=.05)^3
+x <- seq(2, 10, by=.05)
+y <- x^3
 ```
 
 ![plot of chunk unnamed-chunk-8](assets/fig/unnamed-chunk-8-1.png) 
@@ -434,7 +434,9 @@ k-fold cross-validation
 
 in this case we have 5-fold cross-validation
 
-Average the error for all 5 of these to pick the best model
+For each parametor 1:100, we get 5-error metrics, we average these to find our best model
+
+Then we use this model on the test set (keep 80% of data)
 
 </aside>
 
@@ -896,7 +898,7 @@ table(imbal_train$Class)
 ```
 ## 
 ## Class1 Class2 
-##   9439    561
+##   9436    564
 ```
 
 

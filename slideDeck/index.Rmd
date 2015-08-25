@@ -182,8 +182,8 @@ Cross-validation: Avoid overfitting
 ---------------------------------------------------
 __$$y = x^3$$__
 ```{r, echo=TRUE, eval=TRUE, fig.height=2}
-y <- seq(2, 10, by=.05)
-x <- seq(2, 10, by=.05)^3
+x <- seq(2, 10, by=.05)
+y <- x^3
 ```
 
 ```{r, echo=FALSE, fig.height=2}
@@ -261,7 +261,7 @@ polyPlot <- function(training, test, pol, color, return_err) {
   points(Y ~ X, data=test, pch='X', col=color)
   fit <- lm(Y ~ poly(X, pol, raw=TRUE), data=training)
   pred <- predict(fit, newdata=test)
-  lines(training$X, fit$fitted.values, col='blue', lwd=3)
+  lines(training$X[order(training$X)], fit$fitted.values[order(training$X)], col='blue', lwd=3)
   error <- mean(abs(test$Y - pred))
   text(700, 3.75, paste('Error = ', round(error,2)), cex=1.5)
   text(675, 2.5, paste('Polynomial =', pol), cex=1.5)

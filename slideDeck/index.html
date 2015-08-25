@@ -271,8 +271,8 @@ irisTest  &lt;- iris[-trainIndex, ]
   <h2>Cross-validation: Avoid overfitting</h2>
   <p><strong>\[y = x^3\]</strong></p>
 
-<pre><code class="r">y &lt;- seq(2, 10, by=.05)
-x &lt;- seq(2, 10, by=.05)^3
+<pre><code class="r">x &lt;- seq(2, 10, by=.05)
+y &lt;- x^3
 </code></pre>
 
 <p><img src="assets/fig/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"> </p>
@@ -409,7 +409,9 @@ example of this is on prev slide</p></li>
 
 <p>in this case we have 5-fold cross-validation</p>
 
-<p>Average the error for all 5 of these to pick the best model</p>
+<p>For each parametor 1:100, we get 5-error metrics, we average these to find our best model</p>
+
+<p>Then we use this model on the test set (keep 80% of data)</p>
 
 <p></aside></p>
 
@@ -812,7 +814,7 @@ table(imbal_train$Class)
 
 <pre><code>## 
 ## Class1 Class2 
-##   9439    561
+##   9436    564
 </code></pre>
 
 <pre><code class="r">upSample()

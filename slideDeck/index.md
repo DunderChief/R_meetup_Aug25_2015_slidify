@@ -350,9 +350,9 @@ But we will compare analyzing this tuning parameter on both the training & test 
 In-sample (__training set__)   |   Out-of-sample (__test set__)
 
 
-<img src='assets/img/poly1.png' height='175' class='fragment'> <img src='assets/img/poly3.png' height='175' class='fragment'>
+<img src='assets/img/Poly1.png' height='175' class='fragment'> <img src='assets/img/Poly3.png' height='175' class='fragment'>
 
-<img src='assets/img/poly9.png' height='175' class='fragment'> <img src='assets/img/poly50.png' height='175' class='fragment'>
+<img src='assets/img/Poly9.png' height='175' class='fragment'> <img src='assets/img/Poly50.png' height='175' class='fragment'>
 
 <aside class='notes'>
 

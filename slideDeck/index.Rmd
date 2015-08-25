@@ -263,8 +263,8 @@ polyPlot <- function(training, test, pol, color, return_err) {
   pred <- predict(fit, newdata=test)
   lines(training$X[order(training$X)], fit$fitted.values[order(training$X)], col='blue', lwd=4)
   error <- mean(abs(test$Y - pred))
-  text(3.5, -.4, paste('Error = ', round(error,2)), cex=1.5)
-  text(3.5, -.6, paste('Polynomial =', pol), cex=1.5)
+  text(3.9, -.4, paste('Error = ', round(error,2)), cex=2)
+  text(3.9, -.65, paste('Polynomial =', pol), cex=2)
   if(return_err) {return(error)} 
 }
 par(mfrow=c(1,2), mar=rep(0,4))
@@ -291,9 +291,9 @@ par(mar=rep(2, 4), mfrow=c(2,1))
 plot(1:10, err$test.err[1:10], col='red3', xlab='polynomial', ylab='Error', type='l', lwd=4)
 plot(1:50, err$train.err[1:50], col='gray', type='l', lwd=4)
 ```
-<img src='assets/img/poly1.png' height='175' class='fragment'> <img src='assets/img/poly3.png' height='175' class='fragment'>
+<img src='assets/img/Poly1.png' height='175' class='fragment'> <img src='assets/img/Poly3.png' height='175' class='fragment'>
 
-<img src='assets/img/poly9.png' height='175' class='fragment'> <img src='assets/img/poly50.png' height='175' class='fragment'>
+<img src='assets/img/Poly9.png' height='175' class='fragment'> <img src='assets/img/Poly50.png' height='175' class='fragment'>
 
 <aside class='notes'>
 

@@ -1279,6 +1279,7 @@ Places to Learn all about machine learning
 - JHU Practical Machine Learning   https://www.coursera.org/course/predmachlearn
 - Georgia Tech / Udacity M.S. in comp. sci.  <br> http://www.omscs.gatech.edu/
 - Learn by doing <br> https://www.kaggle.com/
+
 ---
 
 Good reads

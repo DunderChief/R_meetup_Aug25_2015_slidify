@@ -234,8 +234,6 @@ round(pred$posterior, 3)
 
 <br> 
 
-
-
 <aside class='notes'>
 
 Since most of the predictive modeling packages are written by different people,
@@ -248,10 +246,228 @@ $('ul.incremental li').addClass('fragment')
 $('ol.incremental li').addClass('fragment')
 </script>
 
+---
+
+Machine Learning Basics
+---------------------------------------------------
+<br>
+<br>
+
+
+```r
+library(caret)
+trainIndex <- createDataPartition(iris$Species, p = .8,
+                                  list = FALSE,
+                                  times = 1)
+irisTrain <- iris[ trainIndex, ]
+irisTest  <- iris[-trainIndex, ]
+```
+
+<br>
+
+<img src='assets/img/train_test.png'>
+<aside class='notes'>
+
+__Why split data?__ To avoid overfitting our results
+
+__Example:__ This is a good example of how caret make you do things the right way. I would normally just select random rows instead of breaking down into equal classes.
+
+</aside>
+
+---
+
+Cross-validation: Avoid overfitting
+---------------------------------------------------
+__$$y = x^3$$__
+
+```r
+y <- seq(2, 10, by=.05)
+x <- seq(2, 10, by=.05)^3
+```
+
+![plot of chunk unnamed-chunk-8](assets/fig/unnamed-chunk-8-1.png) 
+
+
+
+```r
+set.seed(1)
+error <- rnorm(length(x), sd=2)
+dat <- data.frame(X = x + error, Y = y + error)
+```
+
+![plot of chunk unnamed-chunk-10](assets/fig/unnamed-chunk-10-1.png) 
+
+<aside class='notes'>
+
+1. Create data where we know the optimal fit
+
+2. Add some randomness to it
+
+</aside>
+
+---
+
+Tuning polynomials
+------------------------------------------------
+
+
+```r
+set.seed(100)
+trainIndex <- createDataPartition(y=dat$Y, p=0.5, list=FALSE)
+
+training <- dat[trainIndex, ]
+test <- dat[-trainIndex, ]
+```
+
+<br> 
+
+
+
+```r
+fit <- lm(Y ~ poly(X, 3, raw=TRUE), data=training)
+pred.training <- predict(fit, newdata=training)
+pred.test <- predict(fit, newdata=test)
+```
+
+<br>
+
+$$y=\theta_3x^3 + \theta_2x^2 + \theta_1x + \theta_0$$
+
+<br>
+
+.fragment __Our true fit is:__ $\theta_3=1$, $\{\theta_2, \theta_1, \theta_0\}=0$
+
+<aside class='notes'>
+
+We always fit on the training set
+
+But we will compare analyzing this tuning parameter on both the training & test sets
+
+</aside>
+
+---
+
+In-sample (__training set__)   |   Out-of-sample (__test set__)
+
+![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-1.png) ![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-2.png) ![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-3.png) ![plot of chunk unnamed-chunk-13](assets/fig/unnamed-chunk-13-4.png) 
+
+<aside class='notes'>
+
+Error only decreases in training set
+
+At polynomial = 50. Our model no longer works on new data
+
+</aside>
+
+---
+
+
+<img src='assets/img/SL_bias_var_annot.png' height='600'>
+
+
+<aside class='notes'>
+error: lower is better. grey line is our training error. Test is red
+
+training error will always go down as the model gets more flexible
+
+but we want to know how well it does on new data
+
+test set is a better reflection of this
+
+</aside>
+
+---
+
+Parsimony / Occam's Razor
+---------------------------------------------------
+<br>
+The simplest model is usually the best. 
+<br>
+Only use least number of parameters that are necessary.
+
+---
+
+
+Data Splitting 
+---------------------------------------------------
+
+<br>
+
+>  1. __Training set [70%]:__ <br> Train a model 100x with different tuning parameters <br><br>
+>  2. __Cross-validation set [15%]:__ <br> Evaluate these 100 models <br><br>
+>  3. __Test set [15%]:__ <br> Use final model __(only one!)__ to evaluate your the accuracy of your analysis
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
+<aside class='notes'>
+
+1. Most ML models have tuning parameters & we need to optimize these useing an out of sample dataset
+
+2. This is our out of sample set for evaluating these params
+
+3. In order to avoid overfitting due to tuning param selection, need a fresh test set
+example of this is on prev slide
+
+</aside>
+
+---
+
+30% of data on testing?!?
+--------------------------------------
+
+<br>
+
+<img src='assets/img/Performance_Rows.png'>
+
+---
+
+k-fold cross-validation
+--------------------------------------
+<br>
+<img src='assets/img/k-fold_CV.png'>
+
+<aside class='notes'>
+
+in this case we have 5-fold cross-validation
+
+Average the error for all 5 of these to pick the best model
+
+</aside>
 
 
 --- 
 
+
+Typical flow for trying a new algorithm:
+--------------------------------------------------------------
+
+1. Find the package(s) and install
+2. Find training function 
+3. Split data into multiple train/test sets
+4. Set up your data to fit the training model
+    - Formula
+    - Matrix
+    - Data.frame
+    - X, Y as seperate objects
+5. Pre-process data
+6. Look up tuning params
+7. Write loops for model tuning / repeated cross-validation
+8. Analyze results
+
+<aside class='notes'>
+
+Typical flow for base r
+
+__Data Inputs:__ <br> formula, data.frame, matrix, or seperate X & Y objects 
+in caret all of this is contained in less than 5 lines of code
+
+</aside>
+
+
+---
 
 predict(fitObject, type = __???__)
 ---------------------------------------------
@@ -302,33 +518,6 @@ There is some standardization, such as the predict function to test our model on
 
 ---
 
-Typical flow for trying a new algorithm:
---------------------------------------------------------------
-
-1. Find the package(s) and install
-2. Find training function 
-3. Split data into multiple train/test sets
-4. Set up your data to fit the training model
-    - Formula
-    - Matrix
-    - Data.frame
-    - X, Y as seperate objects
-5. Pre-process data
-6. Look up tuning params
-7. Write loops for model tuning / repeated cross-validation
-8. Analyze results
-
-<aside class='notes'>
-
-Typical flow for base r
-
-__Data Inputs:__ <br> formula, data.frame, matrix, or seperate X & Y objects 
-in caret all of this is contained in less than 5 lines of code
-
-</aside>
-
-
----
 
 Caret
 -----------------------------
@@ -430,208 +619,6 @@ Not all models worked because we have 3 categories
 ---
 
 
-
-Machine Learning Basics
----------------------------------------------------
-<br>
-<br>
-
-
-```r
-library(caret)
-```
-
-```
-## Loading required package: lattice
-## Loading required package: ggplot2
-```
-
-```r
-trainIndex <- createDataPartition(iris$Species, p = .8,
-                                  list = FALSE,
-                                  times = 1)
-irisTrain <- iris[ trainIndex, ]
-irisTest  <- iris[-trainIndex, ]
-```
-
-<br>
-
-<img src='assets/img/train_test.png'>
-<aside class='notes'>
-
-__Why split data?__ To avoid overfitting our results
-
-__Example:__ This is a good example of how caret make you do things the right way. I would normally just select random rows instead of breaking down into equal classes.
-
-</aside>
-
----
-
-Cross-validation: Avoid overfitting
----------------------------------------------------
-__$$y = x^3$$__
-
-```r
-y <- seq(2, 10, by=.05)
-x <- seq(2, 10, by=.05)^3
-```
-
-![plot of chunk unnamed-chunk-10](assets/fig/unnamed-chunk-10-1.png) 
-
-
-
-```r
-set.seed(1)
-error <- rnorm(length(x), sd=2)
-dat <- data.frame(X = x + error, Y = y + error)
-```
-
-![plot of chunk unnamed-chunk-12](assets/fig/unnamed-chunk-12-1.png) 
-
-<aside class='notes'>
-
-1. Create data where we know the optimal fit
-
-2. Add some randomness to it
-
-</aside>
-
----
-
-Tuning polynomials
-------------------------------------------------
-
-
-```r
-set.seed(100)
-trainIndex <- createDataPartition(y=dat$Y, p=0.5, list=FALSE)
-
-training <- dat[trainIndex, ]
-test <- dat[-trainIndex, ]
-```
-
-<br> 
-
-
-
-
-
-```r
-fit <- lm(Y ~ poly(X, 3, raw=TRUE), data=training)
-pred.training <- predict(fit, newdata=training)
-pred.test <- predict(fit, newdata=test)
-```
-
-<br>
-
-$$y=\theta_3x^3 + \theta_2x^2 + \theta_1x + \theta_0$$
-
-<br>
-
-.fragment __Our true fit is:__ $\theta_3=1$, $\{\theta_2, \theta_1, \theta_0\}=0$
-
-<aside class='notes'>
-
-We always fit on the training set
-
-But we will compare analyzing this tuning parameter on both the training & test sets
-
-</aside>
-
----
-
-In-sample (__training set__)   |   Out-of-sample (__test set__)
-
-![plot of chunk unnamed-chunk-15](assets/fig/unnamed-chunk-15-1.png) ![plot of chunk unnamed-chunk-15](assets/fig/unnamed-chunk-15-2.png) ![plot of chunk unnamed-chunk-15](assets/fig/unnamed-chunk-15-3.png) ![plot of chunk unnamed-chunk-15](assets/fig/unnamed-chunk-15-4.png) 
-
-<aside class='notes'>
-
-Error only decreases in training set
-
-At polynomial = 50. Our model no longer works on new data
-
-</aside>
-
----
-
-
-<img src='assets/img/SL_bias_var_annot.png' height='600'>
-
-
-<aside class='notes'>
-error: lower is better. grey line is our training error. Test is red
-
-training error will always go down as the model gets more flexible
-
-but we want to know how well it does on new data
-
-test set is a better reflection of this
-
-</aside>
-
----
-
-Parsimony / Occam's Razor
----------------------------------------------------
-<br>
-The simplest model is usually the best. 
-<br>
-Only use least number of parameters that are necessary.
-
----
-
-
-Data Splitting 
----------------------------------------------------
-
-<br>
-
->  1. __Training set [70%]:__ <br> Train a model 100x with different tuning parameters <br><br>
->  2. __Cross-validation set [15%]:__ <br> Evaluate these 100 models <br><br>
->  3. __Test set [15%]:__ <br> Use final model __(only one!)__ to evaluate your the accuracy of your analysis
-
-<script>
-$('ul.incremental li').addClass('fragment')
-$('ol.incremental li').addClass('fragment')
-</script>
-
-<aside class='notes'>
-
-1. Most ML models have tuning parameters & we need to optimize these useing an out of sample dataset
-
-2. This is our out of sample set for evaluating these params
-
-3. In order to avoid overfitting due to tuning param selection, need a fresh test set
-example of this is on prev slide
-
-</aside>
-
----
-
-30% of data on testing?!?
---------------------------------------
-
-<br>
-
-<img src='assets/img/Performance_Rows.png'>
-
----
-
-k-fold cross-validation
---------------------------------------
-<br>
-<img src='assets/img/k-fold_CV.png'>
-
-<aside class='notes'>
-
-in this case we have 5-fold cross-validation
-
-Average the error for all 5 of these to pick the best model
-
-</aside>
-
----
-
 caret: Basic Syntax
 --------------------------------------
 
@@ -705,12 +692,6 @@ train():
 trainControl():
 ----------------------------------------
 
-
-```r
-out <- data.frame(Resampling_Method=c("boot", "boot632", "cv", "repeatedcv", "LOOCV", "LGOCV", "none", "oob", "adaptive_cv", "adaptive_boot", "adaptive_LGOCV"))
-kable(out, format='html')
-```
-
 <table>
  <thead>
   <tr>
@@ -778,14 +759,16 @@ head(gbmGrid)
 ## 5                 5     100       0.1             20
 ## 6                 9     100       0.1             20
 ```
-```
+
+
+```r
 train(Species ~ ., 
-        data=iris,
-        method='gbm',
-        preProcess='pca',
-        trControl=trainControl(method='repeatedcv', number=5, repeats=7),
-        tuneGrid = gbmGrid)
-```   
+      data=iris,
+      method='gbm',
+      preProcess='pca',
+      trControl=trainControl(method='repeatedcv', number=5, repeats=7),
+      tuneGrid = gbmGrid)
+```
 
 
 
@@ -902,7 +885,6 @@ Data Splitting | Class imbalances
 
 
 ```r
-set.seed(2969)
 imbal_train <- twoClassSim(10000, intercept = -20, linearVars = 20)
 imbal_test  <- twoClassSim(10000, intercept = -20, linearVars = 20)
 table(imbal_train$Class)
@@ -911,24 +893,30 @@ table(imbal_train$Class)
 ```
 ## 
 ## Class1 Class2 
-##   9411    589
+##   9439    561
+```
+
+
+```r
+upSample()
+downSample()
+ROSE()
+SMOTE()
 ```
 
 http://topepo.github.io/caret/sampling.html
+
+<aside class='notes'>
+
+Never balance the test set
+
+</aside>
 
 ---
 
 Pre-processing
 ---------------------------------------------------
 
-<br>
-
-
-
----
-
-Other functions
-------------------------------------------
 <br>
 
 
@@ -1023,386 +1011,33 @@ Genetic Algorithms:
 
 ```r
 gafs()
-```
-
-```
-## Error in gafs.default(): promise already under evaluation: recursive default argument reference or earlier problems?
-```
-
-```r
 gafsControl()
-```
-
-```
-## $functions
-## $functions$summary
-## function (data, lev = NULL, model = NULL) 
-## {
-##     if (is.character(data$obs)) 
-##         data$obs <- factor(data$obs, levels = lev)
-##     postResample(data[, "pred"], data[, "obs"])
-## }
-## <environment: namespace:caret>
-## 
-## $functions$fit
-## function (x, y, first, last, ...) 
-## train(x, y, ...)
-## <environment: namespace:caret>
-## 
-## $functions$pred
-## function (object, x) 
-## {
-##     tmp <- predict(object, x)
-##     if (object$modelType == "Classification" & !is.null(object$modelInfo$prob)) {
-##         out <- cbind(data.frame(pred = tmp), as.data.frame(predict(object, 
-##             x, type = "prob")))
-##     }
-##     else out <- tmp
-##     out
-## }
-## <environment: namespace:caret>
-## 
-## $functions$rank
-## function (object, x, y) 
-## {
-##     vimp <- varImp(object, scale = FALSE)$importance
-##     if (object$modelType == "Regression") {
-##         vimp <- vimp[order(vimp[, 1], decreasing = TRUE), , drop = FALSE]
-##     }
-##     else {
-##         if (all(levels(y) %in% colnames(vimp))) {
-##             avImp <- apply(vimp[, levels(y), drop = TRUE], 1, 
-##                 mean)
-##             vimp$Overall <- avImp
-##         }
-##     }
-##     vimp$var <- rownames(vimp)
-##     vimp
-## }
-## <environment: namespace:caret>
-## 
-## $functions$selectSize
-## function (x, metric, maximize) 
-## {
-##     best <- if (maximize) 
-##         which.max(x[, metric])
-##     else which.min(x[, metric])
-##     min(x[best, "Variables"])
-## }
-## <environment: namespace:caret>
-## 
-## $functions$selectVar
-## function (y, size) 
-## {
-##     finalImp <- ddply(y[, c("Overall", "var")], .(var), function(x) mean(x$Overall, 
-##         na.rm = TRUE))
-##     names(finalImp)[2] <- "Overall"
-##     finalImp <- finalImp[order(finalImp$Overall, decreasing = TRUE), 
-##         ]
-##     as.character(finalImp$var[1:size])
-## }
-## <environment: namespace:caret>
-## 
-## 
-## $method
-## [1] "repeatedcv"
-## 
-## $metric
-## NULL
-## 
-## $maximize
-## NULL
-## 
-## $number
-## [1] 10
-## 
-## $repeats
-## [1] 1
-## 
-## $returnResamp
-## [1] "final"
-## 
-## $verbose
-## [1] FALSE
-## 
-## $p
-## [1] 0.75
-## 
-## $index
-## NULL
-## 
-## $indexOut
-## NULL
-## 
-## $seeds
-## NULL
-## 
-## $holdout
-## [1] 0
-## 
-## $genParallel
-## [1] FALSE
-## 
-## $allowParallel
-## [1] TRUE
 ```
 
 Univariate Filters:
 
 ```r
 gafs()
-```
-
-```
-## Error in gafs.default(): promise already under evaluation: recursive default argument reference or earlier problems?
-```
-
-```r
 gafsControl()
-```
-
-```
-## $functions
-## $functions$summary
-## function (data, lev = NULL, model = NULL) 
-## {
-##     if (is.character(data$obs)) 
-##         data$obs <- factor(data$obs, levels = lev)
-##     postResample(data[, "pred"], data[, "obs"])
-## }
-## <environment: namespace:caret>
-## 
-## $functions$fit
-## function (x, y, first, last, ...) 
-## train(x, y, ...)
-## <environment: namespace:caret>
-## 
-## $functions$pred
-## function (object, x) 
-## {
-##     tmp <- predict(object, x)
-##     if (object$modelType == "Classification" & !is.null(object$modelInfo$prob)) {
-##         out <- cbind(data.frame(pred = tmp), as.data.frame(predict(object, 
-##             x, type = "prob")))
-##     }
-##     else out <- tmp
-##     out
-## }
-## <environment: namespace:caret>
-## 
-## $functions$rank
-## function (object, x, y) 
-## {
-##     vimp <- varImp(object, scale = FALSE)$importance
-##     if (object$modelType == "Regression") {
-##         vimp <- vimp[order(vimp[, 1], decreasing = TRUE), , drop = FALSE]
-##     }
-##     else {
-##         if (all(levels(y) %in% colnames(vimp))) {
-##             avImp <- apply(vimp[, levels(y), drop = TRUE], 1, 
-##                 mean)
-##             vimp$Overall <- avImp
-##         }
-##     }
-##     vimp$var <- rownames(vimp)
-##     vimp
-## }
-## <environment: namespace:caret>
-## 
-## $functions$selectSize
-## function (x, metric, maximize) 
-## {
-##     best <- if (maximize) 
-##         which.max(x[, metric])
-##     else which.min(x[, metric])
-##     min(x[best, "Variables"])
-## }
-## <environment: namespace:caret>
-## 
-## $functions$selectVar
-## function (y, size) 
-## {
-##     finalImp <- ddply(y[, c("Overall", "var")], .(var), function(x) mean(x$Overall, 
-##         na.rm = TRUE))
-##     names(finalImp)[2] <- "Overall"
-##     finalImp <- finalImp[order(finalImp$Overall, decreasing = TRUE), 
-##         ]
-##     as.character(finalImp$var[1:size])
-## }
-## <environment: namespace:caret>
-## 
-## 
-## $method
-## [1] "repeatedcv"
-## 
-## $metric
-## NULL
-## 
-## $maximize
-## NULL
-## 
-## $number
-## [1] 10
-## 
-## $repeats
-## [1] 1
-## 
-## $returnResamp
-## [1] "final"
-## 
-## $verbose
-## [1] FALSE
-## 
-## $p
-## [1] 0.75
-## 
-## $index
-## NULL
-## 
-## $indexOut
-## NULL
-## 
-## $seeds
-## NULL
-## 
-## $holdout
-## [1] 0
-## 
-## $genParallel
-## [1] FALSE
-## 
-## $allowParallel
-## [1] TRUE
 ```
 Simalated Annealing:
 
 ```r
 safs()
-```
-
-```
-## Error in safs.default(): promise already under evaluation: recursive default argument reference or earlier problems?
-```
-
-```r
 safsControl()
 ```
 
-```
-## $functions
-## $functions$summary
-## function (data, lev = NULL, model = NULL) 
-## {
-##     if (is.character(data$obs)) 
-##         data$obs <- factor(data$obs, levels = lev)
-##     postResample(data[, "pred"], data[, "obs"])
-## }
-## <environment: namespace:caret>
-## 
-## $functions$fit
-## function (x, y, first, last, ...) 
-## train(x, y, ...)
-## <environment: namespace:caret>
-## 
-## $functions$pred
-## function (object, x) 
-## {
-##     tmp <- predict(object, x)
-##     if (object$modelType == "Classification" & !is.null(object$modelInfo$prob)) {
-##         out <- cbind(data.frame(pred = tmp), as.data.frame(predict(object, 
-##             x, type = "prob")))
-##     }
-##     else out <- tmp
-##     out
-## }
-## <environment: namespace:caret>
-## 
-## $functions$rank
-## function (object, x, y) 
-## {
-##     vimp <- varImp(object, scale = FALSE)$importance
-##     if (object$modelType == "Regression") {
-##         vimp <- vimp[order(vimp[, 1], decreasing = TRUE), , drop = FALSE]
-##     }
-##     else {
-##         if (all(levels(y) %in% colnames(vimp))) {
-##             avImp <- apply(vimp[, levels(y), drop = TRUE], 1, 
-##                 mean)
-##             vimp$Overall <- avImp
-##         }
-##     }
-##     vimp$var <- rownames(vimp)
-##     vimp
-## }
-## <environment: namespace:caret>
-## 
-## $functions$selectSize
-## function (x, metric, maximize) 
-## {
-##     best <- if (maximize) 
-##         which.max(x[, metric])
-##     else which.min(x[, metric])
-##     min(x[best, "Variables"])
-## }
-## <environment: namespace:caret>
-## 
-## $functions$selectVar
-## function (y, size) 
-## {
-##     finalImp <- ddply(y[, c("Overall", "var")], .(var), function(x) mean(x$Overall, 
-##         na.rm = TRUE))
-##     names(finalImp)[2] <- "Overall"
-##     finalImp <- finalImp[order(finalImp$Overall, decreasing = TRUE), 
-##         ]
-##     as.character(finalImp$var[1:size])
-## }
-## <environment: namespace:caret>
-## 
-## 
-## $method
-## [1] "repeatedcv"
-## 
-## $metric
-## NULL
-## 
-## $maximize
-## NULL
-## 
-## $number
-## [1] 10
-## 
-## $repeats
-## [1] 1
-## 
-## $returnResamp
-## [1] "final"
-## 
-## $verbose
-## [1] FALSE
-## 
-## $p
-## [1] 0.75
-## 
-## $index
-## NULL
-## 
-## $indexOut
-## NULL
-## 
-## $seeds
-## NULL
-## 
-## $holdout
-## [1] 0
-## 
-## $improve
-## [1] Inf
-## 
-## $allowParallel
-## [1] TRUE
-```
+<aside class='notes'>
 
+UnivariateFilters = Uses statistics, like t-tests or anovas, to determine whether a feature is statistically different between Outcome Classes
 
+rfe = backward/forward feat selection
+
+GA = mimic darwinism where the best models have 'offspring' that are combined in the next iteration.
+
+SA =
+
+</aside>
 
 ---
 

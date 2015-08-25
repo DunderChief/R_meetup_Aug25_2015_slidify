@@ -243,6 +243,208 @@ $('ol.incremental li').addClass('fragment')
 
 </section>
 <section class='' data-state='' id='slide-7'>
+  <h2>Machine Learning Basics</h2>
+  <p><br>
+<br></p>
+
+<pre><code class="r">library(caret)
+trainIndex &lt;- createDataPartition(iris$Species, p = .8,
+                                  list = FALSE,
+                                  times = 1)
+irisTrain &lt;- iris[ trainIndex, ]
+irisTest  &lt;- iris[-trainIndex, ]
+</code></pre>
+
+<p><br></p>
+
+<p><img src='assets/img/train_test.png'>
+<aside class='notes'></p>
+
+<p><strong>Why split data?</strong> To avoid overfitting our results</p>
+
+<p><strong>Example:</strong> This is a good example of how caret make you do things the right way. I would normally just select random rows instead of breaking down into equal classes.</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-8'>
+  <h2>Cross-validation: Avoid overfitting</h2>
+  <p><strong>\[y = x^3\]</strong></p>
+
+<pre><code class="r">y &lt;- seq(2, 10, by=.05)
+x &lt;- seq(2, 10, by=.05)^3
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"> </p>
+
+<pre><code class="r">set.seed(1)
+error &lt;- rnorm(length(x), sd=2)
+dat &lt;- data.frame(X = x + error, Y = y + error)
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10"> </p>
+
+<p><aside class='notes'></p>
+
+<ol>
+<li><p>Create data where we know the optimal fit</p></li>
+<li><p>Add some randomness to it</p></li>
+</ol>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-9'>
+  <h2>Tuning polynomials</h2>
+  <pre><code class="r">set.seed(100)
+trainIndex &lt;- createDataPartition(y=dat$Y, p=0.5, list=FALSE)
+
+training &lt;- dat[trainIndex, ]
+test &lt;- dat[-trainIndex, ]
+</code></pre>
+
+<p><br> </p>
+
+<pre><code class="r">fit &lt;- lm(Y ~ poly(X, 3, raw=TRUE), data=training)
+pred.training &lt;- predict(fit, newdata=training)
+pred.test &lt;- predict(fit, newdata=test)
+</code></pre>
+
+<p><br></p>
+
+<p>\[y=\theta_3x^3 + \theta_2x^2 + \theta_1x + \theta_0\]</p>
+
+<p><br></p>
+
+<p class='fragment'><strong>Our true fit is:</strong> \(\theta_3=1\), \(\{\theta_2, \theta_1, \theta_0\}=0\)</p>
+
+<p><aside class='notes'></p>
+
+<p>We always fit on the training set</p>
+
+<p>But we will compare analyzing this tuning parameter on both the training &amp; test sets</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-10'>
+  
+  <p>In-sample (<strong>training set</strong>)   |   Out-of-sample (<strong>test set</strong>)</p>
+
+<p><img src="assets/fig/unnamed-chunk-13-1.png" alt="plot of chunk unnamed-chunk-13"> <img src="assets/fig/unnamed-chunk-13-2.png" alt="plot of chunk unnamed-chunk-13"> <img src="assets/fig/unnamed-chunk-13-3.png" alt="plot of chunk unnamed-chunk-13"> <img src="assets/fig/unnamed-chunk-13-4.png" alt="plot of chunk unnamed-chunk-13"> </p>
+
+<p><aside class='notes'></p>
+
+<p>Error only decreases in training set</p>
+
+<p>At polynomial = 50. Our model no longer works on new data</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-11'>
+  
+  <p><img src='assets/img/SL_bias_var_annot.png' height='600'></p>
+
+<p><aside class='notes'>
+error: lower is better. grey line is our training error. Test is red</p>
+
+<p>training error will always go down as the model gets more flexible</p>
+
+<p>but we want to know how well it does on new data</p>
+
+<p>test set is a better reflection of this</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-12'>
+  <h2>Parsimony / Occam&#39;s Razor</h2>
+  <p><br>
+The simplest model is usually the best. 
+<br>
+Only use least number of parameters that are necessary.</p>
+
+</section>
+<section class='' data-state='' id='slide-13'>
+  <h2>Data Splitting </h2>
+  <p><br></p>
+
+<ol class = "build incremental">
+<li><strong>Training set [70%]:</strong> <br> Train a model 100x with different tuning parameters <br><br></li>
+<li><strong>Cross-validation set [15%]:</strong> <br> Evaluate these 100 models <br><br></li>
+<li><strong>Test set [15%]:</strong> <br> Use final model <strong>(only one!)</strong> to evaluate your the accuracy of your analysis</li>
+</ol>
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
+<p><aside class='notes'></p>
+
+<ol>
+<li><p>Most ML models have tuning parameters &amp; we need to optimize these useing an out of sample dataset</p></li>
+<li><p>This is our out of sample set for evaluating these params</p></li>
+<li><p>In order to avoid overfitting due to tuning param selection, need a fresh test set
+example of this is on prev slide</p></li>
+</ol>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-14'>
+  <h2>30% of data on testing?!?</h2>
+  <p><br></p>
+
+<p><img src='assets/img/Performance_Rows.png'></p>
+
+</section>
+<section class='' data-state='' id='slide-15'>
+  <h2>k-fold cross-validation</h2>
+  <p><br>
+<img src='assets/img/k-fold_CV.png'></p>
+
+<p><aside class='notes'></p>
+
+<p>in this case we have 5-fold cross-validation</p>
+
+<p>Average the error for all 5 of these to pick the best model</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-16'>
+  <h2>Typical flow for trying a new algorithm:</h2>
+  <ol>
+<li>Find the package(s) and install</li>
+<li>Find training function </li>
+<li>Split data into multiple train/test sets</li>
+<li>Set up your data to fit the training model
+
+<ul>
+<li>Formula</li>
+<li>Matrix</li>
+<li>Data.frame</li>
+<li>X, Y as seperate objects</li>
+</ul></li>
+<li>Pre-process data</li>
+<li>Look up tuning params</li>
+<li>Write loops for model tuning / repeated cross-validation</li>
+<li>Analyze results</li>
+</ol>
+
+<p><aside class='notes'></p>
+
+<p>Typical flow for base r</p>
+
+<p><strong>Data Inputs:</strong> <br> formula, data.frame, matrix, or seperate X &amp; Y objects 
+in caret all of this is contained in less than 5 lines of code</p>
+
+<p></aside></p>
+
+</section>
+<section class='' data-state='' id='slide-17'>
   <h2>predict(fitObject, type = <strong>???</strong>)</h2>
   <p><br></p>
 
@@ -288,37 +490,7 @@ $('ol.incremental li').addClass('fragment')
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-8'>
-  <h2>Typical flow for trying a new algorithm:</h2>
-  <ol>
-<li>Find the package(s) and install</li>
-<li>Find training function </li>
-<li>Split data into multiple train/test sets</li>
-<li>Set up your data to fit the training model
-
-<ul>
-<li>Formula</li>
-<li>Matrix</li>
-<li>Data.frame</li>
-<li>X, Y as seperate objects</li>
-</ul></li>
-<li>Pre-process data</li>
-<li>Look up tuning params</li>
-<li>Write loops for model tuning / repeated cross-validation</li>
-<li>Analyze results</li>
-</ol>
-
-<p><aside class='notes'></p>
-
-<p>Typical flow for base r</p>
-
-<p><strong>Data Inputs:</strong> <br> formula, data.frame, matrix, or seperate X &amp; Y objects 
-in caret all of this is contained in less than 5 lines of code</p>
-
-<p></aside></p>
-
-</section>
-<section class='' data-state='' id='slide-9'>
+<section class='' data-state='' id='slide-18'>
   <h2>Caret</h2>
   <p>Website: <a href="https://topepo.github.io/caret/index.html">https://topepo.github.io/caret/index.html</a></p>
 
@@ -358,7 +530,7 @@ $('ol.incremental li').addClass('fragment')
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-10'>
+<section class='' data-state='' id='slide-19'>
   <h2>Train lots of models at once</h2>
   <p><br></p>
 
@@ -397,191 +569,13 @@ $('ol.incremental li').addClass('fragment')
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-11'>
+<section class='' data-state='' id='slide-20'>
   
   <p><img src='assets/img/authors.png'></p>
 
 <p><br></p>
 
 <p><img src='assets/img/abstract_highlight.png'></p>
-
-</section>
-<section class='' data-state='' id='slide-12'>
-  <h2>Machine Learning Basics</h2>
-  <p><br>
-<br></p>
-
-<pre><code class="r">library(caret)
-</code></pre>
-
-<pre><code>## Loading required package: lattice
-## Loading required package: ggplot2
-</code></pre>
-
-<pre><code class="r">trainIndex &lt;- createDataPartition(iris$Species, p = .8,
-                                  list = FALSE,
-                                  times = 1)
-irisTrain &lt;- iris[ trainIndex, ]
-irisTest  &lt;- iris[-trainIndex, ]
-</code></pre>
-
-<p><br></p>
-
-<p><img src='assets/img/train_test.png'>
-<aside class='notes'></p>
-
-<p><strong>Why split data?</strong> To avoid overfitting our results</p>
-
-<p><strong>Example:</strong> This is a good example of how caret make you do things the right way. I would normally just select random rows instead of breaking down into equal classes.</p>
-
-<p></aside></p>
-
-</section>
-<section class='' data-state='' id='slide-13'>
-  <h2>Cross-validation: Avoid overfitting</h2>
-  <p><strong>\[y = x^3\]</strong></p>
-
-<pre><code class="r">y &lt;- seq(2, 10, by=.05)
-x &lt;- seq(2, 10, by=.05)^3
-</code></pre>
-
-<p><img src="assets/fig/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10"> </p>
-
-<pre><code class="r">set.seed(1)
-error &lt;- rnorm(length(x), sd=2)
-dat &lt;- data.frame(X = x + error, Y = y + error)
-</code></pre>
-
-<p><img src="assets/fig/unnamed-chunk-12-1.png" alt="plot of chunk unnamed-chunk-12"> </p>
-
-<p><aside class='notes'></p>
-
-<ol>
-<li><p>Create data where we know the optimal fit</p></li>
-<li><p>Add some randomness to it</p></li>
-</ol>
-
-<p></aside></p>
-
-</section>
-<section class='' data-state='' id='slide-14'>
-  <h2>Tuning polynomials</h2>
-  <pre><code class="r">set.seed(100)
-trainIndex &lt;- createDataPartition(y=dat$Y, p=0.5, list=FALSE)
-
-training &lt;- dat[trainIndex, ]
-test &lt;- dat[-trainIndex, ]
-</code></pre>
-
-<p><br> </p>
-
-<pre><code class="r">fit &lt;- lm(Y ~ poly(X, 3, raw=TRUE), data=training)
-pred.training &lt;- predict(fit, newdata=training)
-pred.test &lt;- predict(fit, newdata=test)
-</code></pre>
-
-<p><br></p>
-
-<p>\[y=\theta_3x^3 + \theta_2x^2 + \theta_1x + \theta_0\]</p>
-
-<p><br></p>
-
-<p class='fragment'><strong>Our true fit is:</strong> \(\theta_3=1\), \(\{\theta_2, \theta_1, \theta_0\}=0\)</p>
-
-<p><aside class='notes'></p>
-
-<p>We always fit on the training set</p>
-
-<p>But we will compare analyzing this tuning parameter on both the training &amp; test sets</p>
-
-<p></aside></p>
-
-</section>
-<section class='' data-state='' id='slide-15'>
-  
-  <p>In-sample (<strong>training set</strong>)   |   Out-of-sample (<strong>test set</strong>)</p>
-
-<p><img src="assets/fig/unnamed-chunk-15-1.png" alt="plot of chunk unnamed-chunk-15"> <img src="assets/fig/unnamed-chunk-15-2.png" alt="plot of chunk unnamed-chunk-15"> <img src="assets/fig/unnamed-chunk-15-3.png" alt="plot of chunk unnamed-chunk-15"> <img src="assets/fig/unnamed-chunk-15-4.png" alt="plot of chunk unnamed-chunk-15"> </p>
-
-<p><aside class='notes'></p>
-
-<p>Error only decreases in training set</p>
-
-<p>At polynomial = 50. Our model no longer works on new data</p>
-
-<p></aside></p>
-
-</section>
-<section class='' data-state='' id='slide-16'>
-  
-  <p><img src='assets/img/SL_bias_var_annot.png' height='600'></p>
-
-<p><aside class='notes'>
-error: lower is better. grey line is our training error. Test is red</p>
-
-<p>training error will always go down as the model gets more flexible</p>
-
-<p>but we want to know how well it does on new data</p>
-
-<p>test set is a better reflection of this</p>
-
-<p></aside></p>
-
-</section>
-<section class='' data-state='' id='slide-17'>
-  <h2>Parsimony / Occam&#39;s Razor</h2>
-  <p><br>
-The simplest model is usually the best. 
-<br>
-Only use least number of parameters that are necessary.</p>
-
-</section>
-<section class='' data-state='' id='slide-18'>
-  <h2>Data Splitting </h2>
-  <p><br></p>
-
-<ol class = "build incremental">
-<li><strong>Training set [70%]:</strong> <br> Train a model 100x with different tuning parameters <br><br></li>
-<li><strong>Cross-validation set [15%]:</strong> <br> Evaluate these 100 models <br><br></li>
-<li><strong>Test set [15%]:</strong> <br> Use final model <strong>(only one!)</strong> to evaluate your the accuracy of your analysis</li>
-</ol>
-
-<script>
-$('ul.incremental li').addClass('fragment')
-$('ol.incremental li').addClass('fragment')
-</script>
-
-<p><aside class='notes'></p>
-
-<ol>
-<li><p>Most ML models have tuning parameters &amp; we need to optimize these useing an out of sample dataset</p></li>
-<li><p>This is our out of sample set for evaluating these params</p></li>
-<li><p>In order to avoid overfitting due to tuning param selection, need a fresh test set
-example of this is on prev slide</p></li>
-</ol>
-
-<p></aside></p>
-
-</section>
-<section class='' data-state='' id='slide-19'>
-  <h2>30% of data on testing?!?</h2>
-  <p><br></p>
-
-<p><img src='assets/img/Performance_Rows.png'></p>
-
-</section>
-<section class='' data-state='' id='slide-20'>
-  <h2>k-fold cross-validation</h2>
-  <p><br>
-<img src='assets/img/k-fold_CV.png'></p>
-
-<p><aside class='notes'></p>
-
-<p>in this case we have 5-fold cross-validation</p>
-
-<p>Average the error for all 5 of these to pick the best model</p>
-
-<p></aside></p>
 
 </section>
 <section class='' data-state='' id='slide-21'>
@@ -653,11 +647,7 @@ example of this is on prev slide</p></li>
 </section>
 <section class='' data-state='' id='slide-23'>
   <h2>trainControl():</h2>
-  <pre><code class="r">out &lt;- data.frame(Resampling_Method=c(&quot;boot&quot;, &quot;boot632&quot;, &quot;cv&quot;, &quot;repeatedcv&quot;, &quot;LOOCV&quot;, &quot;LGOCV&quot;, &quot;none&quot;, &quot;oob&quot;, &quot;adaptive_cv&quot;, &quot;adaptive_boot&quot;, &quot;adaptive_LGOCV&quot;))
-kable(out, format=&#39;html&#39;)
-</code></pre>
-
-<table>
+  <table>
  <thead>
   <tr>
    <th style="text-align:left;"> Resampling_Method </th>
@@ -719,12 +709,12 @@ head(gbmGrid)
 ## 6                 9     100       0.1             20
 </code></pre>
 
-<pre><code>train(Species ~ ., 
-        data=iris,
-        method=&#39;gbm&#39;,
-        preProcess=&#39;pca&#39;,
-        trControl=trainControl(method=&#39;repeatedcv&#39;, number=5, repeats=7),
-        tuneGrid = gbmGrid)
+<pre><code class="r">train(Species ~ ., 
+      data=iris,
+      method=&#39;gbm&#39;,
+      preProcess=&#39;pca&#39;,
+      trControl=trainControl(method=&#39;repeatedcv&#39;, number=5, repeats=7),
+      tuneGrid = gbmGrid)
 </code></pre>
 
 </section>
@@ -815,27 +805,33 @@ str(slices)
 </section>
 <section class='' data-state='' id='slide-29'>
   <h2>Data Splitting | Class imbalances</h2>
-  <pre><code class="r">set.seed(2969)
-imbal_train &lt;- twoClassSim(10000, intercept = -20, linearVars = 20)
+  <pre><code class="r">imbal_train &lt;- twoClassSim(10000, intercept = -20, linearVars = 20)
 imbal_test  &lt;- twoClassSim(10000, intercept = -20, linearVars = 20)
 table(imbal_train$Class)
 </code></pre>
 
 <pre><code>## 
 ## Class1 Class2 
-##   9411    589
+##   9439    561
+</code></pre>
+
+<pre><code class="r">upSample()
+downSample()
+ROSE()
+SMOTE()
 </code></pre>
 
 <p><a href="http://topepo.github.io/caret/sampling.html">http://topepo.github.io/caret/sampling.html</a></p>
 
+<p><aside class='notes'></p>
+
+<p>Never balance the test set</p>
+
+<p></aside></p>
+
 </section>
 <section class='' data-state='' id='slide-30'>
   <h2>Pre-processing</h2>
-  <p><br></p>
-
-</section>
-<section class='' data-state='' id='slide-31'>
-  <h2>Other functions</h2>
   <p><br></p>
 
 <pre><code class="r">dummyVars()
@@ -869,7 +865,7 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-32'>
+<section class='' data-state='' id='slide-31'>
   <h2>Variable Importance</h2>
   <p><br>
 <br></p>
@@ -891,7 +887,7 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-33'>
+<section class='' data-state='' id='slide-32'>
   <h2>Feature Selection</h2>
   <p><img src='assets/img/rand_feat.png' height='600' class='fragment'></p>
 
@@ -909,7 +905,7 @@ Applies same parameters to the test set.</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-34'>
+<section class='' data-state='' id='slide-33'>
   
   <p>Recursive Feature Elimination:</p>
 
@@ -921,377 +917,35 @@ rfeControl()
 <p>Genetic Algorithms:</p>
 
 <pre><code class="r">gafs()
-</code></pre>
-
-<pre><code>## Error in gafs.default(): promise already under evaluation: recursive default argument reference or earlier problems?
-</code></pre>
-
-<pre><code class="r">gafsControl()
-</code></pre>
-
-<pre><code>## $functions
-## $functions$summary
-## function (data, lev = NULL, model = NULL) 
-## {
-##     if (is.character(data$obs)) 
-##         data$obs &lt;- factor(data$obs, levels = lev)
-##     postResample(data[, &quot;pred&quot;], data[, &quot;obs&quot;])
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$fit
-## function (x, y, first, last, ...) 
-## train(x, y, ...)
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$pred
-## function (object, x) 
-## {
-##     tmp &lt;- predict(object, x)
-##     if (object$modelType == &quot;Classification&quot; &amp; !is.null(object$modelInfo$prob)) {
-##         out &lt;- cbind(data.frame(pred = tmp), as.data.frame(predict(object, 
-##             x, type = &quot;prob&quot;)))
-##     }
-##     else out &lt;- tmp
-##     out
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$rank
-## function (object, x, y) 
-## {
-##     vimp &lt;- varImp(object, scale = FALSE)$importance
-##     if (object$modelType == &quot;Regression&quot;) {
-##         vimp &lt;- vimp[order(vimp[, 1], decreasing = TRUE), , drop = FALSE]
-##     }
-##     else {
-##         if (all(levels(y) %in% colnames(vimp))) {
-##             avImp &lt;- apply(vimp[, levels(y), drop = TRUE], 1, 
-##                 mean)
-##             vimp$Overall &lt;- avImp
-##         }
-##     }
-##     vimp$var &lt;- rownames(vimp)
-##     vimp
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$selectSize
-## function (x, metric, maximize) 
-## {
-##     best &lt;- if (maximize) 
-##         which.max(x[, metric])
-##     else which.min(x[, metric])
-##     min(x[best, &quot;Variables&quot;])
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$selectVar
-## function (y, size) 
-## {
-##     finalImp &lt;- ddply(y[, c(&quot;Overall&quot;, &quot;var&quot;)], .(var), function(x) mean(x$Overall, 
-##         na.rm = TRUE))
-##     names(finalImp)[2] &lt;- &quot;Overall&quot;
-##     finalImp &lt;- finalImp[order(finalImp$Overall, decreasing = TRUE), 
-##         ]
-##     as.character(finalImp$var[1:size])
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## 
-## $method
-## [1] &quot;repeatedcv&quot;
-## 
-## $metric
-## NULL
-## 
-## $maximize
-## NULL
-## 
-## $number
-## [1] 10
-## 
-## $repeats
-## [1] 1
-## 
-## $returnResamp
-## [1] &quot;final&quot;
-## 
-## $verbose
-## [1] FALSE
-## 
-## $p
-## [1] 0.75
-## 
-## $index
-## NULL
-## 
-## $indexOut
-## NULL
-## 
-## $seeds
-## NULL
-## 
-## $holdout
-## [1] 0
-## 
-## $genParallel
-## [1] FALSE
-## 
-## $allowParallel
-## [1] TRUE
+gafsControl()
 </code></pre>
 
 <p>Univariate Filters:</p>
 
 <pre><code class="r">gafs()
-</code></pre>
-
-<pre><code>## Error in gafs.default(): promise already under evaluation: recursive default argument reference or earlier problems?
-</code></pre>
-
-<pre><code class="r">gafsControl()
-</code></pre>
-
-<pre><code>## $functions
-## $functions$summary
-## function (data, lev = NULL, model = NULL) 
-## {
-##     if (is.character(data$obs)) 
-##         data$obs &lt;- factor(data$obs, levels = lev)
-##     postResample(data[, &quot;pred&quot;], data[, &quot;obs&quot;])
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$fit
-## function (x, y, first, last, ...) 
-## train(x, y, ...)
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$pred
-## function (object, x) 
-## {
-##     tmp &lt;- predict(object, x)
-##     if (object$modelType == &quot;Classification&quot; &amp; !is.null(object$modelInfo$prob)) {
-##         out &lt;- cbind(data.frame(pred = tmp), as.data.frame(predict(object, 
-##             x, type = &quot;prob&quot;)))
-##     }
-##     else out &lt;- tmp
-##     out
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$rank
-## function (object, x, y) 
-## {
-##     vimp &lt;- varImp(object, scale = FALSE)$importance
-##     if (object$modelType == &quot;Regression&quot;) {
-##         vimp &lt;- vimp[order(vimp[, 1], decreasing = TRUE), , drop = FALSE]
-##     }
-##     else {
-##         if (all(levels(y) %in% colnames(vimp))) {
-##             avImp &lt;- apply(vimp[, levels(y), drop = TRUE], 1, 
-##                 mean)
-##             vimp$Overall &lt;- avImp
-##         }
-##     }
-##     vimp$var &lt;- rownames(vimp)
-##     vimp
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$selectSize
-## function (x, metric, maximize) 
-## {
-##     best &lt;- if (maximize) 
-##         which.max(x[, metric])
-##     else which.min(x[, metric])
-##     min(x[best, &quot;Variables&quot;])
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$selectVar
-## function (y, size) 
-## {
-##     finalImp &lt;- ddply(y[, c(&quot;Overall&quot;, &quot;var&quot;)], .(var), function(x) mean(x$Overall, 
-##         na.rm = TRUE))
-##     names(finalImp)[2] &lt;- &quot;Overall&quot;
-##     finalImp &lt;- finalImp[order(finalImp$Overall, decreasing = TRUE), 
-##         ]
-##     as.character(finalImp$var[1:size])
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## 
-## $method
-## [1] &quot;repeatedcv&quot;
-## 
-## $metric
-## NULL
-## 
-## $maximize
-## NULL
-## 
-## $number
-## [1] 10
-## 
-## $repeats
-## [1] 1
-## 
-## $returnResamp
-## [1] &quot;final&quot;
-## 
-## $verbose
-## [1] FALSE
-## 
-## $p
-## [1] 0.75
-## 
-## $index
-## NULL
-## 
-## $indexOut
-## NULL
-## 
-## $seeds
-## NULL
-## 
-## $holdout
-## [1] 0
-## 
-## $genParallel
-## [1] FALSE
-## 
-## $allowParallel
-## [1] TRUE
+gafsControl()
 </code></pre>
 
 <p>Simalated Annealing:</p>
 
 <pre><code class="r">safs()
+safsControl()
 </code></pre>
 
-<pre><code>## Error in safs.default(): promise already under evaluation: recursive default argument reference or earlier problems?
-</code></pre>
+<p><aside class='notes'></p>
 
-<pre><code class="r">safsControl()
-</code></pre>
+<p>UnivariateFilters = Uses statistics, like t-tests or anovas, to determine whether a feature is statistically different between Outcome Classes</p>
 
-<pre><code>## $functions
-## $functions$summary
-## function (data, lev = NULL, model = NULL) 
-## {
-##     if (is.character(data$obs)) 
-##         data$obs &lt;- factor(data$obs, levels = lev)
-##     postResample(data[, &quot;pred&quot;], data[, &quot;obs&quot;])
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$fit
-## function (x, y, first, last, ...) 
-## train(x, y, ...)
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$pred
-## function (object, x) 
-## {
-##     tmp &lt;- predict(object, x)
-##     if (object$modelType == &quot;Classification&quot; &amp; !is.null(object$modelInfo$prob)) {
-##         out &lt;- cbind(data.frame(pred = tmp), as.data.frame(predict(object, 
-##             x, type = &quot;prob&quot;)))
-##     }
-##     else out &lt;- tmp
-##     out
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$rank
-## function (object, x, y) 
-## {
-##     vimp &lt;- varImp(object, scale = FALSE)$importance
-##     if (object$modelType == &quot;Regression&quot;) {
-##         vimp &lt;- vimp[order(vimp[, 1], decreasing = TRUE), , drop = FALSE]
-##     }
-##     else {
-##         if (all(levels(y) %in% colnames(vimp))) {
-##             avImp &lt;- apply(vimp[, levels(y), drop = TRUE], 1, 
-##                 mean)
-##             vimp$Overall &lt;- avImp
-##         }
-##     }
-##     vimp$var &lt;- rownames(vimp)
-##     vimp
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$selectSize
-## function (x, metric, maximize) 
-## {
-##     best &lt;- if (maximize) 
-##         which.max(x[, metric])
-##     else which.min(x[, metric])
-##     min(x[best, &quot;Variables&quot;])
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## $functions$selectVar
-## function (y, size) 
-## {
-##     finalImp &lt;- ddply(y[, c(&quot;Overall&quot;, &quot;var&quot;)], .(var), function(x) mean(x$Overall, 
-##         na.rm = TRUE))
-##     names(finalImp)[2] &lt;- &quot;Overall&quot;
-##     finalImp &lt;- finalImp[order(finalImp$Overall, decreasing = TRUE), 
-##         ]
-##     as.character(finalImp$var[1:size])
-## }
-## &lt;environment: namespace:caret&gt;
-## 
-## 
-## $method
-## [1] &quot;repeatedcv&quot;
-## 
-## $metric
-## NULL
-## 
-## $maximize
-## NULL
-## 
-## $number
-## [1] 10
-## 
-## $repeats
-## [1] 1
-## 
-## $returnResamp
-## [1] &quot;final&quot;
-## 
-## $verbose
-## [1] FALSE
-## 
-## $p
-## [1] 0.75
-## 
-## $index
-## NULL
-## 
-## $indexOut
-## NULL
-## 
-## $seeds
-## NULL
-## 
-## $holdout
-## [1] 0
-## 
-## $improve
-## [1] Inf
-## 
-## $allowParallel
-## [1] TRUE
-</code></pre>
+<p>rfe = backward/forward feat selection</p>
+
+<p>GA = mimic darwinism where the best models have &#39;offspring&#39; that are combined in the next iteration.</p>
+
+<p>SA =</p>
+
+<p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-35'>
+<section class='' data-state='' id='slide-34'>
   
   <!------------------H2O-------------------------------------->
 
@@ -1318,7 +972,7 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-36'>
+<section class='' data-state='' id='slide-35'>
   <h2>Models available with H2O</h2>
   <p><br></p>
 
@@ -1337,7 +991,7 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-37'>
+<section class='' data-state='' id='slide-36'>
   
   <pre><code class="r">h2o.deeplearning(
    x, y, training_frame, model_id = &quot;&quot;,
@@ -1409,7 +1063,7 @@ may want to parallelize a siCan be challenging with many predictors &amp; we can
 </code></pre>
 
 </section>
-<section class='' data-state='' id='slide-38'>
+<section class='' data-state='' id='slide-37'>
   <h2>Use case</h2>
   <pre><code class="r">library(h2o)
 # Initialize h2o with nthreads (default is 2)
@@ -1435,7 +1089,7 @@ performance = h2o.performance(model = model, data=iris.test.h2o)
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-39'>
+<section class='' data-state='' id='slide-38'>
   
   <!----------------GPU--------------------------------------->
 
@@ -1459,7 +1113,7 @@ A typical machine will have 4-8 cores</p>
 </aside></p>
 
 </section>
-<section class='' data-state='' id='slide-40'>
+<section class='' data-state='' id='slide-39'>
   <h2>gputools</h2>
   <pre><code class="r">gpuGLM()
 gpuLM()
@@ -1473,7 +1127,7 @@ gpuHclust(gpuDist())
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-41'>
+<section class='' data-state='' id='slide-40'>
   <h2>rpud</h2>
   <p><a href="http://www.r-tutor.com/gpu-computing">http://www.r-tutor.com/gpu-computing</a></p>
 
@@ -1491,7 +1145,7 @@ rvbm() = Bayesian Classification with Gaussian Process</p>
 <p></aside></p>
 
 </section>
-<section class='' data-state='' id='slide-42'>
+<section class='' data-state='' id='slide-41'>
   
   <!-------------------THE END---------------------------------->
 
@@ -1505,7 +1159,7 @@ rvbm() = Bayesian Classification with Gaussian Process</p>
 </ul>
 
 </section>
-<section class='' data-state='' id='slide-43'>
+<section class='' data-state='' id='slide-42'>
   <h2>References</h2>
   <p><br></p>
 

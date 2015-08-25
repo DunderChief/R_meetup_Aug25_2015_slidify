@@ -137,8 +137,6 @@ round(pred$posterior, 3)
 
 <br> 
 
-
-
 <aside class='notes'>
 
 Since most of the predictive modeling packages are written by different people,
@@ -151,153 +149,7 @@ $('ul.incremental li').addClass('fragment')
 $('ol.incremental li').addClass('fragment')
 </script>
 
-
-
---- 
-
-
-predict(fitObject, type = __???__)
----------------------------------------------
-
-<br>
-
-```{r, echo=FALSE, results='asis'}
-out <- kable(
-  data.frame(Model=c('gbm', 'mda', 'rpart', 'Weka', 'LogitBoost', 'lda'),
-             Probability=c('"response"', '"posterior"', '"prob"', 
-                           '"probability"', '"raw"','None needed' )), 
-  format='html'
-)
-cat(sub('<table>', 
-        '<table class="fragment" style="font-size: 40px; line-height: 50px;">', out))
-```
-
-
-<aside class='notes'>
-
-There is some standardization, such as the predict function to test our model on a new datasets
-
-</aside>
-
 ---
-
-Typical flow for trying a new algorithm:
---------------------------------------------------------------
-
-1. Find the package(s) and install
-2. Find training function 
-3. Split data into multiple train/test sets
-4. Set up your data to fit the training model
-    - Formula
-    - Matrix
-    - Data.frame
-    - X, Y as seperate objects
-5. Pre-process data
-6. Look up tuning params
-7. Write loops for model tuning / repeated cross-validation
-8. Analyze results
-
-<aside class='notes'>
-
-Typical flow for base r
-
-__Data Inputs:__ <br> formula, data.frame, matrix, or seperate X & Y objects 
-in caret all of this is contained in less than 5 lines of code
-
-</aside>
-
-
----
-
-Caret
------------------------------
-
-Website: <https://topepo.github.io/caret/index.html>
-
-List of Models: <https://topepo.github.io/caret/modelList.html>
-
-<br>
-
-```{r, class="Fragment"}
-options(stringsAsFactors=FALSE)
-models <- read.csv('../caret_models.csv')
-table(models$Type)
-class_models <- subset(models, Type %in% c('Classification', 'Dual Use'),
-                       select='method.Argument')
-```
-
-<script>
-$('ul.incremental li').addClass('fragment')
-$('ol.incremental li').addClass('fragment')
-</script>
-
-<aside class='notes'>
-
-Wrapper for 192 models
-
-91 Machine learning packages
-
-With all these dependencies, probably a few thousand packages in total???
-
-Can add your own
-
-</aside>
-
----
-
-Train lots of models at once
----------------------------------------
-
-<br>
-
-```{r caretStart, class="fragment", eval=FALSE}
-library(caret); library(doMC); registerDoMC(7)
-myFits <- foreach(this.model = class_models) %do% {
-  train(Species ~ ., 
-        data=iris,
-        method=this.model,
-        preProcess='pca',
-        trControl=trainControl(method='repeatedcv', number=5, repeats=7),
-        tuneLength=5)
-}
-```
-
-<script>
-$('ul.incremental li').addClass('fragment')
-$('ol.incremental li').addClass('fragment')
-</script>
-
-<br>
-
-<aside class='notes'>
-
-This will:
-1. preprocess with PCA,
-
-2. train with 5-fold cross validation, 7 repeats in parallel
-
-3. will also optimize tuning parameters
-
-Took XX minutes to run
-
-Not all models worked because we have 3 categories
-
-
-</aside>
-
-
----
-
-
-<img src='assets/img/authors.png'>
-
-<br>
-
-<img src='assets/img/abstract_highlight.png'>
-
----
-
-
 
 Machine Learning Basics
 ---------------------------------------------------
@@ -374,8 +226,6 @@ test <- dat[-trainIndex, ]
 ```
 
 <br> 
-
-
 
 
 ```{r, eval=FALSE}
@@ -517,7 +367,152 @@ Average the error for all 5 of these to pick the best model
 
 </aside>
 
+
+--- 
+
+
+Typical flow for trying a new algorithm:
+--------------------------------------------------------------
+
+1. Find the package(s) and install
+2. Find training function 
+3. Split data into multiple train/test sets
+4. Set up your data to fit the training model
+    - Formula
+    - Matrix
+    - Data.frame
+    - X, Y as seperate objects
+5. Pre-process data
+6. Look up tuning params
+7. Write loops for model tuning / repeated cross-validation
+8. Analyze results
+
+<aside class='notes'>
+
+Typical flow for base r
+
+__Data Inputs:__ <br> formula, data.frame, matrix, or seperate X & Y objects 
+in caret all of this is contained in less than 5 lines of code
+
+</aside>
+
+
 ---
+
+predict(fitObject, type = __???__)
+---------------------------------------------
+
+<br>
+
+```{r, echo=FALSE, results='asis'}
+out <- kable(
+  data.frame(Model=c('gbm', 'mda', 'rpart', 'Weka', 'LogitBoost', 'lda'),
+             Probability=c('"response"', '"posterior"', '"prob"', 
+                           '"probability"', '"raw"','None needed' )), 
+  format='html'
+)
+cat(sub('<table>', 
+        '<table class="fragment" style="font-size: 40px; line-height: 50px;">', out))
+```
+
+
+<aside class='notes'>
+
+There is some standardization, such as the predict function to test our model on a new datasets
+
+</aside>
+
+---
+
+
+Caret
+-----------------------------
+
+Website: <https://topepo.github.io/caret/index.html>
+
+List of Models: <https://topepo.github.io/caret/modelList.html>
+
+<br>
+
+```{r, class="Fragment"}
+options(stringsAsFactors=FALSE)
+models <- read.csv('../caret_models.csv')
+table(models$Type)
+class_models <- subset(models, Type %in% c('Classification', 'Dual Use'),
+                       select='method.Argument')
+```
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
+<aside class='notes'>
+
+Wrapper for 192 models
+
+91 Machine learning packages
+
+With all these dependencies, probably a few thousand packages in total???
+
+Can add your own
+
+</aside>
+
+---
+
+Train lots of models at once
+---------------------------------------
+
+<br>
+
+```{r caretStart, class="fragment", eval=FALSE}
+library(caret); library(doMC); registerDoMC(7)
+myFits <- foreach(this.model = class_models) %do% {
+  train(Species ~ ., 
+        data=iris,
+        method=this.model,
+        preProcess='pca',
+        trControl=trainControl(method='repeatedcv', number=5, repeats=7),
+        tuneLength=5)
+}
+```
+
+<script>
+$('ul.incremental li').addClass('fragment')
+$('ol.incremental li').addClass('fragment')
+</script>
+
+<br>
+
+<aside class='notes'>
+
+This will:
+1. preprocess with PCA,
+
+2. train with 5-fold cross validation, 7 repeats in parallel
+
+3. will also optimize tuning parameters
+
+Took XX minutes to run
+
+Not all models worked because we have 3 categories
+
+
+</aside>
+
+
+---
+
+
+<img src='assets/img/authors.png'>
+
+<br>
+
+<img src='assets/img/abstract_highlight.png'>
+
+---
+
 
 caret: Basic Syntax
 --------------------------------------
@@ -553,7 +548,7 @@ frag_it(kable(out, format='html'))
 trainControl():
 ----------------------------------------
 
-```{r}
+```{r, echo=FALSE}
 out <- data.frame(Resampling_Method=c("boot", "boot632", "cv", "repeatedcv", "LOOCV", "LGOCV", "none", "oob", "adaptive_cv", "adaptive_boot", "adaptive_LGOCV"))
 kable(out, format='html')
 ```
@@ -686,27 +681,31 @@ Data Splitting | Class imbalances
 ---------------------------------------------------
 
 ```{r}
-set.seed(2969)
 imbal_train <- twoClassSim(10000, intercept = -20, linearVars = 20)
 imbal_test  <- twoClassSim(10000, intercept = -20, linearVars = 20)
 table(imbal_train$Class)
 ```
 
+```{r, eval=FALSE}
+upSample()
+downSample()
+ROSE()
+SMOTE()
+```
+
 http://topepo.github.io/caret/sampling.html
+
+<aside class='notes'>
+
+Never balance the test set
+
+</aside>
 
 ---
 
 Pre-processing
 ---------------------------------------------------
 
-<br>
-
-
-
----
-
-Other functions
-------------------------------------------
 <br>
 
 ```{r, eval=FALSE}
@@ -795,18 +794,18 @@ rfeControl()
 # <img src='assets/img/RFE.png'>
 ```
 Genetic Algorithms:
-```{r}
+```{r, eval=FALSE}
 gafs()
 gafsControl()
 ```
 
 Univariate Filters:
-```{r}
+```{r, eval=FALSE}
 gafs()
 gafsControl()
 ```
 Simalated Annealing:
-```{r}
+```{r, eval=FALSE}
 safs()
 safsControl()
 ```

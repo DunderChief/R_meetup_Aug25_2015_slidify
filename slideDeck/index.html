@@ -305,14 +305,14 @@ test &lt;- dat[-trainIndex, ]
 
 <p><br> </p>
 
+<p>\[y=\theta_3x^3 + \theta_2x^2 + \theta_1x + \theta_0\]</p>
+
+<p><br></p>
+
 <pre><code class="r">fit &lt;- lm(Y ~ poly(X, 3, raw=TRUE), data=training)
 pred.training &lt;- predict(fit, newdata=training)
 pred.test &lt;- predict(fit, newdata=test)
 </code></pre>
-
-<p><br></p>
-
-<p>\[y=\theta_3x^3 + \theta_2x^2 + \theta_1x + \theta_0\]</p>
 
 <p><aside class='notes'></p>
 
@@ -1159,7 +1159,7 @@ rvbm() = Bayesian Classification with Gaussian Process</p>
 
 </section>
 <section class='' data-state='' id='slide-42'>
-  <h2>References</h2>
+  <h2>Good reads</h2>
   <p><br></p>
 
 <p><img src='assets/img/ESL.jpg' height='400'> <img src='assets/img/ISL.jpg' height='400'> <img src='assets/img/APM.png' height='400'></p>

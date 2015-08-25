@@ -321,6 +321,9 @@ test <- dat[-trainIndex, ]
 
 <br> 
 
+$$y=\theta_3x^3 + \theta_2x^2 + \theta_1x + \theta_0$$
+
+<br>
 
 
 ```r
@@ -329,9 +332,9 @@ pred.training <- predict(fit, newdata=training)
 pred.test <- predict(fit, newdata=test)
 ```
 
-<br>
 
-$$y=\theta_3x^3 + \theta_2x^2 + \theta_1x + \theta_0$$
+
+
 
 
 <aside class='notes'>
@@ -1278,7 +1281,7 @@ Places to Learn all about machine learning
 
 ---
 
-References
+Good reads
 ---------------------------------------------------------------
 
 <br>
